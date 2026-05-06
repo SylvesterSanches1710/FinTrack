@@ -1,0 +1,48 @@
+<div class="card transfer-card">
+
+  <h2>Transfer Between Accounts</h2>
+
+  <div class="transfer-form">
+
+    <!-- From -->
+    <div class="input-group">
+      <label>From</label>
+
+      <select [(ngModel)]="fromAccount">
+        <option value="">Select Account</option>
+
+        <option *ngFor="let acc of accounts" [value]="acc.name">
+          {{ acc.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- To -->
+    <div class="input-group">
+      <label>To</label>
+
+      <select [(ngModel)]="toAccount">
+        <option value="">Select Account</option>
+
+        <option *ngFor="let acc of accounts" [value]="acc.name">
+          {{ acc.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Amount -->
+    <div class="input-group">
+      <label>Amount</label>
+
+      <input type="number"
+             [(ngModel)]="amount"
+             placeholder="Enter amount">
+    </div>
+
+    <button (click)="transfer()">
+      Transfer
+    </button>
+
+  </div>
+
+</div>

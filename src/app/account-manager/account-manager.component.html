@@ -1,0 +1,30 @@
+<div class="card account-card">
+  <h2>Accounts</h2>
+
+  <div class="account-form">
+    <div class="input-group">
+      <label>Bank</label>
+
+      <select [(ngModel)]="selectedBank">
+        <option value="">Select Bank</option>
+        <option *ngFor="let bank of bankOptions" [value]="bank">
+          {{ bank }}
+        </option>
+      </select>
+    </div>
+
+    <!-- 🔥 Show only if Other -->
+    <div class="input-group" *ngIf="selectedBank === 'Other'">
+      <label>Custom Bank Name</label>
+      <input
+        type="text"
+        [(ngModel)]="customBankName"
+        placeholder="Enter bank name" />
+    </div>
+    <div class="input-group">
+      <label>Starting Balance</label>
+      <input type="number" [(ngModel)]="balance" placeholder="e.g. 5000" />
+    </div>
+    <button (click)="addAccount()" class="primary">+ Add Account</button>
+  </div>
+</div>

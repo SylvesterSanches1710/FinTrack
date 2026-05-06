@@ -1,0 +1,29 @@
+<h2>Dashboard</h2>
+
+<div class="dashboard-grid">
+
+  <!-- 🔥 Dynamic Accounts -->
+ <div class="card"
+     *ngFor="let acc of balanceList"
+     [ngClass]="'card-' + acc.color">
+
+  <div class="card-header">
+    <p>{{ acc.name }} Balance</p>
+
+    <button class="delete-btn"
+            (click)="deleteAccount(acc.name)">
+      ✕
+    </button>
+  </div>
+
+  <h3>₹{{ acc.value }}</h3>
+
+</div>
+
+  <!-- Monthly Spending -->
+  <div class="card expense">
+    <p>Monthly Spending</p>
+    <h3>₹{{ monthlyExpense }}</h3>
+  </div>
+
+</div>

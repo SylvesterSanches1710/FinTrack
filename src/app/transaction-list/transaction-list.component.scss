@@ -1,0 +1,125 @@
+/* FILTER BAR */
+/* FILTER TOOLBAR */
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Make inputs consistent size */
+.filters select,
+.filters input {
+  height: 40px;
+  min-width: 140px;
+}
+
+/* Month wrapper */
+.month-wrapper {
+  position: relative;
+}
+
+.month-wrapper span {
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  font-size: 10px;
+  background: white;
+  padding: 0 4px;
+  color: #666;
+}
+
+/* Export button */
+.export-btn {
+  background: #111;
+  padding: 8px 16px;
+}
+
+.export-btn:hover {
+  background: #333;
+}
+/* TRANSACTION CARD */
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  background: #f9fafb;
+}
+
+/* Softer colors instead of full red */
+.expense-card {
+  border-left: 5px solid #ef4444;
+}
+
+.income-card {
+  border-left: 5px solid #10b981;
+}
+
+/* LEFT SIDE */
+.left strong {
+  font-size: 16px;
+}
+
+.category {
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.account {
+  color: #555;
+  margin-left: 5px;
+}
+
+.date {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* RIGHT SIDE BUTTONS */
+.right {
+  display: flex;
+  gap: 8px;
+}
+
+.right button {
+  padding: 6px 12px;
+}
+
+.delete {
+  background: #ef4444;
+}
+
+.delete:hover {
+  background: #dc2626;
+}
+
+.month-filter {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: #555;
+}
+
+.transaction-scroll {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Optional prettier scrollbar */
+.transaction-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.transaction-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.transaction-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

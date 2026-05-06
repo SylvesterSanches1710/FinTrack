@@ -1,0 +1,56 @@
+<h2>
+  {{ editMode ? "Edit Transaction ✏️" : "Add Transaction" }}
+</h2>
+
+<form (ngSubmit)="addTransaction()" class="form">
+  <div class="form-group">
+    <label>Amount</label>
+    <input type="number" [(ngModel)]="amount" name="amount" required />
+  </div>
+
+  <div class="form-group">
+    <label>Type</label>
+    <select [(ngModel)]="type" name="type">
+      <option value="Income">Income</option>
+      <option value="Expense">Expense</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Category</label>
+    <input type="text" [(ngModel)]="category" name="category" />
+  </div>
+
+  <div class="form-group">
+    <label>Account</label>
+    <select [(ngModel)]="account" name="account">
+      <option *ngFor="let acc of accounts" [value]="acc.name">
+        {{ acc.name }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Notes</label>
+    <input type="text" [(ngModel)]="notes" name="notes" />
+  </div>
+
+  <div class="form-group">
+    <label>Date</label>
+    <input type="date" [(ngModel)]="date" name="date" />
+  </div>
+
+  <div class="form-actions">
+    <button type="submit">
+      {{ editMode ? "Update" : "Add Transaction" }}
+    </button>
+
+    <button
+      type="button"
+      *ngIf="editMode"
+      (click)="cancelEdit()"
+      class="secondary">
+      Cancel
+    </button>
+  </div>
+</form>

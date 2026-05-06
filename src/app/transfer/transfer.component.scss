@@ -1,0 +1,16 @@
+.transfer-card {
+  margin-bottom: 20px;
+}
+
+.transfer-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 15px;
+  align-items: end;
+}
+
+@media (max-width: 768px) {
+  .transfer-form {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,12 @@
+.insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.insight-card {
+  padding: 15px;
+  border-radius: 10px;
+  background: #f8fafc;
+  text-align: center;
+}
