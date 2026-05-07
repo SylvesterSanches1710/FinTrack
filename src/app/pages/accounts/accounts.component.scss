@@ -1,0 +1,304 @@
+.accounts-page {
+  color: white;
+}
+
+/* HEADER */
+
+.accounts-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.accounts-header h1 {
+  font-size: 48px;
+
+  margin: 0;
+}
+
+.accounts-header p {
+  color: #8f8f8f;
+
+  margin-top: 8px;
+}
+
+/* BUTTON */
+
+.add-btn {
+  height: 52px;
+
+  padding: 0 24px;
+
+  border: none;
+
+  border-radius: 16px;
+
+  background: #2b6fff;
+
+  color: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+/* NET WORTH */
+
+.networth-card {
+  background: linear-gradient(
+    135deg,
+    #2b6fff,
+    #4d84ff
+  );
+
+  border-radius: 28px;
+
+  padding: 30px;
+
+  margin-bottom: 32px;
+}
+
+.networth-label {
+  font-size: 15px;
+
+  opacity: 0.8;
+}
+
+.networth-value {
+  font-size: 42px;
+
+  font-weight: 700;
+
+  margin-top: 12px;
+}
+
+/* GRID */
+
+.accounts-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(280px, 1fr));
+
+  gap: 24px;
+}
+
+/* CARD */
+
+.account-card {
+  background: #121212;
+
+  border: 1px solid #222;
+
+  border-radius: 28px;
+
+  padding: 24px;
+
+  transition: 0.2s ease;
+}
+
+.account-card:hover {
+  transform: translateY(-2px);
+}
+
+.account-top {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 28px;
+}
+
+.account-dot {
+  width: 14px;
+  height: 14px;
+
+  border-radius: 50%;
+}
+
+.delete-btn {
+  width: 36px;
+  height: 36px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #1d1d1d;
+
+  color: #ff5c67;
+
+  cursor: pointer;
+}
+
+.account-name {
+  font-size: 22px;
+
+  font-weight: 700;
+}
+
+.account-type {
+  color: #8f8f8f;
+
+  margin-top: 8px;
+}
+
+.account-balance {
+  margin-top: 30px;
+
+  font-size: 34px;
+
+  font-weight: 700;
+}
+
+/* MODAL */
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0,0,0,0.7);
+
+  backdrop-filter: blur(6px);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  z-index: 999;
+}
+
+.modal-content {
+  width: 520px;
+
+  background: #121212;
+
+  border: 1px solid #2a2a2a;
+
+  border-radius: 28px;
+
+  padding: 32px;
+}
+
+.modal-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 28px;
+}
+
+.modal-header h2 {
+  color: white;
+}
+
+.close-btn {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #1d1d1d;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+/* FORM */
+
+.form-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  color: #8f8f8f;
+
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  height: 56px;
+
+  background: #171717;
+
+  border: 1px solid #2b2b2b;
+
+  border-radius: 16px;
+
+  padding: 0 18px;
+
+  color: white;
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+.submit-btn {
+  width: 100%;
+
+  height: 56px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  background: #2b6fff;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+
+  .accounts-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 20px;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .accounts-header h1 {
+    font-size: 38px;
+  }
+
+  .networth-value {
+    font-size: 34px;
+  }
+
+}

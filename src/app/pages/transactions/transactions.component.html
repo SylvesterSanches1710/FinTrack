@@ -1,0 +1,150 @@
+<div class="transactions-page">
+  <!-- HEADER -->
+
+  <div class="transactions-header">
+
+  <div class="header-left">
+
+    <h1>Transactions</h1>
+
+    <p>Manage your financial activity</p>
+
+  </div>
+
+  <div class="header-actions">
+
+    <button
+      class="export-btn"
+      (click)="exportCSV()"
+    >
+      Export CSV
+    </button>
+
+    <button
+      class="export-pdf-btn"
+      (click)="exportPDF()"
+    >
+      Export PDF
+    </button>
+
+    <button
+      class="add-btn"
+      (click)="openTransactionModal()"
+    >
+      + Add Transaction
+    </button>
+
+  </div>
+
+</div>
+
+  <!-- FILTERS -->
+
+  <div class="filters-bar">
+    <input
+      type="text"
+      placeholder="Search transactions..."
+      [(ngModel)]="searchTerm" />
+
+    <select [(ngModel)]="selectedType">
+      <option value="">All Types</option>
+
+      <option value="Expense">Expense</option>
+
+      <option value="Income">Income</option>
+
+      <option value="Transfer">Transfer</option>
+    </select>
+  </div>
+
+  <!-- LIST -->
+
+  <div class="transactions-widget">
+    <div
+      class="transaction-item"
+      *ngFor="let t of filteredTransactions(); let i = index">
+      <!-- LEFT -->
+
+      <div class="transaction-left">
+        <div class="transaction-avatar">
+          {{ t.category?.charAt(0) || "?" }}
+        </div>
+
+        <div>
+          <div class="transaction-title">
+            {{ t.category }}
+          </div>
+
+          <div class="transaction-sub">
+            {{ t.account }}
+            •
+            {{ t.date }}
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+
+      <div class="transaction-right">
+        <div
+          class="transaction-amount"
+          [ngClass]="{
+            income: t.type === 'Income',
+            expense: t.type === 'Expense',
+            transfer: t.type === 'Transfer',
+          }">
+          {{ t.type === "Income" ? "+" : t.type === "Expense" ? "-" : "" }}
+
+          ₹{{ t.amount }}
+        </div>
+
+        <!-- ACTION MENU -->
+
+        <div class="action-wrapper">
+          <button class="menu-btn" (click)="toggleMenu(i)">⋮</button>
+
+          <div class="action-menu" *ngIf="activeMenuIndex === i">
+            <button (click)="editTransaction(t, i)">Edit</button>
+
+            <button class="delete-action" (click)="openDeleteModal(i)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSACTION MODAL -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showTransactionModal"
+    (click)="closeTransactionModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add Transaction</h2>
+
+        <button class="close-btn" (click)="closeTransactionModal()">✕</button>
+      </div>
+
+      <app-transaction-form></app-transaction-form>
+    </div>
+  </div>
+
+  <!-- DELETE MODAL -->
+
+  <div class="modal-overlay" *ngIf="showDeleteModal">
+    <div class="confirm-modal">
+      <h2>Delete Transaction?</h2>
+
+      <p>This action cannot be undone.</p>
+
+      <div class="confirm-actions">
+        <button class="cancel-btn" (click)="closeDeleteModal()">Cancel</button>
+
+        <button class="delete-btn" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

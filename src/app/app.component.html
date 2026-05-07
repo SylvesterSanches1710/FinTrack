@@ -1,20 +1,28 @@
-<h1 class="title">Finance Tracker</h1>
+<div class="app-layout">
+  <!-- MOBILE OVERLAY -->
 
-<div class="container">
+  <div
+    class="mobile-overlay"
+    *ngIf="sidebarOpen"
+    (click)="toggleSidebar()"></div>
 
-  <!-- 🔥 ADD THIS HERE -->
-  <app-account-manager class="full"></app-account-manager>
+  <!-- SIDEBAR -->
 
-  <app-dashboard class="full"></app-dashboard>
-  <app-transfer></app-transfer>
+  <app-sidebar
+    [class.mobile-open]="sidebarOpen"
+    (closeMenu)="sidebarOpen = false"></app-sidebar>
 
-  <div class="row">
-    <app-transaction-form></app-transaction-form>
-    <app-transaction-list></app-transaction-list>
-  </div>
-</div>
+  <!-- MAIN CONTENT -->
 
-<div class="bottom-grid">
-  <app-charts></app-charts>
-  <app-insights></app-insights>
+  <main class="main-content">
+    <!-- MOBILE TOPBAR -->
+
+    <div class="mobile-topbar">
+      <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+
+      <div class="mobile-logo">Fintrack</div>
+    </div>
+
+    <router-outlet></router-outlet>
+  </main>
 </div>

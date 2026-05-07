@@ -22,16 +22,15 @@ export class TransactionFormComponent {
 
   constructor(private transactionService: TransactionService) {}
 
-  categoryOptions: string[] = [
+  categories = [
     "Food",
-    "Groceries",
-    "Restaurant",
-    "Electric Bill",
-    "Water Bill",
-    "Investment",
-    "RD (Savings)",
     "Fuel",
-    "Other",
+    "Bills",
+    "Investment",
+    "Shopping",
+    "Health",
+    "Groceries",
+    "Travel",
   ];
 
   selectedCategory: string = "";
@@ -110,5 +109,6 @@ export class TransactionFormComponent {
     this.transactionService.accounts$.subscribe((data) => {
       this.accounts = data;
     });
+    this.accounts = this.transactionService.getAccounts();
   }
 }

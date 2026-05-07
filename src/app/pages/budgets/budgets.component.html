@@ -1,0 +1,91 @@
+<div class="budgets-page">
+  <!-- HEADER -->
+
+  <div class="page-header">
+    <div>
+      <h1>Budgets</h1>
+
+      <p>Track your monthly spending goals</p>
+    </div>
+    <button class="add-budget-btn" (click)="showBudgetModal = true">
+      + Add Budget
+    </button>
+  </div>
+
+  <!-- GRID -->
+
+  <div class="budgets-grid">
+    <div class="budget-card" *ngFor="let b of budgets">
+      <button class="delete-budget-btn" (click)="deleteBudget(b.category)">
+        ✕
+      </button>
+      <div class="budget-top">
+        <div>
+          <div class="budget-category">
+            {{ b.category }}
+          </div>
+
+          <div class="budget-sub">₹{{ b.spent }} spent of ₹{{ b.limit }}</div>
+        </div>
+
+        <div class="budget-percent" [style.color]="b.color">
+          {{ getProgress(b.spent, b.limit) | number: "1.0-0" }}%
+        </div>
+      </div>
+
+      <!-- BAR -->
+
+      <div class="budget-bar">
+        <div
+          class="budget-fill"
+          [style.width.%]="getProgress(b.spent, b.limit)"
+          [style.background]="b.color"></div>
+      </div>
+
+      <!-- STATUS -->
+
+      <div
+        class="budget-status"
+        [ngClass]="{
+          warning: getProgress(b.spent, b.limit) > 80,
+          danger: getProgress(b.spent, b.limit) >= 100,
+        }">
+        <span *ngIf="getProgress(b.spent, b.limit) < 80"> On Track </span>
+
+        <span
+          *ngIf="
+            getProgress(b.spent, b.limit) >= 80 &&
+            getProgress(b.spent, b.limit) < 100
+          ">
+          Near Limit
+        </span>
+
+        <span *ngIf="getProgress(b.spent, b.limit) >= 100">
+          Budget Exceeded
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUDGET MODAL -->
+
+<div class="modal-overlay" *ngIf="showBudgetModal">
+  <div class="budget-modal">
+    <h2>Add Budget</h2>
+
+    <input type="text" placeholder="Category" [(ngModel)]="newCategory" />
+
+    <input type="number" placeholder="Limit" [(ngModel)]="newLimit" />
+
+    <input type="color" [(ngModel)]="newColor" />
+
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="showBudgetModal = false">
+        Cancel
+      </button>
+
+      <button class="save-btn" (click)="addBudget()">Save Budget</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,170 @@
+<div class="accounts-page">
+
+  <!-- HEADER -->
+
+  <div class="accounts-header">
+
+    <div>
+
+      <h1>Accounts</h1>
+
+      <p>
+        Manage your bank accounts
+      </p>
+
+    </div>
+
+    <button
+      class="add-btn"
+      (click)="showAddModal = true"
+    >
+      + Add Account
+    </button>
+
+  </div>
+
+  <!-- NET WORTH -->
+
+  <div class="networth-card">
+
+    <div class="networth-label">
+      Total Net Worth
+    </div>
+
+    <div class="networth-value">
+      ₹{{ totalWorth }}
+    </div>
+
+  </div>
+
+  <!-- ACCOUNTS GRID -->
+
+  <div class="accounts-grid">
+
+    <div
+      class="account-card"
+      *ngFor="let acc of accounts"
+    >
+
+      <div class="account-top">
+
+        <div
+          class="account-dot"
+          [style.background]="acc.color"
+        ></div>
+
+        <button
+          class="delete-btn"
+          (click)="deleteAccount(acc.name)"
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <div class="account-name">
+        {{ acc.name }}
+      </div>
+
+      <div class="account-type">
+        Savings Account
+      </div>
+
+      <div class="account-balance">
+        ₹{{ acc.balance }}
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ADD ACCOUNT MODAL -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="showAddModal"
+    (click)="showAddModal = false"
+  >
+
+    <div
+      class="modal-content"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+
+        <h2>Add Account</h2>
+
+        <button
+          class="close-btn"
+          (click)="showAddModal = false"
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Bank Name</label>
+
+        <select [(ngModel)]="selectedBank">
+
+          <option value="">
+            Select Bank
+          </option>
+
+          <option
+            *ngFor="let bank of banks"
+            [value]="bank"
+          >
+            {{ bank }}
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+        </select>
+
+      </div>
+
+      <div
+        class="form-group"
+        *ngIf="selectedBank === 'Other'"
+      >
+
+        <label>Custom Bank Name</label>
+
+        <input
+          type="text"
+          [(ngModel)]="customBankName"
+          placeholder="Enter bank name"
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Starting Balance</label>
+
+        <input
+          type="number"
+          [(ngModel)]="balance"
+          placeholder="₹ 0"
+        >
+
+      </div>
+
+      <button
+        class="submit-btn"
+        (click)="addAccount()"
+      >
+        Add Account
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

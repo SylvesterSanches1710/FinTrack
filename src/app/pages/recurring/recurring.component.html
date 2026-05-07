@@ -1,0 +1,87 @@
+<div class="recurring-page">
+  <!-- HEADER -->
+
+  <div class="page-header">
+    <div>
+      <h1>Recurring Transactions</h1>
+
+      <p>Automate regular financial activity</p>
+    </div>
+
+    <button class="add-btn" (click)="showModal = true">+ Add Recurring</button>
+  </div>
+
+  <!-- GRID -->
+
+  <div class="recurring-grid">
+    <div class="recurring-card" *ngFor="let r of recurring">
+      <button class="delete-btn" (click)="deleteRecurring(r.title)">✕</button>
+
+      <div class="recurring-title">
+        {{ r.title }}
+      </div>
+
+      <div class="recurring-amount">₹{{ r.amount }}</div>
+
+      <div class="recurring-info">
+        {{ r.frequency }}
+
+        •
+
+        {{ r.type }}
+      </div>
+
+      <div class="recurring-date">
+        Next:
+        {{ r.nextDate }}
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="recurring-modal">
+      <h2>Add Recurring</h2>
+
+      <input type="text" placeholder="Title" [(ngModel)]="newRecurring.title" />
+
+      <input
+        type="number"
+        placeholder="Amount"
+        [(ngModel)]="newRecurring.amount" />
+
+      <select [(ngModel)]="newRecurring.type">
+        <option>Expense</option>
+
+        <option>Income</option>
+      </select>
+
+      <input
+        type="text"
+        placeholder="Category"
+        [(ngModel)]="newRecurring.category" />
+
+      <input
+        type="text"
+        placeholder="Account"
+        [(ngModel)]="newRecurring.account" />
+
+      <select [(ngModel)]="newRecurring.frequency">
+        <option>Weekly</option>
+
+        <option>Monthly</option>
+
+        <option>Yearly</option>
+      </select>
+
+      <input type="date" [(ngModel)]="newRecurring.nextDate" />
+
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="showModal = false">Cancel</button>
+
+        <button class="save-btn" (click)="addRecurring()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

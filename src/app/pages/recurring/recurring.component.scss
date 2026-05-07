@@ -1,0 +1,187 @@
+.recurring-page {
+  padding: 40px;
+  color: white;
+}
+
+.page-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 48px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #8b8b8b;
+  }
+}
+
+.add-btn {
+  background: #2563eb;
+
+  border: none;
+
+  color: white;
+
+  padding: 14px 22px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+.recurring-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+
+  gap: 24px;
+}
+
+.recurring-card {
+  background: #141414;
+
+  border: 1px solid #232323;
+
+  border-radius: 24px;
+
+  padding: 24px;
+
+  position: relative;
+}
+
+.delete-btn {
+  position: absolute;
+
+  top: 16px;
+  right: 16px;
+
+  width: 34px;
+  height: 34px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #1d1d1d;
+
+  color: #ff4d57;
+
+  cursor: pointer;
+}
+
+.recurring-title {
+  font-size: 24px;
+
+  font-weight: 700;
+
+  margin-bottom: 12px;
+}
+
+.recurring-amount {
+  font-size: 36px;
+
+  font-weight: 700;
+
+  margin-bottom: 14px;
+
+  color: #22c55e;
+}
+
+.recurring-info {
+  color: #9ca3af;
+
+  margin-bottom: 10px;
+}
+
+.recurring-date {
+  color: #60a5fa;
+}
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.7);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+.recurring-modal {
+  width: 440px;
+
+  background: #141414;
+
+  border-radius: 24px;
+
+  padding: 28px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+
+  input,
+  select {
+    height: 52px;
+
+    border: 1px solid #2a2a2a;
+
+    background: #1b1b1b;
+
+    border-radius: 14px;
+
+    padding: 0 16px;
+
+    color: white;
+  }
+}
+
+.modal-actions {
+  display: flex;
+
+  gap: 14px;
+}
+
+.cancel-btn,
+.save-btn {
+  flex: 1;
+
+  height: 48px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+.cancel-btn {
+  background: #222;
+
+  color: white;
+}
+
+.save-btn {
+  background: #2563eb;
+
+  color: white;
+}
