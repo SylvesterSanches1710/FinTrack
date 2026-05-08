@@ -42,8 +42,8 @@
         type="button"
         *ngFor="let c of categories"
         class="chip"
-        [class.active-chip]="category === c"
-        (click)="category = c">
+        [class.active-chip]="selectedCategory === c"
+        (click)="selectedCategory = c">
         {{ c }}
       </button>
     </div>
@@ -83,5 +83,7 @@
 
   <!-- BUTTON -->
 
-  <button type="submit" class="submit-btn">Add Transaction</button>
+  <button type="submit" class="submit-btn">
+    {{ editMode ? "Update Transaction" : "Add Transaction" }}
+  </button>
 </form>

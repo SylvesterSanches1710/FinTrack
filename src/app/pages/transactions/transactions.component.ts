@@ -29,6 +29,25 @@ export class TransactionsComponent {
 
   selectedTransactionIndex: number | null = null;
 
+  getCategoryIcon(category: string): string {
+  const icons: Record<string, string> = {
+    'Food':          'ti ti-tools-kitchen-2',
+    'Restaurant':    'ti ti-tools-kitchen-2',
+    'Fuel':          'ti ti-gas-station',
+    'Bills':         'ti ti-file-invoice',
+    'Investment':    'ti ti-chart-line',
+    'Shopping':      'ti ti-shopping-bag',
+    'Health':        'ti ti-heart-rate-monitor',
+    'Groceries':     'ti ti-basket',
+    'Travel':        'ti ti-plane',
+    'Entertainment': 'ti ti-device-tv',
+    'Transfer':      'ti ti-switch-horizontal',
+    'Salary':        'ti ti-cash',
+    'Other':         'ti ti-dots-circle-horizontal',
+  };
+  return icons[category] ?? 'ti ti-dots-circle-horizontal';
+}
+
   constructor(private transactionService: TransactionService) {}
 
   ngOnInit() {
@@ -62,9 +81,13 @@ export class TransactionsComponent {
   }
 
   editTransaction(transaction: any, index: number) {
+    const originalIndex =
+      this.transactionService.getTransactions().length - 1 - index;
+
     this.transactionService.editTransaction$.next({
       transaction,
-      index,
+
+      index: originalIndex,
     });
 
     this.showTransactionModal = true;
@@ -82,13 +105,14 @@ export class TransactionsComponent {
 
   confirmDelete() {
     if (this.selectedTransactionIndex !== null) {
-      const transactions = this.transactionService.getTransactions();
+      // REVERSED ARRAY FIX
 
-      transactions.splice(this.selectedTransactionIndex, 1);
+      const originalIndex =
+        this.transactionService.getTransactions().length -
+        1 -
+        this.selectedTransactionIndex;
 
-      localStorage.setItem("transactions", JSON.stringify(transactions));
-
-      this.transactionService.loadTransactions();
+      this.transactionService.deleteTransaction(originalIndex);
     }
 
     this.showDeleteModal = false;

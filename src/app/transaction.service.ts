@@ -84,7 +84,10 @@ export class TransactionService {
   // EDIT EVENT
   // =========================
 
-  editTransaction$ = new Subject<any>();
+  editTransaction$ =
+  new BehaviorSubject<any>(
+    null
+  );
 
   constructor() {
     this.processRecurringTransactions();
@@ -315,5 +318,76 @@ export class TransactionService {
     localStorage.setItem("recurring", JSON.stringify(recurring));
 
     this.recurringTransactions = recurring;
+  }
+
+  // =========================
+  // TRANSFERS
+  // =========================
+  private updateAccounts(accounts: any[]) {
+    this.accountsSubject.next(accounts);
+  }
+
+  private updateState(transactions: any[]) {
+    this.transactionsSubject.next(transactions);
+  }
+
+  transferMoney(
+    from: string,
+    to: string,
+    amount: number,
+    note: string,
+    date: string,
+  ) {
+    const accounts = this.getAccounts();
+
+    const updatedAccounts = accounts.map((acc: any) => {
+      // REMOVE FROM SOURCE
+
+      if (acc.name === from) {
+        return {
+          ...acc,
+
+          balance: acc.balance - amount,
+        };
+      }
+
+      // ADD TO TARGET
+
+      if (acc.name === to) {
+        return {
+          ...acc,
+
+          balance: acc.balance + amount,
+        };
+      }
+
+      return acc;
+    });
+
+    localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
+
+    this.updateAccounts(updatedAccounts);
+
+    // CREATE TRANSFER RECORD
+
+    const transactions = this.getTransactions();
+
+    transactions.push({
+      type: "Transfer",
+
+      amount,
+
+      category: "Transfer",
+
+      account: `${from} → ${to}`,
+
+      note,
+
+      date,
+    });
+
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+
+    this.updateState(transactions);
   }
 }

@@ -1,94 +1,96 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component } from "@angular/core";
 
-import { TransactionService } from '../../transaction.service';
+import { CommonModule } from "@angular/common";
+
+import { FormsModule } from "@angular/forms";
+
+import { TransactionService } from "../../transaction.service";
 
 @Component({
-  selector: 'app-accounts',
-  imports: [ CommonModule, FormsModule ],
-  templateUrl: './accounts.component.html',
-  styleUrl: './accounts.component.scss'
+  selector: "app-accounts",
+
+  imports: [CommonModule, FormsModule],
+
+  templateUrl: "./accounts.component.html",
+
+  styleUrl: "./accounts.component.scss",
 })
 export class AccountsComponent {
-
   accounts: any[] = [];
 
   totalWorth = 0;
 
   showAddModal = false;
 
-  selectedBank = '';
+  selectedBank = "";
 
-  customBankName = '';
+  customBankName = "";
 
   balance = 0;
 
-  banks = [
-    'HDFC',
-    'Canara',
-    'SBI',
-    'ICICI',
-    'Axis',
-    'Kotak',
-    'Bank of Baroda'
-  ];
+  banks = ["HDFC", "Canara", "SBI", "ICICI", "Axis", "Kotak", "Bank of Baroda"];
 
-  colors = [
-    '#4d8dff',
-    '#20d997',
-    '#ff4d57',
-    '#ffc107',
-    '#b26bff'
-  ];
+  colors = ["#4d8dff", "#20d997", "#ff4d57", "#ffc107", "#b26bff"];
 
-  constructor(
-    private transactionService: TransactionService
-  ) {}
+  constructor(private transactionService: TransactionService) {}
 
   ngOnInit() {
+    // LIVE ACCOUNT CHANGES
 
-    this.loadAccounts();
+    this.transactionService.accounts$.subscribe((accounts) => {
+      this.accounts = [...accounts];
 
+      this.calculateBalances();
+    });
+
+    // LIVE TRANSACTION CHANGES
+
+    this.transactionService.transactions$.subscribe(() => {
+      this.calculateBalances();
+    });
   }
 
-  loadAccounts() {
+  calculateBalances() {
+    const transactions = this.transactionService.getTransactions();
 
-    this.accounts =
-      this.transactionService.getAccounts();
+    this.accounts = this.accounts.map((acc: any, index: number) => {
+      let currentBalance = Number(acc.balance);
 
-    this.accounts.forEach(
-      (acc: any, index: number) => {
+      transactions.forEach((t: any) => {
+        if (t.account !== acc.name) {
+          return;
+        }
 
-        acc.color =
-          this.colors[index % this.colors.length];
+        const amount = Number(t.amount);
 
-      }
+        if (t.type === "Income") {
+          currentBalance += amount;
+        } else {
+          currentBalance -= amount;
+        }
+      });
+
+      return {
+        ...acc,
+
+        color: this.colors[index % this.colors.length],
+
+        currentBalance,
+      };
+    });
+
+    this.totalWorth = this.accounts.reduce(
+      (sum: number, acc: any) => sum + acc.currentBalance,
+
+      0,
     );
-
-    this.calculateNetWorth();
-
-  }
-
-  calculateNetWorth() {
-
-    this.totalWorth =
-      this.accounts.reduce(
-        (sum: number, acc: any) =>
-          sum + acc.balance,
-        0
-      );
-
   }
 
   addAccount() {
-
     const finalName =
-      this.selectedBank === 'Other'
-        ? this.customBankName
-        : this.selectedBank;
+      this.selectedBank === "Other" ? this.customBankName : this.selectedBank;
 
-    if (!finalName || this.balance <= 0) {
+    if (!finalName || this.balance < 0) {
       return;
     }
 
@@ -97,76 +99,51 @@ export class AccountsComponent {
     }
 
     const exists = this.accounts.some(
-      (acc: any) =>
-        acc.name.toLowerCase() ===
-        finalName.toLowerCase()
+      (acc: any) => acc.name.toLowerCase() === finalName.toLowerCase(),
     );
 
     if (exists) {
       return;
     }
 
-    const newAccount = {
+    this.transactionService.addAccount({
       name: finalName,
-      balance: this.balance
-    };
 
-    this.accounts.push(newAccount);
+      balance: this.balance,
+    });
 
-    localStorage.setItem(
-      'accounts',
-      JSON.stringify(this.accounts)
-    );
+    this.selectedBank = "";
 
-    this.selectedBank = '';
-
-    this.customBankName = '';
+    this.customBankName = "";
 
     this.balance = 0;
 
     this.showAddModal = false;
-
-    this.loadAccounts();
-
   }
 
   deleteAccount(name: string) {
-
-    const confirmed = confirm(
-      `Delete ${name} account?`
-    );
+    const confirmed = confirm(`Delete ${name} account?`);
 
     if (!confirmed) {
       return;
     }
 
-    this.accounts =
-      this.accounts.filter(
-        (acc: any) => acc.name !== name
-      );
+    this.transactionService.deleteAccount(name);
 
-    localStorage.setItem(
-      'accounts',
-      JSON.stringify(this.accounts)
+    // REMOVE RELATED TRANSACTIONS
+
+    const transactions = this.transactionService.getTransactions();
+
+    const updatedTransactions = transactions.filter(
+      (t: any) => t.account !== name,
     );
 
-    const transactions =
-      this.transactionService.getTransactions();
-
-    const updatedTransactions =
-      transactions.filter(
-        (t: any) => t.account !== name
-      );
-
     localStorage.setItem(
-      'transactions',
-      JSON.stringify(updatedTransactions)
+      "transactions",
+
+      JSON.stringify(updatedTransactions),
     );
 
     this.transactionService.loadTransactions();
-
-    this.loadAccounts();
-
   }
-
 }

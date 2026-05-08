@@ -19,6 +19,22 @@ export class BudgetsComponent {
 
   newColor = "#4d7cff";
 
+  categories = [
+    "Restaurant",
+
+    "Fuel",
+
+    "Bills",
+
+    "Shopping",
+
+    "Investment",
+
+    "Entertainment",
+
+    "Transfer",
+  ];
+
   getProgress(spent: number, limit: number) {
     return (spent / limit) * 100;
   }
@@ -59,9 +75,22 @@ export class BudgetsComponent {
 
     this.budgets = budgets.map((budget: any) => {
       const spent = transactions
-        .filter(
-          (t: any) => t.category === budget.category && t.type === "Expense",
-        )
+        .filter((t: any) => {
+          const transactionDate = new Date(t.date);
+
+          const currentDate = new Date();
+
+          const sameMonth =
+            transactionDate.getMonth() === currentDate.getMonth() &&
+            transactionDate.getFullYear() === currentDate.getFullYear();
+
+          return (
+            t.category?.trim().toLowerCase() ===
+              budget.category?.trim().toLowerCase() &&
+            t.type === "Expense" &&
+            sameMonth
+          );
+        })
 
         .reduce((sum: number, t: any) => sum + t.amount, 0);
 
@@ -75,16 +104,10 @@ export class BudgetsComponent {
   constructor(private transactionService: TransactionService) {}
 
   ngOnInit() {
+    this.refreshBudgets();
 
-  this.refreshBudgets();
-
-  this.transactionService
-    .transactions$
-    .subscribe(() => {
-
+    this.transactionService.transactions$.subscribe(() => {
       this.refreshBudgets();
-
     });
-
-}
+  }
 }

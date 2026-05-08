@@ -74,7 +74,13 @@
   <div class="budget-modal">
     <h2>Add Budget</h2>
 
-    <input type="text" placeholder="Category" [(ngModel)]="newCategory" />
+    <select [(ngModel)]="newCategory">
+      <option value="">Select Category</option>
+
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category }}
+      </option>
+    </select>
 
     <input type="number" placeholder="Limit" [(ngModel)]="newLimit" />
 

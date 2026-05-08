@@ -1,1 +1,57 @@
-<p>transfers works!</p>
+<div class="transfers-page">
+  <!-- HEADER -->
+
+  <div class="page-header">
+    <div>
+      <h1>Transfers</h1>
+
+      <p>Move money between accounts</p>
+    </div>
+  </div>
+
+  <!-- FORM -->
+
+  <div class="transfer-form">
+    <select [(ngModel)]="fromAccount">
+      <option value="">From Account</option>
+
+      <option *ngFor="let acc of accounts" [value]="acc.name">
+        {{ acc.name }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="toAccount">
+      <option value="">To Account</option>
+
+      <option *ngFor="let acc of accounts" [value]="acc.name">
+        {{ acc.name }}
+      </option>
+    </select>
+
+    <input type="number" placeholder="Amount" [(ngModel)]="amount" />
+
+    <input type="text" placeholder="Note" [(ngModel)]="note" />
+
+    <input type="date" [(ngModel)]="date" />
+
+    <button (click)="submitTransfer()">Transfer Money</button>
+  </div>
+
+  <!-- HISTORY -->
+
+  <div class="transfer-history">
+    <div class="transfer-card" *ngFor="let t of transfers">
+      <div>
+        <div class="transfer-title">
+          {{ t.account }}
+        </div>
+
+        <div class="transfer-date">
+          {{ t.date }}
+        </div>
+      </div>
+
+      <div class="transfer-amount">₹{{ t.amount }}</div>
+    </div>
+  </div>
+</div>

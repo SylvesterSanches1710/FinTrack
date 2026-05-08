@@ -1,19 +1,16 @@
 <div class="sidebar">
   <!-- MOBILE CLOSE -->
-
   <button class="mobile-close" *ngIf="isMobile" (click)="closeSidebar()">
     ✕
   </button>
 
   <!-- LOGO -->
-
   <div class="logo">
     <div class="logo-icon">₹</div>
     <h2>Fintrack</h2>
   </div>
 
   <!-- MAIN -->
-
   <div class="section-title">MAIN</div>
 
   <nav>
@@ -21,26 +18,23 @@
       routerLink="/dashboard"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Dashboard
+      <i class="ti ti-layout-dashboard"></i> Dashboard
     </a>
-
     <a
       routerLink="/transactions"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Transactions
+      <i class="ti ti-arrows-right-left"></i> Transactions
     </a>
-
     <a
       routerLink="/analytics"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Analytics
+      <i class="ti ti-chart-pie"></i> Analytics
     </a>
   </nav>
 
   <!-- MONEY -->
-
   <div class="section-title second">MONEY</div>
 
   <nav>
@@ -48,35 +42,31 @@
       routerLink="/accounts"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Accounts
+      <i class="ti ti-building-bank"></i> Accounts
     </a>
-
     <a
       routerLink="/transfers"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Transfers
+      <i class="ti ti-switch-horizontal"></i> Transfers
     </a>
-
     <a
       routerLink="/budgets"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Budgets
+      <i class="ti ti-wallet"></i> Budgets
     </a>
-
     <a
       routerLink="/goals"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Goals
+      <i class="ti ti-target"></i> Goals
     </a>
-
     <a
       routerLink="/recurring"
       routerLinkActive="active"
       (click)="navigateAndClose()">
-      Recurring
+      <i class="ti ti-repeat"></i> Recurring
     </a>
   </nav>
 </div>
