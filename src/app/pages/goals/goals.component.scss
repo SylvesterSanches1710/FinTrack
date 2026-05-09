@@ -163,81 +163,216 @@
   }
 }
 
+/* ── YOUR EXISTING SCSS (unchanged) ── */
+
 .modal-overlay {
   position: fixed;
-
   inset: 0;
-
   background: rgba(0, 0, 0, 0.7);
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   z-index: 1000;
 }
 
 .goal-modal {
   width: 420px;
-
   background: #141414;
-
   border-radius: 24px;
-
   padding: 28px;
-
   display: flex;
-
   flex-direction: column;
-
   gap: 18px;
 
   input {
     height: 52px;
-
     border: 1px solid #2a2a2a;
-
     background: #1b1b1b;
-
     border-radius: 14px;
-
     padding: 0 16px;
-
     color: white;
   }
 }
 
 .modal-actions {
   display: flex;
-
   gap: 14px;
 }
 
 .cancel-btn,
 .save-btn {
   flex: 1;
-
   height: 48px;
-
   border: none;
-
   border-radius: 14px;
-
   cursor: pointer;
-
   font-weight: 600;
 }
 
 .cancel-btn {
   background: #222;
-
   color: white;
 }
 
 .save-btn {
   background: #2563eb;
-
   color: white;
+}
+
+/* ── NEW ADDITIONS ONLY ── */
+
+.goal-modal {
+  border: 1px solid #232323;
+  backdrop-filter: blur(0.4rem);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+}
+
+.modal-close {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #1d1d1d;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: #2a2a2a;
+    color: white;
+  }
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.813rem;
+    font-weight: 500;
+    color: #9ca3af;
+  }
+}
+
+.optional {
+  font-size: 0.75rem;
+  color: #4b5563;
+  font-weight: 400;
+}
+
+.goal-modal select {
+  width: 100%;
+  height: 52px;
+  border: 1px solid #2a2a2a;
+  background: #1b1b1b;
+  border-radius: 14px;
+  padding: 0 1rem;
+  color: white;
+  font-size: 0.938rem;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-color: #1b1b1b;
+  transition: border-color 0.15s ease;
+
+  &:focus { border-color: #2563eb; }
+}
+
+.goal-modal input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.input-prefix {
+  display: flex;
+  align-items: center;
+  background: #1b1b1b;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &:focus-within { border-color: #2563eb; }
+
+  span {
+    padding: 0 0.875rem;
+    color: #6b7280;
+    font-size: 1rem;
+    font-weight: 500;
+    border-right: 1px solid #2a2a2a;
+    height: 52px;
+    display: flex;
+    align-items: center;
+  }
+
+  input {
+    flex: 1;
+    height: 52px;
+    border: none !important;
+    background: transparent;
+    padding: 0 1rem;
+    color: white;
+    font-size: 0.938rem;
+    outline: none;
+    width: 100%;
+    border-radius: 0 !important;
+  }
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover { transform: scale(1.15); }
+
+  &.selected {
+    border-color: white;
+    transform: scale(1.15);
+  }
+}
+
+.custom-color-input {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 2px solid #2a2a2a;
+  background: #1b1b1b;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  &::-webkit-color-swatch-wrapper { padding: 0; }
+  &::-webkit-color-swatch { border: none; border-radius: 50%; }
 }

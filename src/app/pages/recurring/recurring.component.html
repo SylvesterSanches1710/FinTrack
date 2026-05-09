@@ -49,8 +49,7 @@
       <input
         type="number"
         placeholder="Amount"
-        [(ngModel)]="newRecurring.amount"
-      />
+        [(ngModel)]="newRecurring.amount" />
 
       <select [(ngModel)]="newRecurring.type">
         <option>Expense</option>
@@ -58,17 +57,21 @@
         <option>Income</option>
       </select>
 
-      <input
-        type="text"
-        placeholder="Category"
-        [(ngModel)]="newRecurring.category"
-      />
+      <select [(ngModel)]="newRecurring.category">
+        <option value="">Select Category</option>
 
-      <input
-        type="text"
-        placeholder="Account"
-        [(ngModel)]="newRecurring.account"
-      />
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="newRecurring.account">
+        <option value="">Select Account</option>
+
+        <option *ngFor="let acc of accounts" [value]="acc.name">
+          {{ acc.name }}
+        </option>
+      </select>
 
       <select [(ngModel)]="newRecurring.frequency">
         <option>Weekly</option>

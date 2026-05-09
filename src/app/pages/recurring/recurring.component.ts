@@ -1,42 +1,63 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 import {
   RecurringTransaction,
   TransactionService,
-} from '../../transaction.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+} from "../../transaction.service";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: 'app-recurring',
+  selector: "app-recurring",
   imports: [FormsModule, CommonModule],
-  templateUrl: './recurring.component.html',
-  styleUrl: './recurring.component.scss',
+  templateUrl: "./recurring.component.html",
+  styleUrl: "./recurring.component.scss",
 })
 export class RecurringComponent {
   recurring: RecurringTransaction[] = [];
 
   showModal = false;
+  accounts: any[] = [];
+
+  categories: string[] = [];
 
   newRecurring = {
-    title: '',
+    title: "",
 
     amount: 0,
 
-    type: 'Expense',
+    type: "Expense",
 
-    category: '',
+    category: "",
 
-    account: '',
+    account: "",
 
-    frequency: 'Monthly',
+    frequency: "Monthly",
 
-    nextDate: '',
+    nextDate: "",
   };
 
   constructor(private transactionService: TransactionService) {}
 
   ngOnInit() {
+    // INITIAL LOAD
+
+    this.accounts = this.transactionService.getAccounts();
+
+    this.categories = this.transactionService.getCategories();
+
     this.loadRecurring();
+
+    // LIVE ACCOUNTS
+
+    this.transactionService.accounts$.subscribe((data) => {
+      this.accounts = data;
+    });
+
+    // LIVE CATEGORIES
+
+    this.transactionService.categories$.subscribe((data) => {
+      this.categories = data;
+    });
   }
 
   loadRecurring() {
@@ -55,19 +76,19 @@ export class RecurringComponent {
     this.showModal = false;
 
     this.newRecurring = {
-      title: '',
+      title: "",
 
       amount: 0,
 
-      type: 'Expense',
+      type: "Expense",
 
-      category: '',
+      category: "",
 
-      account: '',
+      account: "",
 
-      frequency: 'Monthly',
+      frequency: "Monthly",
 
-      nextDate: '',
+      nextDate: "",
     };
   }
 

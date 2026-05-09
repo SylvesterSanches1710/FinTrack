@@ -1,57 +1,87 @@
 <div class="transfers-page">
-  <!-- HEADER -->
 
+  <!-- HEADER -->
   <div class="page-header">
     <div>
       <h1>Transfers</h1>
-
       <p>Move money between accounts</p>
     </div>
   </div>
 
   <!-- FORM -->
-
   <div class="transfer-form">
-    <select [(ngModel)]="fromAccount">
-      <option value="">From Account</option>
 
-      <option *ngFor="let acc of accounts" [value]="acc.name">
-        {{ acc.name }}
-      </option>
-    </select>
+    <div class="form-row">
+      <div class="form-field">
+        <label>From Account</label>
+        <select [(ngModel)]="fromAccount">
+          <option value="" disabled>Select account</option>
+          <option *ngFor="let acc of accounts" [value]="acc.name">{{ acc.name }}</option>
+        </select>
+      </div>
 
-    <select [(ngModel)]="toAccount">
-      <option value="">To Account</option>
+      <div class="transfer-arrow"><i class="ti ti-arrow-right"></i></div>
 
-      <option *ngFor="let acc of accounts" [value]="acc.name">
-        {{ acc.name }}
-      </option>
-    </select>
+      <div class="form-field">
+        <label>To Account</label>
+        <select [(ngModel)]="toAccount">
+          <option value="" disabled>Select account</option>
+          <option *ngFor="let acc of accounts" [value]="acc.name">{{ acc.name }}</option>
+        </select>
+      </div>
+    </div>
 
-    <input type="number" placeholder="Amount" [(ngModel)]="amount" />
-
-    <input type="text" placeholder="Note" [(ngModel)]="note" />
-
-    <input type="date" [(ngModel)]="date" />
-
-    <button (click)="submitTransfer()">Transfer Money</button>
-  </div>
-
-  <!-- HISTORY -->
-
-  <div class="transfer-history">
-    <div class="transfer-card" *ngFor="let t of transfers">
-      <div>
-        <div class="transfer-title">
-          {{ t.account }}
-        </div>
-
-        <div class="transfer-date">
-          {{ t.date }}
+    <div class="form-row">
+      <div class="form-field">
+        <label>Amount</label>
+        <div class="input-prefix">
+          <span>₹</span>
+          <input type="number" placeholder="0" [(ngModel)]="amount" />
         </div>
       </div>
 
+      <div class="form-field">
+        <label>Goal Category <span class="optional">optional</span></label>
+        <select [(ngModel)]="category">
+          <option value="">Select category</option>
+          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>Note <span class="optional">optional</span></label>
+        <input type="text" placeholder="What's this transfer for?" [(ngModel)]="note" />
+      </div>
+
+      <div class="form-field">
+        <label>Date</label>
+        <input type="date" [(ngModel)]="date" />
+      </div>
+    </div>
+
+    <button class="transfer-btn" (click)="submitTransfer()">
+      <i class="ti ti-switch-horizontal"></i> Transfer Money
+    </button>
+
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-header">
+    <span>Recent Transfers</span>
+    <span class="history-count">{{ transfers.length }}</span>
+  </div>
+
+  <div class="transfer-history">
+    <div class="transfer-card" *ngFor="let t of transfers">
+      <div class="transfer-icon"><i class="ti ti-switch-horizontal"></i></div>
+      <div class="transfer-info">
+        <div class="transfer-title">{{ t.account }}</div>
+        <div class="transfer-date">{{ t.date }}</div>
+      </div>
       <div class="transfer-amount">₹{{ t.amount }}</div>
     </div>
   </div>
+
 </div>

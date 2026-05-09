@@ -39,51 +39,40 @@
     </div>
   </div>
 
-  <!-- ADD ACCOUNT MODAL -->
+<!-- ADD ACCOUNT MODAL -->
+<div class="modal-overlay" *ngIf="showAddModal" (click)="showAddModal = false">
+  <div class="modal-content" (click)="$event.stopPropagation()">
 
-  <div
-    class="modal-overlay"
-    *ngIf="showAddModal"
-    (click)="showAddModal = false"
-  >
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Add Account</h2>
-
-        <button class="close-btn" (click)="showAddModal = false">✕</button>
-      </div>
-
-      <div class="form-group">
-        <label>Bank Name</label>
-
-        <select [(ngModel)]="selectedBank">
-          <option value="">Select Bank</option>
-
-          <option *ngFor="let bank of banks" [value]="bank">
-            {{ bank }}
-          </option>
-
-          <option value="Other">Other</option>
-        </select>
-      </div>
-
-      <div class="form-group" *ngIf="selectedBank === 'Other'">
-        <label>Custom Bank Name</label>
-
-        <input
-          type="text"
-          [(ngModel)]="customBankName"
-          placeholder="Enter bank name"
-        />
-      </div>
-
-      <div class="form-group">
-        <label>Starting Balance</label>
-
-        <input type="number" [(ngModel)]="balance" placeholder="₹ 0" />
-      </div>
-
-      <button class="submit-btn" (click)="addAccount()">Add Account</button>
+    <div class="modal-header">
+      <h2>Add Account</h2>
+      <button class="close-btn" (click)="showAddModal = false">
+        <i class="ti ti-x"></i>
+      </button>
     </div>
+
+    <div class="form-group">
+      <label>Bank Name</label>
+      <select [(ngModel)]="selectedBank">
+        <option value="" disabled>Select a bank</option>
+        <option *ngFor="let bank of banks" [value]="bank">{{ bank }}</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="selectedBank === 'Other'">
+      <label>Custom Bank Name</label>
+      <input type="text" [(ngModel)]="customBankName" placeholder="Enter bank name" />
+    </div>
+
+    <div class="form-group">
+      <label>Starting Balance</label>
+      <div class="input-prefix">
+        <span>₹</span>
+        <input type="number" [(ngModel)]="balance" placeholder="0" />
+      </div>
+    </div>
+
+    <button class="submit-btn" (click)="addAccount()">Add Account</button>
+
   </div>
 </div>
