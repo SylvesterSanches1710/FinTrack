@@ -44,7 +44,8 @@
   <div
     class="modal-overlay"
     *ngIf="showAddModal"
-    (click)="showAddModal = false">
+    (click)="showAddModal = false"
+  >
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h2>Add Account</h2>
@@ -72,7 +73,8 @@
         <input
           type="text"
           [(ngModel)]="customBankName"
-          placeholder="Enter bank name" />
+          placeholder="Enter bank name"
+        />
       </div>
 
       <div class="form-group">

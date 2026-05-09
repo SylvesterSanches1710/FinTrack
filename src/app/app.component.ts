@@ -1,24 +1,24 @@
-import { Component } from "@angular/core";
-import { RouterOutlet } from "@angular/router";
-import { SidebarComponent } from "./layout/sidebar/sidebar.component";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
-import { TransactionService } from "./transaction.service";
+import { TransactionService } from './transaction.service';
 
 @Component({
-  selector: "app-root",
+  selector: 'app-root',
   imports: [RouterOutlet, SidebarComponent, CommonModule, FormsModule],
-  templateUrl: "./app.component.html",
-  styleUrl: "./app.component.scss",
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   showOnboarding = false;
 
-  accountName = "";
+  accountName = '';
 
   accountBalance = 0;
-  title = "finance-tracker-angular";
+  title = 'finance-tracker-angular';
 
   sidebarOpen = false;
 
@@ -27,21 +27,21 @@ export class AppComponent {
   }
 
   banks = [
-    "HDFC Bank",
+    'HDFC Bank',
 
-    "ICICI Bank",
+    'ICICI Bank',
 
-    "Canara Bank",
+    'Canara Bank',
 
-    "SBI",
+    'SBI',
 
-    "Axis Bank",
+    'Axis Bank',
 
-    "Kotak Mahindra",
+    'Kotak Mahindra',
 
-    "Bank of Baroda",
+    'Bank of Baroda',
 
-    "Cash Wallet",
+    'Cash Wallet',
   ];
   selectInput(event: any) {
     event.target.select();
@@ -65,7 +65,7 @@ export class AppComponent {
 
       balance: this.accountBalance,
 
-      color: "blue",
+      color: 'blue',
     });
 
     this.showOnboarding = false;

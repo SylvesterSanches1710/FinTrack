@@ -1,8 +1,8 @@
-import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { TransactionService } from "../../transaction.service";
-import { TransactionFormComponent } from "../../transaction-form/transaction-form.component";
-import { RouterLink } from "@angular/router";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TransactionService } from '../../transaction.service';
+import { TransactionFormComponent } from '../../transaction-form/transaction-form.component';
+import { RouterLink } from '@angular/router';
 
 interface Account {
   name: string;
@@ -11,11 +11,11 @@ interface Account {
 }
 
 @Component({
-  selector: "app-dashboard",
+  selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: "./dashboard.component.html",
-  styleUrl: "./dashboard.component.scss",
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
   balances: { [key: string]: number } = {};
@@ -32,7 +32,7 @@ export class DashboardComponent {
 
   recentTransactions: any[] = [];
 
-  currentMonth = "";
+  currentMonth = '';
   categorySpend: any[] = [];
   showTransactionModal = false;
 
@@ -47,34 +47,46 @@ export class DashboardComponent {
   }
 
   ngOnInit() {
-    // Current Month
+    // CURRENT MONTH
 
     const now = new Date();
 
-    this.currentMonth = now.toLocaleString("default", {
-      month: "long",
-      year: "numeric",
+    this.currentMonth = now.toLocaleString('default', {
+      month: 'long',
+      year: 'numeric',
     });
 
-    // REACTIVE DATA
+    // REACTIVE UPDATES
 
-    this.transactionService.transactions$.subscribe((transactions) => {
+    const refreshDashboard = () => {
+      const transactions = this.transactionService.getTransactions();
+
       const accounts = this.transactionService.getAccounts();
 
       this.calculate(transactions, accounts);
 
-      // Latest 5 transactions
+      this.recentTransactions = [...transactions]
 
-      this.recentTransactions = [...transactions].reverse().slice(0, 5);
+        .reverse()
+
+        .slice(0, 5);
+    };
+
+    // TRANSACTIONS
+
+    this.transactionService.transactions$.subscribe(() => {
+      refreshDashboard();
     });
 
-    // ACCOUNT CHANGES
+    // ACCOUNTS
 
-    this.transactionService.accounts$.subscribe((accounts) => {
-      const transactions = this.transactionService.getTransactions();
-
-      this.calculate(transactions, accounts);
+    this.transactionService.accounts$.subscribe(() => {
+      refreshDashboard();
     });
+
+    // INITIAL LOAD
+
+    refreshDashboard();
   }
 
   calculate(transactions: any[], accounts: Account[]) {
@@ -98,7 +110,7 @@ export class DashboardComponent {
         this.balances[t.account] = 0;
       }
 
-      if (t.type === "Income") {
+      if (t.type === 'Income') {
         this.balances[t.account] += amount;
       } else {
         this.balances[t.account] -= amount;
@@ -106,7 +118,7 @@ export class DashboardComponent {
 
       // Monthly expense
       if (
-        t.type === "Expense" &&
+        t.type === 'Expense' &&
         date.getMonth() === currentMonth &&
         date.getFullYear() === currentYear
       ) {
@@ -118,7 +130,7 @@ export class DashboardComponent {
     this.balanceList = accounts.map((acc: Account) => ({
       name: acc.name,
       value: this.balances[acc.name],
-      color: acc.color || "blue",
+      color: acc.color || 'blue',
     }));
 
     // Total worth
@@ -127,7 +139,7 @@ export class DashboardComponent {
     const categoryTotals: any = {};
 
     transactions.forEach((t: any) => {
-      if (t.type === "Expense") {
+      if (t.type === 'Expense') {
         if (!categoryTotals[t.category]) {
           categoryTotals[t.category] = 0;
         }
@@ -136,7 +148,7 @@ export class DashboardComponent {
       }
     });
 
-    const colors = ["#4d8dff", "#20d997", "#ffb020", "#ff4d57", "#8b5cf6"];
+    const colors = ['#4d8dff', '#20d997', '#ffb020', '#ff4d57', '#8b5cf6'];
 
     const totalExpenses = (Object.values(categoryTotals) as number[]).reduce(
       (a, b) => a + b,

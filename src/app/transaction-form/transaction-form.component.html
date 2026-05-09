@@ -5,21 +5,24 @@
     <button
       type="button"
       [class.active]="type === 'Expense'"
-      (click)="type = 'Expense'">
+      (click)="type = 'Expense'"
+    >
       Expense
     </button>
 
     <button
       type="button"
       [class.active]="type === 'Income'"
-      (click)="type = 'Income'">
+      (click)="type = 'Income'"
+    >
       Income
     </button>
 
     <button
       type="button"
       [class.active]="type === 'Transfer'"
-      (click)="type = 'Transfer'">
+      (click)="type = 'Transfer'"
+    >
       Transfer
     </button>
   </div>
@@ -43,7 +46,8 @@
         *ngFor="let c of categories"
         class="chip"
         [class.active-chip]="selectedCategory === c"
-        (click)="selectedCategory = c">
+        (click)="selectedCategory = c"
+      >
         {{ c }}
       </button>
     </div>
@@ -70,7 +74,8 @@
       type="text"
       [(ngModel)]="notes"
       name="notes"
-      placeholder="Optional note..." />
+      placeholder="Optional note..."
+    />
   </div>
 
   <!-- DATE -->

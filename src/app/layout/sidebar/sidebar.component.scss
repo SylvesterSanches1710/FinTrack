@@ -54,7 +54,7 @@
   padding-left: 0.625rem;
 }
 .section-title::after {
-  content: '';
+  content: "";
 
   display: block;
 
@@ -86,7 +86,9 @@ nav a {
   gap: 0.688rem;
   font-size: 1rem;
   font-weight: 500;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   i {
     font-size: 1.125rem;

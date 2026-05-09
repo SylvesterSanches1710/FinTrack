@@ -5,10 +5,9 @@ import { TransactionService } from '../transaction.service';
   selector: 'app-insights',
   imports: [],
   templateUrl: './insights.component.html',
-  styleUrl: './insights.component.scss'
+  styleUrl: './insights.component.scss',
 })
 export class InsightsComponent implements OnInit {
-
   totalExpense = 0;
   topCategory = '';
   highestExpense = 0;
@@ -17,21 +16,19 @@ export class InsightsComponent implements OnInit {
   constructor(private transactionService: TransactionService) {}
 
   ngOnInit() {
-    this.transactionService.transactions$.subscribe(data => {
+    this.transactionService.transactions$.subscribe((data) => {
       this.calculateInsights(data);
     });
   }
 
   calculateInsights(transactions: any[]) {
-
     this.totalExpense = 0;
     this.highestExpense = 0;
     this.transactionCount = transactions.length;
 
     const categoryMap: any = {};
 
-    transactions.forEach(t => {
-
+    transactions.forEach((t) => {
       if (t.type === 'Expense') {
         const amount = Number(t.amount);
 

@@ -1,25 +1,25 @@
-import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
-import { TransactionService } from "../../transaction.service";
-import { TransactionFormComponent } from "../../transaction-form/transaction-form.component";
-import jsPDF from "jspdf";
+import { TransactionService } from '../../transaction.service';
+import { TransactionFormComponent } from '../../transaction-form/transaction-form.component';
+import jsPDF from 'jspdf';
 
-import autoTable from "jspdf-autotable";
+import autoTable from 'jspdf-autotable';
 
 @Component({
-  selector: "app-transactions",
+  selector: 'app-transactions',
   imports: [CommonModule, FormsModule, TransactionFormComponent],
-  templateUrl: "./transactions.component.html",
-  styleUrl: "./transactions.component.scss",
+  templateUrl: './transactions.component.html',
+  styleUrl: './transactions.component.scss',
 })
 export class TransactionsComponent {
   transactions: any[] = [];
 
-  searchTerm = "";
+  searchTerm = '';
 
-  selectedType = "";
+  selectedType = '';
 
   showTransactionModal = false;
 
@@ -30,23 +30,23 @@ export class TransactionsComponent {
   selectedTransactionIndex: number | null = null;
 
   getCategoryIcon(category: string): string {
-  const icons: Record<string, string> = {
-    'Food':          'ti ti-tools-kitchen-2',
-    'Restaurant':    'ti ti-tools-kitchen-2',
-    'Fuel':          'ti ti-gas-station',
-    'Bills':         'ti ti-file-invoice',
-    'Investment':    'ti ti-chart-line',
-    'Shopping':      'ti ti-shopping-bag',
-    'Health':        'ti ti-heart-rate-monitor',
-    'Groceries':     'ti ti-basket',
-    'Travel':        'ti ti-plane',
-    'Entertainment': 'ti ti-device-tv',
-    'Transfer':      'ti ti-switch-horizontal',
-    'Salary':        'ti ti-cash',
-    'Other':         'ti ti-dots-circle-horizontal',
-  };
-  return icons[category] ?? 'ti ti-dots-circle-horizontal';
-}
+    const icons: Record<string, string> = {
+      Food: 'ti ti-tools-kitchen-2',
+      Restaurant: 'ti ti-tools-kitchen-2',
+      Fuel: 'ti ti-gas-station',
+      Bills: 'ti ti-file-invoice',
+      Investment: 'ti ti-chart-line',
+      Shopping: 'ti ti-shopping-bag',
+      Health: 'ti ti-heart-rate-monitor',
+      Groceries: 'ti ti-basket',
+      Travel: 'ti ti-plane',
+      Entertainment: 'ti ti-device-tv',
+      Transfer: 'ti ti-switch-horizontal',
+      Salary: 'ti ti-cash',
+      Other: 'ti ti-dots-circle-horizontal',
+    };
+    return icons[category] ?? 'ti ti-dots-circle-horizontal';
+  }
 
   constructor(private transactionService: TransactionService) {}
 
@@ -131,7 +131,7 @@ export class TransactionsComponent {
       return;
     }
 
-    const headers = ["Date", "Category", "Type", "Amount", "Account"];
+    const headers = ['Date', 'Category', 'Type', 'Amount', 'Account'];
 
     const rows = transactions.map((t: any) => [
       t.date,
@@ -146,22 +146,22 @@ export class TransactionsComponent {
     ]);
 
     const csvContent = [
-      headers.join(","),
+      headers.join(','),
 
-      ...rows.map((row) => row.join(",")),
-    ].join("\n");
+      ...rows.map((row) => row.join(',')),
+    ].join('\n');
 
     const blob = new Blob([csvContent], {
-      type: "text/csv;charset=utf-8;",
+      type: 'text/csv;charset=utf-8;',
     });
 
     const url = window.URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
+    const link = document.createElement('a');
 
     link.href = url;
 
-    link.setAttribute("download", "transactions.csv");
+    link.setAttribute('download', 'transactions.csv');
 
     document.body.appendChild(link);
 
@@ -177,7 +177,7 @@ export class TransactionsComponent {
 
     doc.setFontSize(22);
 
-    doc.text("Fintrack Financial Report", 14, 20);
+    doc.text('Fintrack Financial Report', 14, 20);
 
     // DATE
 
@@ -200,13 +200,13 @@ export class TransactionsComponent {
     ]);
 
     autoTable(doc, {
-      head: [["Date", "Category", "Type", "Amount", "Account"]],
+      head: [['Date', 'Category', 'Type', 'Amount', 'Account']],
 
       body: rows,
 
       startY: 40,
 
-      theme: "grid",
+      theme: 'grid',
 
       styles: {
         fillColor: [20, 20, 20],
@@ -221,6 +221,6 @@ export class TransactionsComponent {
 
     // SAVE
 
-    doc.save("fintrack-report.pdf");
+    doc.save('fintrack-report.pdf');
   }
 }

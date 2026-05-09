@@ -1,9 +1,7 @@
 <div class="card transfer-card">
-
   <h2>Transfer Between Accounts</h2>
 
   <div class="transfer-form">
-
     <!-- From -->
     <div class="input-group">
       <label>From</label>
@@ -34,15 +32,9 @@
     <div class="input-group">
       <label>Amount</label>
 
-      <input type="number"
-             [(ngModel)]="amount"
-             placeholder="Enter amount">
+      <input type="number" [(ngModel)]="amount" placeholder="Enter amount" />
     </div>
 
-    <button (click)="transfer()">
-      Transfer
-    </button>
-
+    <button (click)="transfer()">Transfer</button>
   </div>
-
 </div>

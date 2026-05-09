@@ -1,19 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { TransactionService } from "../transaction.service";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { Subject } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { TransactionService } from '../transaction.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
 
 @Component({
-  selector: "app-transaction-list",
+  selector: 'app-transaction-list',
   imports: [CommonModule, FormsModule],
-  templateUrl: "./transaction-list.component.html",
-  styleUrl: "./transaction-list.component.scss",
+  templateUrl: './transaction-list.component.html',
+  styleUrl: './transaction-list.component.scss',
 })
 export class TransactionListComponent implements OnInit {
-  selectedAccount: string = "";
-  selectedType: string = "";
-  selectedMonth: string = "";
+  selectedAccount: string = '';
+  selectedType: string = '';
+  selectedMonth: string = '';
 
   transactions: any[] = [];
   accounts: any[] = [];
@@ -59,11 +59,11 @@ export class TransactionListComponent implements OnInit {
     const data = this.transactions;
 
     if (!data.length) {
-      alert("No data to export");
+      alert('No data to export');
       return;
     }
 
-    const headers = ["Amount", "Type", "Category", "Account", "Notes", "Date"];
+    const headers = ['Amount', 'Type', 'Category', 'Account', 'Notes', 'Date'];
 
     const rows = data.map((t) => [
       t.amount,
@@ -74,21 +74,21 @@ export class TransactionListComponent implements OnInit {
       t.date,
     ]);
 
-    let csvContent = "";
+    let csvContent = '';
 
-    csvContent += headers.join(",") + "\n";
+    csvContent += headers.join(',') + '\n';
 
     rows.forEach((row) => {
-      csvContent += row.join(",") + "\n";
+      csvContent += row.join(',') + '\n';
     });
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
 
-    link.setAttribute("href", url);
-    link.setAttribute("download", "transactions.csv");
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'transactions.csv');
     link.click();
   }
 }

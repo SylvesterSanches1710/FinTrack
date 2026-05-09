@@ -1,8 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { TransactionService } from "../transaction.service";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { combineLatest } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { TransactionService } from '../transaction.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { combineLatest } from 'rxjs';
 
 interface Account {
   name: string;
@@ -11,10 +11,10 @@ interface Account {
 }
 
 @Component({
-  selector: "app-dashboard",
+  selector: 'app-dashboard',
   imports: [FormsModule, CommonModule],
-  templateUrl: "./dashboard.component.html",
-  styleUrl: "./dashboard.component.scss",
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
   balances: { [key: string]: number } = {};
@@ -29,14 +29,14 @@ export class DashboardComponent implements OnInit {
       this.transactionService.transactions$,
       this.transactionService.accounts$,
     ]).subscribe(([transactions, accounts]) => {
-      console.log("Accounts:", accounts); 
-      console.log("Transactions:", transactions); 
+      console.log('Accounts:', accounts);
+      console.log('Transactions:', transactions);
 
       this.calculate(transactions, accounts);
     });
   }
   getCardClass(index: number): string {
-    const classes = ["card-blue", "card-green", "card-purple"];
+    const classes = ['card-blue', 'card-green', 'card-purple'];
     return classes[index % classes.length];
   }
 
@@ -47,12 +47,10 @@ export class DashboardComponent implements OnInit {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
-    
     accounts.forEach((acc: Account) => {
       this.balances[acc.name] = Number(acc.balance);
     });
 
-    
     transactions.forEach((t: any) => {
       const amount = Number(t.amount);
       const date = new Date(t.date);
@@ -61,15 +59,14 @@ export class DashboardComponent implements OnInit {
         this.balances[t.account] = 0;
       }
 
-      if (t.type === "Income") {
+      if (t.type === 'Income') {
         this.balances[t.account] += amount;
       } else {
         this.balances[t.account] -= amount;
       }
 
-      
       if (
-        t.type === "Expense" &&
+        t.type === 'Expense' &&
         date.getMonth() === currentMonth &&
         date.getFullYear() === currentYear
       ) {
@@ -77,29 +74,27 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    
     this.balanceList = accounts.map((acc) => ({
       name: acc.name,
       value: this.balances[acc.name],
-      color: acc.color || "blue", 
+      color: acc.color || 'blue',
     }));
   }
 
   deleteAccount(name: string) {
+    const transactions = this.transactionService.getTransactions();
 
-  const transactions = this.transactionService.getTransactions();
+    const used = transactions.some((t: any) => t.account === name);
 
-  const used = transactions.some((t: any) => t.account === name);
+    if (used) {
+      alert('Cannot delete account with transactions');
+      return;
+    }
 
-  if (used) {
-    alert('Cannot delete account with transactions');
-    return;
+    const confirmDelete = confirm(`Delete ${name}?`);
+
+    if (!confirmDelete) return;
+
+    this.transactionService.deleteAccount(name);
   }
-
-  const confirmDelete = confirm(`Delete ${name}?`);
-
-  if (!confirmDelete) return;
-
-  this.transactionService.deleteAccount(name);
-}
 }

@@ -1,30 +1,30 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
-import { TransactionService } from "../transaction.service";
+import { TransactionService } from '../transaction.service';
 
-import { FormsModule } from "@angular/forms";
+import { FormsModule } from '@angular/forms';
 
-import { CommonModule } from "@angular/common";
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: "app-transaction-form",
+  selector: 'app-transaction-form',
 
   imports: [FormsModule, CommonModule],
 
-  templateUrl: "./transaction-form.component.html",
+  templateUrl: './transaction-form.component.html',
 
-  styleUrl: "./transaction-form.component.scss",
+  styleUrl: './transaction-form.component.scss',
 })
 export class TransactionFormComponent {
   amount: number = 0;
 
-  type: string = "Expense";
+  type: string = 'Expense';
 
-  account: string = "";
+  account: string = '';
 
-  notes: string = "";
+  notes: string = '';
 
-  date: string = "";
+  date: string = '';
 
   editMode: boolean = false;
 
@@ -33,30 +33,30 @@ export class TransactionFormComponent {
   accounts: any[] = [];
 
   categories = [
-    "Food",
+    'Food',
 
-    "Fuel",
+    'Fuel',
 
-    "Bills",
+    'Bills',
 
-    "Investment",
+    'Investment',
 
-    "Shopping",
+    'Shopping',
 
-    "Health",
+    'Health',
 
-    "Groceries",
+    'Groceries',
 
-    "Travel",
-    "Entertainment",
-    "Restaurant",
+    'Travel',
+    'Entertainment',
+    'Restaurant',
 
-    "Other",
+    'Other',
   ];
 
-  selectedCategory: string = "";
+  selectedCategory: string = '';
 
-  customCategory: string = "";
+  customCategory: string = '';
 
   constructor(private transactionService: TransactionService) {}
 
@@ -94,12 +94,12 @@ export class TransactionFormComponent {
     let finalDate = this.date;
 
     if (!finalDate) {
-      finalDate = new Date().toISOString().split("T")[0];
+      finalDate = new Date().toISOString().split('T')[0];
     }
 
-    let finalCategory = "";
+    let finalCategory = '';
 
-    if (this.selectedCategory === "Other") {
+    if (this.selectedCategory === 'Other') {
       finalCategory = this.customCategory.trim();
     } else {
       finalCategory = this.selectedCategory;
@@ -146,17 +146,17 @@ export class TransactionFormComponent {
   resetForm() {
     this.amount = 0;
 
-    this.type = "Expense";
+    this.type = 'Expense';
 
-    this.selectedCategory = "";
+    this.selectedCategory = '';
 
-    this.account = "";
+    this.account = '';
 
-    this.notes = "";
+    this.notes = '';
 
-    this.date = "";
+    this.date = '';
 
-    this.customCategory = "";
+    this.customCategory = '';
 
     this.editMode = false;
 

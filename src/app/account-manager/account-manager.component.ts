@@ -1,7 +1,7 @@
-import { Component } from "@angular/core";
-import { TransactionService } from "../transaction.service";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
+import { Component } from '@angular/core';
+import { TransactionService } from '../transaction.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface Account {
   name: string;
@@ -18,19 +18,19 @@ interface Transaction {
   date: string;
 }
 @Component({
-  selector: "app-account-manager",
+  selector: 'app-account-manager',
   imports: [FormsModule, CommonModule],
-  templateUrl: "./account-manager.component.html",
-  styleUrl: "./account-manager.component.scss",
+  templateUrl: './account-manager.component.html',
+  styleUrl: './account-manager.component.scss',
 })
 export class AccountManagerComponent {
-  name: string = "";
+  name: string = '';
   balance: number = 0;
   accounts: any[] = [];
-  bankOptions: string[] = ["HDFC", "Canara", "SBI", "ICICI", "Other"];
+  bankOptions: string[] = ['HDFC', 'Canara', 'SBI', 'ICICI', 'Other'];
 
-  selectedBank: string = "";
-  customBankName: string = "";
+  selectedBank: string = '';
+  customBankName: string = '';
 
   constructor(private transactionService: TransactionService) {}
 
@@ -45,14 +45,14 @@ export class AccountManagerComponent {
 
     // 🔒 Limit to 3 accounts
     if (accounts.length >= 3) {
-      alert("Maximum 3 accounts allowed");
+      alert('Maximum 3 accounts allowed');
       return;
     }
 
     // 🎯 Determine final account name
-    let finalName = "";
+    let finalName = '';
 
-    if (this.selectedBank === "Other") {
+    if (this.selectedBank === 'Other') {
       finalName = this.customBankName.trim();
     } else {
       finalName = this.selectedBank;
@@ -65,12 +65,12 @@ export class AccountManagerComponent {
     );
 
     if (exists) {
-      alert("Account already exists");
+      alert('Account already exists');
       return;
     }
 
     // 🎨 Assign stable color
-    const colors = ["blue", "green", "purple"];
+    const colors = ['blue', 'green', 'purple'];
 
     const account = {
       name: finalName,
@@ -82,26 +82,25 @@ export class AccountManagerComponent {
     this.transactionService.addAccount(account);
 
     // 🔄 Reset form
-    this.selectedBank = "";
-    this.customBankName = "";
+    this.selectedBank = '';
+    this.customBankName = '';
     this.balance = 0;
   }
 
   deleteAccount(name: string) {
+    const transactions = this.transactionService.getTransactions();
 
-  const transactions = this.transactionService.getTransactions();
+    const used = transactions.some((t: Transaction) => t.account === name);
 
-  const used = transactions.some((t: Transaction) => t.account === name);
+    if (used) {
+      alert('Cannot delete account with transactions');
+      return;
+    }
 
-  if (used) {
-    alert('Cannot delete account with transactions');
-    return;
+    const confirmDelete = confirm(`Delete ${name} account?`);
+
+    if (!confirmDelete) return;
+
+    this.transactionService.deleteAccount(name);
   }
-
-  const confirmDelete = confirm(`Delete ${name} account?`);
-
-  if (!confirmDelete) return;
-
-  this.transactionService.deleteAccount(name);
-}
 }

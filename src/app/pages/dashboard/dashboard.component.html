@@ -1,75 +1,40 @@
 <div class="dashboard-page">
-
   <!-- HEADER -->
 
   <div class="page-header">
-
     <div>
       <h1>Dashboard</h1>
       <p>{{ currentMonth }}</p>
     </div>
 
-    <button
-      class="add-btn"
-      routerLink="/transactions"
-    >
+    <button class="add-btn" routerLink="/transactions">
       View Transactions
     </button>
-
   </div>
 
   <!-- STATS -->
 
   <div class="stats-grid">
-
-    <div
-      class="stat-card"
-      *ngFor="let acc of balanceList"
-    >
-
+    <div class="stat-card" *ngFor="let acc of balanceList">
       <div class="stat-top">
-
-        <div class="stat-title">
-          {{ acc.name }} Balance
-        </div>
-
+        <div class="stat-title">{{ acc.name }} Balance</div>
       </div>
 
-      <div
-        class="stat-value"
-        [ngClass]="acc.color"
-      >
-        ₹{{ acc.value }}
-      </div>
+      <div class="stat-value" [ngClass]="acc.color">₹{{ acc.value }}</div>
 
-      <div class="stat-trend positive">
-        +12% vs last month
-      </div>
-
+      <div class="stat-trend positive">+12% vs last month</div>
     </div>
 
     <!-- MONTHLY SPENDING -->
 
     <div class="stat-card">
-
       <div class="stat-top">
-
-        <div class="stat-title">
-          Monthly Spending
-        </div>
-
+        <div class="stat-title">Monthly Spending</div>
       </div>
 
-      <div class="stat-value red">
-        ₹{{ monthlyExpense }}
-      </div>
+      <div class="stat-value red">₹{{ monthlyExpense }}</div>
 
-      <div class="stat-trend negative">
-        +8% vs last month
-      </div>
-
+      <div class="stat-trend negative">+8% vs last month</div>
     </div>
-
   </div>
-
 </div>

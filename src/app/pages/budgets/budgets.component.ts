@@ -1,38 +1,38 @@
-import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
-import { TransactionService } from "../../transaction.service";
-import { FormsModule } from "@angular/forms";
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { TransactionService } from '../../transaction.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: "app-budgets",
+  selector: 'app-budgets',
   imports: [CommonModule, FormsModule],
-  templateUrl: "./budgets.component.html",
-  styleUrl: "./budgets.component.scss",
+  templateUrl: './budgets.component.html',
+  styleUrl: './budgets.component.scss',
 })
 export class BudgetsComponent {
   budgets: any[] = [];
   showBudgetModal = false;
 
-  newCategory = "";
+  newCategory = '';
 
   newLimit = 0;
 
-  newColor = "#4d7cff";
+  newColor = '#4d7cff';
 
   categories = [
-    "Restaurant",
+    'Restaurant',
 
-    "Fuel",
+    'Fuel',
 
-    "Bills",
+    'Bills',
 
-    "Shopping",
+    'Shopping',
 
-    "Investment",
+    'Investment',
 
-    "Entertainment",
+    'Entertainment',
 
-    "Transfer",
+    'Transfer',
   ];
 
   getProgress(spent: number, limit: number) {
@@ -53,11 +53,11 @@ export class BudgetsComponent {
 
     this.refreshBudgets();
 
-    this.newCategory = "";
+    this.newCategory = '';
 
     this.newLimit = 0;
 
-    this.newColor = "#4d7cff";
+    this.newColor = '#4d7cff';
 
     this.showBudgetModal = false;
   }
@@ -87,7 +87,7 @@ export class BudgetsComponent {
           return (
             t.category?.trim().toLowerCase() ===
               budget.category?.trim().toLowerCase() &&
-            t.type === "Expense" &&
+            t.type === 'Expense' &&
             sameMonth
           );
         })

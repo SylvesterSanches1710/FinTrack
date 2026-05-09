@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import Chart from "chart.js/auto";
-import { TransactionService } from "../transaction.service";
+import { Component, OnInit } from '@angular/core';
+import Chart from 'chart.js/auto';
+import { TransactionService } from '../transaction.service';
 
 @Component({
-  selector: "app-charts",
+  selector: 'app-charts',
   imports: [],
-  templateUrl: "./charts.component.html",
-  styleUrl: "./charts.component.scss",
+  templateUrl: './charts.component.html',
+  styleUrl: './charts.component.scss',
 })
 export class ChartsComponent implements OnInit {
   chart: any;
@@ -28,7 +28,7 @@ export class ChartsComponent implements OnInit {
     const categoryMap: any = {};
 
     transactions.forEach((t) => {
-      if (t.type === "Expense") {
+      if (t.type === 'Expense') {
         categoryMap[t.category] =
           (categoryMap[t.category] || 0) + Number(t.amount);
       }
@@ -38,17 +38,19 @@ export class ChartsComponent implements OnInit {
     const values = Object.values(categoryMap);
 
     this.chart = new Chart('categoryChart', {
-  type: 'pie',
-  data: {
-    labels: labels,
-    datasets: [{
-      data: values
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false 
-  }
-});
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: values,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
   }
 }

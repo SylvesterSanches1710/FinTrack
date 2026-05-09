@@ -1,0 +1,149 @@
+<div class="lent-page">
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Lent Money</h1>
+      <p>Track money lent to others</p>
+    </div>
+    <button class="add-btn" (click)="showModal = true">+ Add Entry</button>
+  </div>
+
+  <!-- CARDS -->
+  <div class="lending-grid">
+    <div class="lending-card" *ngFor="let lending of lendings; let i = index">
+      <!-- CARD HEADER -->
+      <div class="card-header">
+        <div class="avatar">{{ lending.person?.charAt(0) }}</div>
+        <div class="card-header-info">
+          <div class="person">{{ lending.person }}</div>
+          <div class="card-date">{{ lending.date }}</div>
+        </div>
+        <span
+          class="status-badge"
+          [ngClass]="{
+            pending: lending.status === 'Pending',
+            partial: lending.status === 'Partial',
+            recovered: lending.status === 'Recovered',
+          }"
+          >{{ lending.status }}</span
+        >
+        <button class="delete-btn" (click)="deleteLending(i)">
+          <i class="ti ti-trash"></i>
+        </button>
+      </div>
+
+      <!-- AMOUNT ROW -->
+      <div class="amount-row">
+        <div>
+          <div class="amount-label">Lent</div>
+          <div class="amount">₹{{ lending.amount }}</div>
+        </div>
+        <div>
+          <div class="amount-label">Recovered</div>
+          <div class="amount recovered-amt">₹{{ lending.recovered }}</div>
+        </div>
+        <div>
+          <div class="amount-label">Remaining</div>
+          <div class="amount remaining-amt">₹{{ lending.remaining }}</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS BAR -->
+      <div class="recovery-bar">
+        <div
+          class="recovery-fill"
+          [style.width.%]="(lending.recovered / lending.amount) * 100"
+        ></div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="card-footer">
+        <div class="card-meta">
+          <i class="ti ti-building-bank"></i> {{ lending.account }}
+          <span *ngIf="lending.note" class="note-dot">·</span>
+          <span *ngIf="lending.note" class="note">{{ lending.note }}</span>
+        </div>
+        <button class="recover-btn" (click)="openRecoveryModal(i)">
+          Update Recovery
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" *ngIf="showModal" (click)="showModal = false">
+  <div class="lending-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Add Lending Entry</h2>
+      <button class="modal-close" (click)="showModal = false">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="modal-field">
+      <label>Person</label>
+      <input
+        type="text"
+        placeholder="Who did you lend to?"
+        [(ngModel)]="person"
+      />
+    </div>
+    <div class="modal-field">
+      <label>Account</label>
+      <select [(ngModel)]="selectedAccount">
+        <option value="">Select account</option>
+        <option *ngFor="let acc of accounts" [value]="acc.name">
+          {{ acc.name }}
+        </option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Amount</label>
+      <div class="input-prefix">
+        <span>₹</span>
+        <input type="number" placeholder="0" [(ngModel)]="amount" />
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Note <span class="optional">optional</span></label>
+      <input type="text" placeholder="What was it for?" [(ngModel)]="note" />
+    </div>
+    <div class="modal-field">
+      <label>Date</label>
+      <input type="date" [(ngModel)]="date" />
+    </div>
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="showModal = false">Cancel</button>
+      <button class="save-btn" (click)="addLending()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECOVERY MODAL -->
+<div
+  class="modal-overlay"
+  *ngIf="showRecoveryModal"
+  (click)="showRecoveryModal = false"
+>
+  <div class="lending-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Update Recovery</h2>
+      <button class="modal-close" (click)="showRecoveryModal = false">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <div class="modal-field">
+      <label>Amount Recovered</label>
+      <div class="input-prefix">
+        <span>₹</span>
+        <input type="number" placeholder="0" [(ngModel)]="recoveryAmount" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel-btn" (click)="showRecoveryModal = false">
+        Cancel
+      </button>
+      <button class="save-btn" (click)="updateRecovery()">Update</button>
+    </div>
+  </div>
+</div>

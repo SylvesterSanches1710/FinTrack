@@ -11,12 +11,11 @@ interface Account {
 
 @Component({
   selector: 'app-transfer',
-  imports:[FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './transfer.component.html',
-  styleUrl: './transfer.component.scss'
+  styleUrl: './transfer.component.scss',
 })
 export class TransferComponent {
-
   accounts: Account[] = [];
 
   fromAccount = '';
@@ -32,7 +31,6 @@ export class TransferComponent {
   }
 
   transfer() {
-
     // validations
     if (!this.fromAccount || !this.toAccount || this.amount <= 0) {
       alert('Fill all fields');
@@ -53,7 +51,7 @@ export class TransferComponent {
       category: 'Transfer',
       account: this.fromAccount,
       notes: `Transfer to ${this.toAccount}`,
-      date: today
+      date: today,
     });
 
     // 🔥 Income transaction
@@ -63,7 +61,7 @@ export class TransferComponent {
       category: 'Transfer',
       account: this.toAccount,
       notes: `Transfer from ${this.fromAccount}`,
-      date: today
+      date: today,
     });
 
     alert('Transfer successful');

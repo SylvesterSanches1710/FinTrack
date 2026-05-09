@@ -1,59 +1,65 @@
-import { Routes } from "@angular/router";
-import { DashboardComponent } from "./pages/dashboard/dashboard.component";
-import { AccountsComponent } from "./pages/accounts/accounts.component";
-import { AnalyticsComponent } from "./pages/analytics/analytics.component";
-import { TransactionsComponent } from "./pages/transactions/transactions.component";
-import { TransfersComponent } from "./pages/transfers/transfers.component";
-import { GoalsComponent } from "./pages/goals/goals.component";
-import { RecurringComponent } from "./pages/recurring/recurring.component";
+import { Routes } from '@angular/router';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { AccountsComponent } from './pages/accounts/accounts.component';
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
+import { TransactionsComponent } from './pages/transactions/transactions.component';
+import { TransfersComponent } from './pages/transfers/transfers.component';
+import { GoalsComponent } from './pages/goals/goals.component';
+import { RecurringComponent } from './pages/recurring/recurring.component';
+import { LentMoneyComponent } from './pages/lent-money/lent-money.component';
 
 export const routes: Routes = [
   {
-    path: "",
-    redirectTo: "dashboard",
-    pathMatch: "full",
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
 
   {
-    path: "dashboard",
+    path: 'dashboard',
     component: DashboardComponent,
   },
 
   {
-    path: "transactions",
+    path: 'transactions',
     component: TransactionsComponent,
   },
 
   {
-    path: "analytics",
+    path: 'analytics',
     component: AnalyticsComponent,
   },
 
   {
-    path: "accounts",
+    path: 'accounts',
     component: AccountsComponent,
   },
 
   {
-    path: "transfers",
+    path: 'transfers',
     component: TransfersComponent,
   },
 
   {
-    path: "budgets",
+    path: 'budgets',
     loadComponent: () =>
-      import("./pages/budgets/budgets.component").then(
+      import('./pages/budgets/budgets.component').then(
         (m) => m.BudgetsComponent,
       ),
   },
 
   {
-    path: "goals",
+    path: 'goals',
     component: GoalsComponent,
   },
 
   {
-    path: "recurring",
+    path: 'recurring',
     component: RecurringComponent,
+  },
+
+  {
+    path: 'lent-money',
+    component: LentMoneyComponent,
   },
 ];

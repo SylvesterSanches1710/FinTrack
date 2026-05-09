@@ -1,17 +1,17 @@
-import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { TransactionService } from "../../transaction.service";
-import { BaseChartDirective } from "ng2-charts";
+import { TransactionService } from '../../transaction.service';
+import { BaseChartDirective } from 'ng2-charts';
 
-import { ChartConfiguration, ChartType } from "chart.js";
-import "chart.js/auto";
+import { ChartConfiguration, ChartType } from 'chart.js';
+import 'chart.js/auto';
 
 @Component({
-  selector: "app-analytics",
+  selector: 'app-analytics',
   imports: [CommonModule, BaseChartDirective],
-  templateUrl: "./analytics.component.html",
-  styleUrl: "./analytics.component.scss",
+  templateUrl: './analytics.component.html',
+  styleUrl: './analytics.component.scss',
 })
 export class AnalyticsComponent {
   transactions: any[] = [];
@@ -22,7 +22,7 @@ export class AnalyticsComponent {
 
   savings = 0;
 
-  topCategory = "";
+  topCategory = '';
 
   categoryData: {
     category: string;
@@ -31,21 +31,21 @@ export class AnalyticsComponent {
     color: string;
   }[] = [];
 
-  colors = ["#4d8dff", "#20d997", "#ff4d57", "#ffc107", "#b26bff", "#ff922b"];
-  pieChartType: "doughnut" = "doughnut";
+  colors = ['#4d8dff', '#20d997', '#ff4d57', '#ffc107', '#b26bff', '#ff922b'];
+  pieChartType: 'doughnut' = 'doughnut';
 
-  pieChartData: ChartConfiguration<"doughnut">["data"] = {
+  pieChartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: [],
     datasets: [
       {
         data: [],
         backgroundColor: [
-          "#4d8dff",
-          "#20d997",
-          "#ff4d57",
-          "#ffc107",
-          "#b26bff",
-          "#ff922b",
+          '#4d8dff',
+          '#20d997',
+          '#ff4d57',
+          '#ffc107',
+          '#b26bff',
+          '#ff922b',
         ],
 
         borderWidth: 0,
@@ -53,33 +53,33 @@ export class AnalyticsComponent {
     ],
   };
 
-  pieChartOptions: ChartConfiguration<"doughnut">["options"] = {
+  pieChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
 
     plugins: {
       legend: {
         labels: {
-          color: "white",
+          color: 'white',
         },
       },
     },
   };
 
-  lineChartType: "line" = "line";
+  lineChartType: 'line' = 'line';
 
-  lineChartData: ChartConfiguration<"line">["data"] = {
+  lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: [],
   };
 
-  lineChartOptions: ChartConfiguration<"line">["options"] = {
+  lineChartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
 
     plugins: {
       legend: {
         labels: {
-          color: "white",
+          color: 'white',
         },
       },
     },
@@ -87,21 +87,21 @@ export class AnalyticsComponent {
     scales: {
       x: {
         ticks: {
-          color: "white",
+          color: 'white',
         },
 
         grid: {
-          color: "#222",
+          color: '#222',
         },
       },
 
       y: {
         ticks: {
-          color: "white",
+          color: 'white',
         },
 
         grid: {
-          color: "#222",
+          color: '#222',
         },
       },
     },
@@ -127,11 +127,11 @@ export class AnalyticsComponent {
     const categoryTotals: any = {};
 
     this.transactions.forEach((t: any) => {
-      if (t.type === "Income") {
+      if (t.type === 'Income') {
         this.totalIncome += Number(t.amount);
       }
 
-      if (t.type === "Expense") {
+      if (t.type === 'Expense') {
         this.totalExpense += Number(t.amount);
 
         if (!categoryTotals[t.category]) {
@@ -148,7 +148,7 @@ export class AnalyticsComponent {
 
     const highest = categories.sort((a: any, b: any) => b[1] - a[1])[0];
 
-    this.topCategory = highest ? String(highest[0]) : "-";
+    this.topCategory = highest ? String(highest[0]) : '-';
 
     this.categoryData = categories.map(
       ([category, amount]: any, index: number) => {
@@ -179,8 +179,8 @@ export class AnalyticsComponent {
     const monthlyMap: any = {};
 
     this.transactions.forEach((t: any) => {
-      const month = new Date(t.date).toLocaleString("default", {
-        month: "short",
+      const month = new Date(t.date).toLocaleString('default', {
+        month: 'short',
       });
 
       if (!monthlyMap[month]) {
@@ -190,11 +190,11 @@ export class AnalyticsComponent {
         };
       }
 
-      if (t.type === "Income") {
+      if (t.type === 'Income') {
         monthlyMap[month].income += t.amount;
       }
 
-      if (t.type === "Expense") {
+      if (t.type === 'Expense') {
         monthlyMap[month].expense += t.amount;
       }
     });
@@ -210,25 +210,25 @@ export class AnalyticsComponent {
 
       datasets: [
         {
-          label: "Income",
+          label: 'Income',
 
           data: incomeData,
 
-          borderColor: "#20d997",
+          borderColor: '#20d997',
 
-          backgroundColor: "#20d997",
+          backgroundColor: '#20d997',
 
           tension: 0.4,
         },
 
         {
-          label: "Expenses",
+          label: 'Expenses',
 
           data: expenseData,
 
-          borderColor: "#ff4d57",
+          borderColor: '#ff4d57',
 
-          backgroundColor: "#ff4d57",
+          backgroundColor: '#ff4d57',
 
           tension: 0.4,
         },
@@ -268,7 +268,7 @@ export class AnalyticsComponent {
 
     // Highest expense
 
-    const expenses = this.transactions.filter((t: any) => t.type === "Expense");
+    const expenses = this.transactions.filter((t: any) => t.type === 'Expense');
 
     if (expenses.length > 0) {
       const biggest = expenses.reduce((max: any, t: any) =>

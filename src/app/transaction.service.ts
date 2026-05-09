@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export interface Budget {
   category: string;
@@ -36,8 +36,24 @@ export interface RecurringTransaction {
   nextDate: string;
 }
 
+export interface Lending {
+  person: string;
+
+  amount: number;
+
+  recovered: number;
+
+  remaining: number;
+
+  note: string;
+
+  date: string;
+
+  status: string;
+}
+
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TransactionService {
   // =========================
@@ -45,7 +61,7 @@ export class TransactionService {
   // =========================
 
   private recurringTransactions: RecurringTransaction[] = JSON.parse(
-    localStorage.getItem("recurring") || "[]",
+    localStorage.getItem('recurring') || '[]',
   );
 
   // =========================
@@ -53,14 +69,14 @@ export class TransactionService {
   // =========================
 
   private budgets: Budget[] = JSON.parse(
-    localStorage.getItem("budgets") || "[]",
+    localStorage.getItem('budgets') || '[]',
   );
 
   // =========================
   // GOALS
   // =========================
 
-  private goals: Goal[] = JSON.parse(localStorage.getItem("goals") || "[]");
+  private goals: Goal[] = JSON.parse(localStorage.getItem('goals') || '[]');
 
   // =========================
   // TRANSACTIONS STATE
@@ -84,10 +100,7 @@ export class TransactionService {
   // EDIT EVENT
   // =========================
 
-  editTransaction$ =
-  new BehaviorSubject<any>(
-    null
-  );
+  editTransaction$ = new BehaviorSubject<any>(null);
 
   constructor() {
     this.processRecurringTransactions();
@@ -104,7 +117,7 @@ export class TransactionService {
   addTransaction(transaction: any) {
     const updated = [...this.transactionsSubject.value, transaction];
 
-    localStorage.setItem("transactions", JSON.stringify(updated));
+    localStorage.setItem('transactions', JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
   }
@@ -114,7 +127,7 @@ export class TransactionService {
 
     updated.splice(index, 1);
 
-    localStorage.setItem("transactions", JSON.stringify(updated));
+    localStorage.setItem('transactions', JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
   }
@@ -124,13 +137,13 @@ export class TransactionService {
 
     updated[index] = updatedTransaction;
 
-    localStorage.setItem("transactions", JSON.stringify(updated));
+    localStorage.setItem('transactions', JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
   }
 
   loadTransactions() {
-    return JSON.parse(localStorage.getItem("transactions") || "[]");
+    return JSON.parse(localStorage.getItem('transactions') || '[]');
   }
 
   // =========================
@@ -144,7 +157,7 @@ export class TransactionService {
   addAccount(account: any) {
     const updated = [...this.accountsSubject.value, account];
 
-    localStorage.setItem("accounts", JSON.stringify(updated));
+    localStorage.setItem('accounts', JSON.stringify(updated));
 
     this.accountsSubject.next(updated);
   }
@@ -154,13 +167,13 @@ export class TransactionService {
       (acc: any) => acc.name !== name,
     );
 
-    localStorage.setItem("accounts", JSON.stringify(updated));
+    localStorage.setItem('accounts', JSON.stringify(updated));
 
     this.accountsSubject.next(updated);
   }
 
   loadAccounts() {
-    return JSON.parse(localStorage.getItem("accounts") || "[]");
+    return JSON.parse(localStorage.getItem('accounts') || '[]');
   }
 
   // =========================
@@ -174,7 +187,7 @@ export class TransactionService {
   addBudget(budget: Budget) {
     this.budgets.push(budget);
 
-    localStorage.setItem("budgets", JSON.stringify(this.budgets));
+    localStorage.setItem('budgets', JSON.stringify(this.budgets));
   }
 
   deleteBudget(category: string) {
@@ -182,7 +195,7 @@ export class TransactionService {
       (budget) => budget.category !== category,
     );
 
-    localStorage.setItem("budgets", JSON.stringify(this.budgets));
+    localStorage.setItem('budgets', JSON.stringify(this.budgets));
   }
 
   // =========================
@@ -196,13 +209,13 @@ export class TransactionService {
   addGoal(goal: Goal) {
     this.goals.push(goal);
 
-    localStorage.setItem("goals", JSON.stringify(this.goals));
+    localStorage.setItem('goals', JSON.stringify(this.goals));
   }
 
   deleteGoal(title: string) {
     this.goals = this.goals.filter((goal) => goal.title !== title);
 
-    localStorage.setItem("goals", JSON.stringify(this.goals));
+    localStorage.setItem('goals', JSON.stringify(this.goals));
   }
 
   addSavingsToGoal(title: string, amount: number) {
@@ -218,7 +231,7 @@ export class TransactionService {
       return goal;
     });
 
-    localStorage.setItem("goals", JSON.stringify(this.goals));
+    localStorage.setItem('goals', JSON.stringify(this.goals));
   }
 
   // =========================
@@ -233,7 +246,7 @@ export class TransactionService {
     this.recurringTransactions.push(recurring);
 
     localStorage.setItem(
-      "recurring",
+      'recurring',
       JSON.stringify(this.recurringTransactions),
     );
   }
@@ -244,7 +257,7 @@ export class TransactionService {
     );
 
     localStorage.setItem(
-      "recurring",
+      'recurring',
       JSON.stringify(this.recurringTransactions),
     );
   }
@@ -289,19 +302,19 @@ export class TransactionService {
 
         const next = new Date(r.nextDate);
 
-        if (r.frequency === "Weekly") {
+        if (r.frequency === 'Weekly') {
           next.setDate(next.getDate() + 7);
         }
 
-        if (r.frequency === "Monthly") {
+        if (r.frequency === 'Monthly') {
           next.setMonth(next.getMonth() + 1);
         }
 
-        if (r.frequency === "Yearly") {
+        if (r.frequency === 'Yearly') {
           next.setFullYear(next.getFullYear() + 1);
         }
 
-        r.nextDate = next.toISOString().split("T")[0];
+        r.nextDate = next.toISOString().split('T')[0];
       }
 
       return r;
@@ -309,13 +322,13 @@ export class TransactionService {
 
     // SAVE UPDATED TRANSACTIONS
 
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+    localStorage.setItem('transactions', JSON.stringify(transactions));
 
     this.transactionsSubject.next(transactions);
 
     // SAVE UPDATED RECURRING
 
-    localStorage.setItem("recurring", JSON.stringify(recurring));
+    localStorage.setItem('recurring', JSON.stringify(recurring));
 
     this.recurringTransactions = recurring;
   }
@@ -364,7 +377,7 @@ export class TransactionService {
       return acc;
     });
 
-    localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
+    localStorage.setItem('accounts', JSON.stringify(updatedAccounts));
 
     this.updateAccounts(updatedAccounts);
 
@@ -373,11 +386,11 @@ export class TransactionService {
     const transactions = this.getTransactions();
 
     transactions.push({
-      type: "Transfer",
+      type: 'Transfer',
 
       amount,
 
-      category: "Transfer",
+      category: 'Transfer',
 
       account: `${from} → ${to}`,
 
@@ -386,8 +399,74 @@ export class TransactionService {
       date,
     });
 
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+    localStorage.setItem('transactions', JSON.stringify(transactions));
 
     this.updateState(transactions);
+  }
+
+  // =========================
+  // LENT MONEY
+  // =========================
+
+  private lendingSubject = new BehaviorSubject<any[]>(this.getLendings());
+
+  lendings$ = this.lendingSubject.asObservable();
+
+  getLendings() {
+    return JSON.parse(localStorage.getItem('lendings') || '[]');
+  }
+
+  private updateLendings(lendings: any[]) {
+    this.lendingSubject.next(lendings);
+  }
+
+  addLending(lending: any) {
+    const lendings = this.getLendings();
+
+    lendings.push(lending);
+
+    localStorage.setItem(
+      'lendings',
+
+      JSON.stringify(lendings),
+    );
+
+    this.updateLendings(lendings);
+  }
+
+  updateLending(index: number, updated: any) {
+    const lendings = this.getLendings();
+
+    lendings[index] = updated;
+
+    localStorage.setItem(
+      'lendings',
+
+      JSON.stringify(lendings),
+    );
+
+    this.updateLendings(lendings);
+  }
+
+  deleteLending(index: number) {
+    const lendings = this.getLendings();
+
+    lendings.splice(index, 1);
+
+    localStorage.setItem(
+      'lendings',
+
+      JSON.stringify(lendings),
+    );
+
+    this.updateLendings(lendings);
+  }
+
+  refreshTransactions() {
+    const transactions = JSON.parse(
+      localStorage.getItem('transactions') || '[]',
+    );
+
+    this.transactionsSubject.next(transactions);
   }
 }

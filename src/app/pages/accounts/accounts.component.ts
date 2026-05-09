@@ -1,19 +1,19 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
-import { CommonModule } from "@angular/common";
+import { CommonModule } from '@angular/common';
 
-import { FormsModule } from "@angular/forms";
+import { FormsModule } from '@angular/forms';
 
-import { TransactionService } from "../../transaction.service";
+import { TransactionService } from '../../transaction.service';
 
 @Component({
-  selector: "app-accounts",
+  selector: 'app-accounts',
 
   imports: [CommonModule, FormsModule],
 
-  templateUrl: "./accounts.component.html",
+  templateUrl: './accounts.component.html',
 
-  styleUrl: "./accounts.component.scss",
+  styleUrl: './accounts.component.scss',
 })
 export class AccountsComponent {
   accounts: any[] = [];
@@ -22,15 +22,15 @@ export class AccountsComponent {
 
   showAddModal = false;
 
-  selectedBank = "";
+  selectedBank = '';
 
-  customBankName = "";
+  customBankName = '';
 
   balance = 0;
 
-  banks = ["HDFC", "Canara", "SBI", "ICICI", "Axis", "Kotak", "Bank of Baroda"];
+  banks = ['HDFC', 'Canara', 'SBI', 'ICICI', 'Axis', 'Kotak', 'Bank of Baroda'];
 
-  colors = ["#4d8dff", "#20d997", "#ff4d57", "#ffc107", "#b26bff"];
+  colors = ['#4d8dff', '#20d997', '#ff4d57', '#ffc107', '#b26bff'];
 
   constructor(private transactionService: TransactionService) {}
 
@@ -63,7 +63,7 @@ export class AccountsComponent {
 
         const amount = Number(t.amount);
 
-        if (t.type === "Income") {
+        if (t.type === 'Income') {
           currentBalance += amount;
         } else {
           currentBalance -= amount;
@@ -88,7 +88,7 @@ export class AccountsComponent {
 
   addAccount() {
     const finalName =
-      this.selectedBank === "Other" ? this.customBankName : this.selectedBank;
+      this.selectedBank === 'Other' ? this.customBankName : this.selectedBank;
 
     if (!finalName || this.balance < 0) {
       return;
@@ -112,9 +112,9 @@ export class AccountsComponent {
       balance: this.balance,
     });
 
-    this.selectedBank = "";
+    this.selectedBank = '';
 
-    this.customBankName = "";
+    this.customBankName = '';
 
     this.balance = 0;
 
@@ -139,7 +139,7 @@ export class AccountsComponent {
     );
 
     localStorage.setItem(
-      "transactions",
+      'transactions',
 
       JSON.stringify(updatedTransactions),
     );

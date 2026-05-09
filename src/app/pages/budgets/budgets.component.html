@@ -39,7 +39,8 @@
         <div
           class="budget-fill"
           [style.width.%]="getProgress(b.spent, b.limit)"
-          [style.background]="b.color"></div>
+          [style.background]="b.color"
+        ></div>
       </div>
 
       <!-- STATUS -->
@@ -49,14 +50,16 @@
         [ngClass]="{
           warning: getProgress(b.spent, b.limit) > 80,
           danger: getProgress(b.spent, b.limit) >= 100,
-        }">
+        }"
+      >
         <span *ngIf="getProgress(b.spent, b.limit) < 80"> On Track </span>
 
         <span
           *ngIf="
             getProgress(b.spent, b.limit) >= 80 &&
             getProgress(b.spent, b.limit) < 100
-          ">
+          "
+        >
           Near Limit
         </span>
 

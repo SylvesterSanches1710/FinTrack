@@ -14,7 +14,6 @@
     <option value="Expense">Expense</option>
   </select>
 
-  
   <div class="month-wrapper">
     <input type="month" [(ngModel)]="selectedMonth" />
     <span>Month</span>
@@ -30,7 +29,8 @@
       [ngClass]="{
         'income-card': t.type === 'Income',
         'expense-card': t.type === 'Expense',
-      }">
+      }"
+    >
       <div class="left">
         <strong>₹{{ t.amount }}</strong>
         <span class="category">{{ t.category }}</span>
