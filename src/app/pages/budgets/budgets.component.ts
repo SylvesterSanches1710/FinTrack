@@ -26,6 +26,14 @@ export class BudgetsComponent {
   newColor = '#4d7cff';
 
   categories: string[] = [];
+  presetColors = [
+    '#2b6fff',
+    '#20d997',
+    '#ffb020',
+    '#ff4d57',
+    '#a855f7',
+    '#f97316',
+  ];
 
   getProgress(spent: number, limit: number) {
     return (spent / limit) * 100;

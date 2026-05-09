@@ -2,157 +2,143 @@
   color: white;
 }
 
-/* HEADER */
+/* ── HEADER ── */
 
 .accounts-header {
   display: flex;
-
   justify-content: space-between;
-
-  align-items: center;
-
+  align-items: flex-start;
   margin-bottom: 30px;
+
+  h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  p {
+    color: #8f8f8f;
+    margin: 8px 0 0;
+  }
 }
 
-.accounts-header h1 {
-  font-size: 48px;
-
-  margin: 0;
-}
-
-.accounts-header p {
-  color: #8f8f8f;
-
-  margin-top: 8px;
-}
-
-/* BUTTON */
+/* ── ADD BUTTON ── */
 
 .add-btn {
-  height: 52px;
-
+  flex-shrink: 0;
+  height: 48px;
   padding: 0 24px;
-
   border: none;
-
-  border-radius: 16px;
-
+  border-radius: 14px;
   background: #2b6fff;
-
   color: white;
-
+  font-size: 0.938rem;
   font-weight: 600;
-
   cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #4d84ff;
+  }
 }
 
-/* NET WORTH */
+/* ── NET WORTH CARD ── */
 
 .networth-card {
   background: linear-gradient(135deg, #2b6fff, #4d84ff);
-
-  border-radius: 28px;
-
-  padding: 30px;
-
-  margin-bottom: 32px;
+  border-radius: 24px;
+  padding: 28px 32px;
+  margin-bottom: 28px;
 }
 
 .networth-label {
-  font-size: 15px;
-
+  font-size: 14px;
+  font-weight: 500;
   opacity: 0.8;
 }
 
 .networth-value {
   font-size: 42px;
-
   font-weight: 700;
-
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
-/* GRID */
+/* ── ACCOUNTS GRID ── */
 
 .accounts-grid {
   display: grid;
-
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
 }
 
-/* CARD */
+/* ── ACCOUNT CARD ── */
 
 .account-card {
   background: #121212;
-
   border: 1px solid #222;
+  border-radius: 24px;
+  padding: 22px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 
-  border-radius: 28px;
-
-  padding: 24px;
-
-  transition: 0.2s ease;
-}
-
-.account-card:hover {
-  transform: translateY(-2px);
+  &:hover {
+    transform: translateY(-2px);
+    border-color: #2f2f2f;
+  }
 }
 
 .account-top {
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .account-dot {
-  width: 14px;
-  height: 14px;
-
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
 }
 
 .delete-btn {
-  width: 36px;
-  height: 36px;
-
+  width: 34px;
+  height: 34px;
   border: none;
-
-  border-radius: 12px;
-
+  border-radius: 10px;
   background: #1d1d1d;
-
   color: #ff5c67;
-
+  font-size: 13px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #2a1a1a;
+  }
 }
 
 .account-name {
-  font-size: 22px;
-
+  font-size: 20px;
   font-weight: 700;
 }
 
 .account-type {
   color: #8f8f8f;
-
-  margin-top: 8px;
+  font-size: 14px;
+  margin-top: 6px;
 }
 
 .account-balance {
-  margin-top: 30px;
-
-  font-size: 34px;
-
+  margin-top: 28px;
+  font-size: 32px;
   font-weight: 700;
 }
 
-/* MODAL */
+/* ── MODAL (unchanged) ── */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -210,7 +196,6 @@
   }
 }
 
-/* FORM */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -253,7 +238,6 @@
   }
 }
 
-/* AMOUNT PREFIX */
 .input-prefix {
   display: flex;
   align-items: center;
@@ -313,26 +297,53 @@
   }
 }
 
-/* ── YOUR EXISTING RESPONSIVE SCSS (unchanged) ── */
+/* ── RESPONSIVE ── */
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .accounts-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 16px;
+
+    h1 {
+      font-size: 36px;
+    }
   }
 
   .add-btn {
     width: 100%;
+    justify-content: center;
   }
-}
 
-@media (max-width: 600px) {
-  .accounts-header h1 {
-    font-size: 38px;
+  .networth-card {
+    padding: 22px 20px;
   }
 
   .networth-value {
     font-size: 34px;
+  }
+
+  .accounts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: calc(100vw - 2rem);
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .accounts-header h1 {
+    font-size: 30px;
+  }
+
+  .networth-value {
+    font-size: 28px;
+  }
+
+  .account-balance {
+    font-size: 26px;
   }
 }

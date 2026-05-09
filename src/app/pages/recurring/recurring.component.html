@@ -1,92 +1,131 @@
 <div class="recurring-page">
   <!-- HEADER -->
-
   <div class="page-header">
     <div>
       <h1>Recurring Transactions</h1>
-
       <p>Automate regular financial activity</p>
     </div>
-
-    <button class="add-btn" (click)="showModal = true">+ Add Recurring</button>
+    <button class="add-btn" (click)="showModal = true">
+      <i class="ti ti-plus"></i> Add Recurring
+    </button>
   </div>
 
   <!-- GRID -->
-
   <div class="recurring-grid">
     <div class="recurring-card" *ngFor="let r of recurring">
-      <button class="delete-btn" (click)="deleteRecurring(r.title)">✕</button>
-
-      <div class="recurring-title">
-        {{ r.title }}
+      <div class="card-header">
+        <div class="recurring-title">{{ r.title }}</div>
+        <button class="delete-btn" (click)="deleteRecurring(r.title)">
+          <i class="ti ti-trash"></i>
+        </button>
       </div>
 
-      <div class="recurring-amount">₹{{ r.amount }}</div>
-
-      <div class="recurring-info">
-        {{ r.frequency }}
-
-        •
-
-        {{ r.type }}
+      <div
+        class="recurring-amount"
+        [ngClass]="{
+          income: r.type === 'Income',
+          expense: r.type === 'Expense',
+        }"
+      >
+        ₹{{ r.amount }}
       </div>
 
-      <div class="recurring-date">
-        Next:
-        {{ r.nextDate }}
+      <div class="card-footer">
+        <div class="recurring-badges">
+          <span class="badge">
+            <i class="ti ti-repeat"></i> {{ r.frequency }}
+          </span>
+          <span
+            class="badge"
+            [ngClass]="{
+              'badge-green': r.type === 'Income',
+              'badge-red': r.type === 'Expense',
+            }"
+            >{{ r.type }}</span
+          >
+        </div>
+        <div class="recurring-date">
+          <i class="ti ti-calendar"></i> {{ r.nextDate }}
+        </div>
       </div>
     </div>
   </div>
 
   <!-- MODAL -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="showModal = false">
+    <div class="recurring-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add Recurring</h2>
+        <button class="modal-close" (click)="showModal = false">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
 
-  <div class="modal-overlay" *ngIf="showModal">
-    <div class="recurring-modal">
-      <h2>Add Recurring</h2>
+      <div class="modal-field">
+        <label>Title</label>
+        <input
+          type="text"
+          placeholder="e.g. Salary"
+          [(ngModel)]="newRecurring.title"
+        />
+      </div>
 
-      <input type="text" placeholder="Title" [(ngModel)]="newRecurring.title" />
+      <div class="modal-field">
+        <label>Amount</label>
+        <div class="input-prefix">
+          <span>₹</span>
+          <input
+            type="number"
+            placeholder="0"
+            [(ngModel)]="newRecurring.amount"
+          />
+        </div>
+      </div>
 
-      <input
-        type="number"
-        placeholder="Amount"
-        [(ngModel)]="newRecurring.amount"
-      />
+      <div class="modal-field">
+        <label>Type</label>
+        <select [(ngModel)]="newRecurring.type">
+          <option>Expense</option>
+          <option>Income</option>
+        </select>
+      </div>
 
-      <select [(ngModel)]="newRecurring.type">
-        <option>Expense</option>
+      <div class="modal-field">
+        <label>Category</label>
+        <select [(ngModel)]="newRecurring.category">
+          <option value="">Select Category</option>
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
 
-        <option>Income</option>
-      </select>
+      <div class="modal-field">
+        <label>Account</label>
+        <select [(ngModel)]="newRecurring.account">
+          <option value="">Select Account</option>
+          <option *ngFor="let acc of accounts" [value]="acc.name">
+            {{ acc.name }}
+          </option>
+        </select>
+      </div>
 
-      <select [(ngModel)]="newRecurring.category">
-        <option value="">Select Category</option>
+      <div class="modal-field">
+        <label>Frequency</label>
+        <select [(ngModel)]="newRecurring.frequency">
+          <option>Weekly</option>
+          <option>Monthly</option>
+          <option>Yearly</option>
+        </select>
+      </div>
 
-        <option *ngFor="let category of categories" [value]="category">
-          {{ category }}
-        </option>
-      </select>
-
-      <select [(ngModel)]="newRecurring.account">
-        <option value="">Select Account</option>
-
-        <option *ngFor="let acc of accounts" [value]="acc.name">
-          {{ acc.name }}
-        </option>
-      </select>
-
-      <select [(ngModel)]="newRecurring.frequency">
-        <option>Weekly</option>
-
-        <option>Monthly</option>
-
-        <option>Yearly</option>
-      </select>
-
-      <input type="date" [(ngModel)]="newRecurring.nextDate" />
+      <div class="modal-field">
+        <label>Next Date</label>
+        <input type="date" [(ngModel)]="newRecurring.nextDate" />
+      </div>
 
       <div class="modal-actions">
         <button class="cancel-btn" (click)="showModal = false">Cancel</button>
-
         <button class="save-btn" (click)="addRecurring()">Save</button>
       </div>
     </div>

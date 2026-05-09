@@ -1,58 +1,50 @@
 <div class="dashboard-page">
   <!-- HEADER -->
-
   <div class="page-header">
     <div>
       <h1>Dashboard</h1>
       <p>{{ currentMonth }}</p>
     </div>
-
     <button class="add-btn" routerLink="/transactions">
-      View Transactions
+      <i class="ti ti-arrows-right-left"></i> View Transactions
     </button>
   </div>
 
-  <!-- STATS -->
-
+  <!-- STATS ROW -->
   <div class="stats-grid">
     <div class="stat-card" *ngFor="let acc of balanceList">
       <div class="stat-top">
         <div class="stat-title">{{ acc.name }} Balance</div>
+        <div class="stat-icon"><i class="ti ti-building-bank"></i></div>
       </div>
-
       <div class="stat-value" [ngClass]="acc.color">₹{{ acc.value }}</div>
-
-      <div class="stat-trend positive">+12% vs last month</div>
-    </div>
-
-    <!-- AI INSIGHTS -->
-
-    <div class="dashboard-widget">
-      <div class="widget-header">
-        <h2>Smart Insights</h2>
-      </div>
-
-      <div class="insights-grid">
-        <div class="insight-card" *ngFor="let insight of aiInsights">
-          <div class="insight-icon">⚡</div>
-
-          <div class="insight-text">
-            {{ insight }}
-          </div>
-        </div>
+      <div class="stat-trend positive">
+        <i class="ti ti-trending-up"></i> +12% vs last month
       </div>
     </div>
 
-    <!-- MONTHLY SPENDING -->
-
-    <div class="stat-card">
+    <div class="stat-card spending">
       <div class="stat-top">
         <div class="stat-title">Monthly Spending</div>
+        <div class="stat-icon red"><i class="ti ti-receipt"></i></div>
       </div>
-
       <div class="stat-value red">₹{{ monthlyExpense }}</div>
+      <div class="stat-trend negative">
+        <i class="ti ti-trending-up"></i> +8% vs last month
+      </div>
+    </div>
+  </div>
 
-      <div class="stat-trend negative">+8% vs last month</div>
+  <!-- INSIGHTS -->
+  <div class="dashboard-widget">
+    <div class="widget-header">
+      <h2><i class="ti ti-bulb"></i> Smart Insights</h2>
+    </div>
+    <div class="insights-grid">
+      <div class="insight-card" *ngFor="let insight of aiInsights">
+        <div class="insight-icon">⚡</div>
+        <div class="insight-text">{{ insight }}</div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,54 +1,45 @@
 <div class="budgets-page">
   <!-- HEADER -->
-
   <div class="page-header">
     <div>
       <h1>Budgets</h1>
-
       <p>Track your monthly spending goals</p>
     </div>
     <button class="add-budget-btn" (click)="showBudgetModal = true">
-      + Add Budget
+      <i class="ti ti-plus"></i> Add Budget
     </button>
   </div>
 
   <!-- GRID -->
-
   <div class="budgets-grid">
     <div class="budget-card" *ngFor="let b of budgets">
-      <button class="delete-budget-btn" (click)="deleteBudget(b.title)">
-        ✕
-      </button>
       <div class="budget-top">
-        <div>
-          <div class="budget-category">
-            {{ b.title }}
-          </div>
-          <div class="budget-tags">
-            <span class="budget-tag" *ngFor="let cat of b.categories">
-              {{ cat }}
-            </span>
-          </div>
-
-          <div class="budget-sub">₹{{ b.spent }} spent of ₹{{ b.limit }}</div>
-          <div class="budget-meta">
-            {{ b.period }}
-
-            •
-
-            <span *ngIf="b.recurring"> Recurring </span>
-
-            <span *ngIf="!b.recurring"> One-Time </span>
-          </div>
+        <div class="budget-title-row">
+          <div class="budget-dot" [style.background]="b.color"></div>
+          <div class="budget-category">{{ b.title }}</div>
         </div>
-
-        <div class="budget-percent" [style.color]="b.color">
-          {{ getProgress(b.spent, b.limit) | number: "1.0-0" }}%
+        <div class="budget-top-right">
+          <div class="budget-percent" [style.color]="b.color">
+            {{ getProgress(b.spent, b.limit) | number: "1.0-0" }}%
+          </div>
+          <button class="delete-budget-btn" (click)="deleteBudget(b.title)">
+            <i class="ti ti-trash"></i>
+          </button>
         </div>
       </div>
 
-      <!-- BAR -->
+      <div class="budget-tags">
+        <span class="budget-tag" *ngFor="let cat of b.categories">{{
+          cat
+        }}</span>
+      </div>
 
+      <div class="budget-amounts">
+        <span class="budget-sub">₹{{ b.spent }} spent</span>
+        <span class="budget-sub">of ₹{{ b.limit }}</span>
+      </div>
+
+      <!-- BAR -->
       <div class="budget-bar">
         <div
           class="budget-fill"
@@ -57,55 +48,63 @@
         ></div>
       </div>
 
-      <!-- STATUS -->
-
-      <div
-        class="budget-status"
-        [ngClass]="{
-          warning: getProgress(b.spent, b.limit) > 80,
-          danger: getProgress(b.spent, b.limit) >= 100,
-        }"
-      >
-        <span *ngIf="getProgress(b.spent, b.limit) < 80"> On Track </span>
-
-        <span
-          *ngIf="
-            getProgress(b.spent, b.limit) >= 80 &&
-            getProgress(b.spent, b.limit) < 100
-          "
+      <!-- FOOTER -->
+      <div class="budget-footer">
+        <div
+          class="budget-status"
+          [ngClass]="{
+            warning: getProgress(b.spent, b.limit) > 80,
+            danger: getProgress(b.spent, b.limit) >= 100,
+          }"
         >
-          Near Limit
-        </span>
-
-        <span *ngIf="getProgress(b.spent, b.limit) >= 100">
-          Budget Exceeded
-        </span>
+          <span *ngIf="getProgress(b.spent, b.limit) < 80">
+            <i class="ti ti-circle-check"></i> On Track
+          </span>
+          <span
+            *ngIf="
+              getProgress(b.spent, b.limit) >= 80 &&
+              getProgress(b.spent, b.limit) < 100
+            "
+          >
+            <i class="ti ti-alert-triangle"></i> Near Limit
+          </span>
+          <span *ngIf="getProgress(b.spent, b.limit) >= 100">
+            <i class="ti ti-circle-x"></i> Budget Exceeded
+          </span>
+        </div>
+        <div class="budget-meta">
+          {{ b.period }} · {{ b.recurring ? "Recurring" : "One-Time" }}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- BUDGET MODAL -->
+<div
+  class="modal-overlay"
+  *ngIf="showBudgetModal"
+  (click)="showBudgetModal = false"
+>
+  <div class="budget-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Create Budget</h2>
+      <button class="modal-close-btn" (click)="showBudgetModal = false">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
 
-<div class="modal-overlay" *ngIf="showBudgetModal">
-  <div class="budget-modal">
-    <h2>Create Budget</h2>
+    <div class="modal-field">
+      <label>Budget Name</label>
+      <input
+        type="text"
+        placeholder="e.g. Monthly Expense"
+        [(ngModel)]="newTitle"
+      />
+    </div>
 
-    <!-- TITLE -->
-
-    <input
-      type="text"
-      placeholder="
-        Budget Name
-      "
-      [(ngModel)]="newTitle"
-    />
-
-    <!-- CATEGORY CHIPS -->
-
-    <div class="category-section">
-      <label> Categories </label>
-
+    <div class="modal-field">
+      <label>Categories</label>
       <div class="category-chips">
         <button
           type="button"
@@ -119,33 +118,26 @@
       </div>
     </div>
 
-    <!-- LIMIT -->
+    <div class="modal-field">
+      <label>Spending Limit</label>
+      <div class="input-prefix">
+        <span>₹</span>
+        <input type="number" placeholder="0" [(ngModel)]="newLimit" />
+      </div>
+    </div>
 
-    <input
-      type="number"
-      placeholder="
-        Budget Limit
-      "
-      [(ngModel)]="newLimit"
-    />
+    <div class="modal-field">
+      <label>Period</label>
+      <select [(ngModel)]="newPeriod">
+        <option>Daily</option>
+        <option>Weekly</option>
+        <option>Monthly</option>
+        <option>Yearly</option>
+      </select>
+    </div>
 
-    <!-- PERIOD -->
-
-    <select [(ngModel)]="newPeriod">
-      <option>Daily</option>
-
-      <option>Weekly</option>
-
-      <option>Monthly</option>
-
-      <option>Yearly</option>
-    </select>
-
-    <!-- RECURRING -->
-
-    <div class="recurring-section">
-      <label> Budget Type </label>
-
+    <div class="modal-field">
+      <label>Budget Type</label>
       <div class="toggle-group">
         <button
           type="button"
@@ -153,31 +145,42 @@
           [class.active-toggle]="isRecurring"
           (click)="isRecurring = true"
         >
-          Recurring
+          <i class="ti ti-repeat"></i> Recurring
         </button>
-
         <button
           type="button"
           class="toggle-btn"
           [class.active-toggle]="!isRecurring"
           (click)="isRecurring = false"
         >
-          One-Time
+          <i class="ti ti-calendar-event"></i> One-Time
         </button>
       </div>
     </div>
 
-    <!-- COLOR -->
-
-    <input type="color" [(ngModel)]="newColor" />
-
-    <!-- ACTIONS -->
+    <div class="modal-field">
+      <label>Colour</label>
+      <div class="color-picker-row">
+        <div
+          class="color-swatch"
+          *ngFor="let c of presetColors"
+          [style.background]="c"
+          [class.selected]="newColor === c"
+          (click)="newColor = c"
+        ></div>
+        <input
+          type="color"
+          [(ngModel)]="newColor"
+          class="custom-color-input"
+          title="Custom colour"
+        />
+      </div>
+    </div>
 
     <div class="modal-actions">
       <button class="cancel-btn" (click)="showBudgetModal = false">
         Cancel
       </button>
-
       <button class="save-btn" (click)="addBudget()">Save Budget</button>
     </div>
   </div>

@@ -29,6 +29,12 @@ export class TransactionsComponent {
 
   selectedTransactionIndex: number | null = null;
 
+  selectedAccount = 'All Accounts';
+
+  selectedPeriod = 'All Time';
+
+  accounts: any[] = [];
+
   getCategoryIcon(category: string): string {
     const icons: Record<string, string> = {
       Food: 'ti ti-tools-kitchen-2',
@@ -54,18 +60,83 @@ export class TransactionsComponent {
     this.transactionService.transactions$.subscribe((data) => {
       this.transactions = [...data].reverse();
     });
+    this.accounts = this.transactionService.getAccounts();
   }
 
   filteredTransactions() {
-    return this.transactions.filter((t) => {
-      const matchesSearch =
-        !this.searchTerm ||
-        t.category?.toLowerCase().includes(this.searchTerm.toLowerCase());
+    return (
+      this.transactions
 
-      const matchesType = !this.selectedType || t.type === this.selectedType;
+        // SORT NEWEST FIRST
 
-      return matchesSearch && matchesType;
-    });
+        .sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        })
+
+        // FILTERS
+
+        .filter((t) => {
+          // SEARCH
+
+          const matchesSearch =
+            !this.searchTerm ||
+            t.category
+              ?.toLowerCase()
+
+              .includes(this.searchTerm.toLowerCase());
+
+          // TYPE
+
+          const matchesType =
+            !this.selectedType || t.type === this.selectedType;
+
+          // ACCOUNT
+
+          const matchesAccount =
+            this.selectedAccount === 'All Accounts' ||
+            t.account === this.selectedAccount;
+
+          // DATE FILTER
+
+          const transactionDate = new Date(t.date);
+
+          const now = new Date();
+
+          let matchesPeriod = true;
+
+          // TODAY
+
+          if (this.selectedPeriod === 'Today') {
+            matchesPeriod =
+              transactionDate.toDateString() === now.toDateString();
+          }
+
+          // THIS WEEK
+          else if (this.selectedPeriod === 'This Week') {
+            const startOfWeek = new Date(now);
+
+            startOfWeek.setDate(now.getDate() - now.getDay());
+
+            matchesPeriod = transactionDate >= startOfWeek;
+          }
+
+          // THIS MONTH
+          else if (this.selectedPeriod === 'This Month') {
+            matchesPeriod =
+              transactionDate.getMonth() === now.getMonth() &&
+              transactionDate.getFullYear() === now.getFullYear();
+          }
+
+          // THIS YEAR
+          else if (this.selectedPeriod === 'This Year') {
+            matchesPeriod = transactionDate.getFullYear() === now.getFullYear();
+          }
+
+          return (
+            matchesSearch && matchesType && matchesAccount && matchesPeriod
+          );
+        })
+    );
   }
 
   openTransactionModal() {

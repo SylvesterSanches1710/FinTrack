@@ -43,6 +43,40 @@ export class LentMoneyComponent {
     this.transactionService.accounts$.subscribe((data) => {
       this.accounts = data;
     });
+    // RECOVER OLD LENDINGS
+    // FROM TRANSACTIONS
+
+    const existingLendings = this.transactionService.getLendings();
+
+    if (existingLendings.length === 0) {
+      const transactions = this.transactionService.getTransactions();
+
+      const lendingTransactions = transactions.filter(
+        (t: any) => t.category === 'Lent Money',
+      );
+
+      lendingTransactions.forEach((t: any) => {
+        const person = t.notes?.replace('Lent to ', '');
+
+        this.transactionService.addLending({
+          person,
+
+          amount: t.amount,
+
+          recovered: 0,
+
+          remaining: t.amount,
+
+          account: t.account,
+
+          note: t.notes,
+
+          date: t.date,
+
+          status: 'Pending',
+        });
+      });
+    }
   }
 
   addLending() {
