@@ -4,9 +4,15 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { CloudDataService } from './services/cloud-data.service';
 
 export interface Budget {
-  category: string;
+  title: string;
+
+  categories: string[];
 
   limit: number;
+
+  period: string;
+
+  recurring: boolean;
 
   color: string;
 }
@@ -283,12 +289,15 @@ export class TransactionService {
     this.syncToCloud();
   }
 
-  deleteBudget(category: string) {
-    this.budgets = this.budgets.filter(
-      (budget) => budget.category !== category,
+  deleteBudget(title: string) {
+    this.budgets = this.budgets.filter((budget) => budget.title !== title);
+
+    localStorage.setItem(
+      'budgets',
+
+      JSON.stringify(this.budgets),
     );
 
-    localStorage.setItem('budgets', JSON.stringify(this.budgets));
     this.syncToCloud();
   }
 

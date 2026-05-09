@@ -13,49 +13,59 @@ export class BudgetsComponent {
   budgets: any[] = [];
   showBudgetModal = false;
 
-  newCategory = '';
+  newTitle = '';
+
+  selectedCategories: string[] = [];
+
+  newPeriod = 'Monthly';
+
+  isRecurring = true;
 
   newLimit = 0;
 
   newColor = '#4d7cff';
 
-  categories = [
-    'Restaurant',
-
-    'Fuel',
-
-    'Bills',
-
-    'Shopping',
-
-    'Investment',
-
-    'Entertainment',
-
-    'Transfer',
-  ];
+  categories: string[] = [];
 
   getProgress(spent: number, limit: number) {
     return (spent / limit) * 100;
   }
   addBudget() {
-    if (!this.newCategory || this.newLimit <= 0) {
+    if (
+      !this.newTitle ||
+      this.selectedCategories.length === 0 ||
+      this.newLimit <= 0
+    ) {
       return;
     }
 
     this.transactionService.addBudget({
-      category: this.newCategory,
+      title: this.newTitle,
+
+      categories: this.selectedCategories,
 
       limit: this.newLimit,
+
+      period: this.newPeriod,
+
+      recurring: this.isRecurring,
 
       color: this.newColor,
     });
 
     this.refreshBudgets();
 
-    this.newCategory = '';
+    // RESET
+
+    this.newTitle = '';
+
+    this.selectedCategories = [];
 
     this.newLimit = 0;
+
+    this.newPeriod = 'Monthly';
+
+    this.isRecurring = true;
 
     this.newColor = '#4d7cff';
 
@@ -75,24 +85,65 @@ export class BudgetsComponent {
 
     this.budgets = budgets.map((budget: any) => {
       const spent = transactions
+
         .filter((t: any) => {
+          // ONLY EXPENSES
+
+          if (t.type !== 'Expense') {
+            return false;
+          }
+
+          // CATEGORY MATCH
+
+          const matchesCategory = budget.categories.includes(t.category);
+
+          if (!matchesCategory) {
+            return false;
+          }
+
           const transactionDate = new Date(t.date);
 
-          const currentDate = new Date();
+          const now = new Date();
 
-          const sameMonth =
-            transactionDate.getMonth() === currentDate.getMonth() &&
-            transactionDate.getFullYear() === currentDate.getFullYear();
+          // DAILY
+
+          if (budget.period === 'Daily') {
+            return transactionDate.toDateString() === now.toDateString();
+          }
+
+          // WEEKLY
+
+          if (budget.period === 'Weekly') {
+            const startOfWeek = new Date(now);
+
+            startOfWeek.setDate(now.getDate() - now.getDay());
+
+            return transactionDate >= startOfWeek;
+          }
+
+          // YEARLY
+
+          if (budget.period === 'Yearly') {
+            return transactionDate.getFullYear() === now.getFullYear();
+          }
+
+          // MONTHLY DEFAULT
 
           return (
-            t.category?.trim().toLowerCase() ===
-              budget.category?.trim().toLowerCase() &&
-            t.type === 'Expense' &&
-            sameMonth
+            transactionDate.getMonth() === now.getMonth() &&
+            transactionDate.getFullYear() === now.getFullYear()
           );
         })
 
-        .reduce((sum: number, t: any) => sum + t.amount, 0);
+        .reduce(
+          (
+            sum: number,
+
+            t: any,
+          ) => sum + t.amount,
+
+          0,
+        );
 
       return {
         ...budget,
@@ -109,5 +160,27 @@ export class BudgetsComponent {
     this.transactionService.transactions$.subscribe(() => {
       this.refreshBudgets();
     });
+
+    this.categories = this.transactionService.getCategories();
+
+    this.transactionService.categories$.subscribe((data) => {
+      this.categories = data;
+    });
+  }
+  toggleCategory(category: string) {
+    const exists = this.selectedCategories.includes(category);
+
+    // REMOVE
+
+    if (exists) {
+      this.selectedCategories = this.selectedCategories.filter(
+        (c) => c !== category,
+      );
+    }
+
+    // ADD
+    else {
+      this.selectedCategories.push(category);
+    }
   }
 }

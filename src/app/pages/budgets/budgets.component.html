@@ -16,16 +16,30 @@
 
   <div class="budgets-grid">
     <div class="budget-card" *ngFor="let b of budgets">
-      <button class="delete-budget-btn" (click)="deleteBudget(b.category)">
+      <button class="delete-budget-btn" (click)="deleteBudget(b.title)">
         ✕
       </button>
       <div class="budget-top">
         <div>
           <div class="budget-category">
-            {{ b.category }}
+            {{ b.title }}
+          </div>
+          <div class="budget-tags">
+            <span class="budget-tag" *ngFor="let cat of b.categories">
+              {{ cat }}
+            </span>
           </div>
 
           <div class="budget-sub">₹{{ b.spent }} spent of ₹{{ b.limit }}</div>
+          <div class="budget-meta">
+            {{ b.period }}
+
+            •
+
+            <span *ngIf="b.recurring"> Recurring </span>
+
+            <span *ngIf="!b.recurring"> One-Time </span>
+          </div>
         </div>
 
         <div class="budget-percent" [style.color]="b.color">
@@ -75,19 +89,89 @@
 
 <div class="modal-overlay" *ngIf="showBudgetModal">
   <div class="budget-modal">
-    <h2>Add Budget</h2>
+    <h2>Create Budget</h2>
 
-    <select [(ngModel)]="newCategory">
-      <option value="">Select Category</option>
+    <!-- TITLE -->
 
-      <option *ngFor="let category of categories" [value]="category">
-        {{ category }}
-      </option>
+    <input
+      type="text"
+      placeholder="
+        Budget Name
+      "
+      [(ngModel)]="newTitle"
+    />
+
+    <!-- CATEGORY CHIPS -->
+
+    <div class="category-section">
+      <label> Categories </label>
+
+      <div class="category-chips">
+        <button
+          type="button"
+          class="chip"
+          *ngFor="let category of categories"
+          [class.active-chip]="selectedCategories.includes(category)"
+          (click)="toggleCategory(category)"
+        >
+          {{ category }}
+        </button>
+      </div>
+    </div>
+
+    <!-- LIMIT -->
+
+    <input
+      type="number"
+      placeholder="
+        Budget Limit
+      "
+      [(ngModel)]="newLimit"
+    />
+
+    <!-- PERIOD -->
+
+    <select [(ngModel)]="newPeriod">
+      <option>Daily</option>
+
+      <option>Weekly</option>
+
+      <option>Monthly</option>
+
+      <option>Yearly</option>
     </select>
 
-    <input type="number" placeholder="Limit" [(ngModel)]="newLimit" />
+    <!-- RECURRING -->
+
+    <div class="recurring-section">
+      <label> Budget Type </label>
+
+      <div class="toggle-group">
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active-toggle]="isRecurring"
+          (click)="isRecurring = true"
+        >
+          Recurring
+        </button>
+
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active-toggle]="!isRecurring"
+          (click)="isRecurring = false"
+        >
+          One-Time
+        </button>
+      </div>
+    </div>
+
+    <!-- COLOR -->
 
     <input type="color" [(ngModel)]="newColor" />
+
+    <!-- ACTIONS -->
 
     <div class="modal-actions">
       <button class="cancel-btn" (click)="showBudgetModal = false">
