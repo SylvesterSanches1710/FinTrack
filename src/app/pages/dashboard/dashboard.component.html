@@ -25,6 +25,24 @@
       <div class="stat-trend positive">+12% vs last month</div>
     </div>
 
+    <!-- AI INSIGHTS -->
+
+    <div class="dashboard-widget">
+      <div class="widget-header">
+        <h2>Smart Insights</h2>
+      </div>
+
+      <div class="insights-grid">
+        <div class="insight-card" *ngFor="let insight of aiInsights">
+          <div class="insight-icon">⚡</div>
+
+          <div class="insight-text">
+            {{ insight }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- MONTHLY SPENDING -->
 
     <div class="stat-card">

@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { TransactionService } from './transaction.service';
+import { AuthService } from './auth/auth.service';
+
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +16,7 @@ import { TransactionService } from './transaction.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
+  hideLayout = false;
   showOnboarding = false;
 
   accountName = '';
@@ -47,12 +51,48 @@ export class AppComponent {
     event.target.select();
   }
 
-  constructor(private transactionService: TransactionService) {}
+  constructor(
+    private transactionService: TransactionService,
+
+    private authService: AuthService,
+
+    private router: Router,
+  ) {
+    // ROUTE CHANGES
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.hideLayout = event.urlAfterRedirects === '/auth';
+      }
+    });
+  }
 
   ngOnInit() {
-    const accounts = this.transactionService.getAccounts();
+    this.authService.user$.subscribe(async (user) => {
+      // NOT LOGGED IN
 
-    this.showOnboarding = accounts.length === 0;
+      if (!user) {
+        this.router.navigate(['/auth']);
+
+        return;
+      }
+
+      // RESTORE CLOUD DATA
+
+      await this.transactionService.restoreFromCloud();
+
+      // CHECK ACCOUNTS
+
+      const accounts = this.transactionService.getAccounts();
+
+      this.showOnboarding = accounts.length === 0;
+
+      // IF SETUP COMPLETE
+
+      if (!this.showOnboarding) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
   }
 
   createFirstAccount() {

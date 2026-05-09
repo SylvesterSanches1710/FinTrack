@@ -1,0 +1,39 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <h1>FinTrack</h1>
+
+    <p>Smart Personal Finance</p>
+
+    <!-- ERROR -->
+
+    <div class="error-box" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <!-- EMAIL -->
+
+    <input type="email" placeholder="Email" [(ngModel)]="email" />
+
+    <!-- PASSWORD -->
+
+    <input type="password" placeholder="Password" [(ngModel)]="password" />
+
+    <!-- BUTTON -->
+
+    <button (click)="submitAuth()" [disabled]="loading">
+      {{ loading ? "Please wait..." : isLogin ? "Login" : "Create Account" }}
+    </button>
+
+    <!-- TOGGLE -->
+
+    <div class="toggle-auth">
+      <span>
+        {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+      </span>
+
+      <button type="button" (click)="isLogin = !isLogin">
+        {{ isLogin ? "Sign Up" : "Login" }}
+      </button>
+    </div>
+  </div>
+</div>

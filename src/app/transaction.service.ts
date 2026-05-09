@@ -1,6 +1,7 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from 'rxjs';
+import { CloudDataService } from './services/cloud-data.service';
 
 export interface Budget {
   category: string;
@@ -55,7 +56,7 @@ export interface Lending {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class TransactionService {
   categories: string[] = [];
@@ -68,7 +69,7 @@ export class TransactionService {
   // =========================
 
   private recurringTransactions: RecurringTransaction[] = JSON.parse(
-    localStorage.getItem("recurring") || "[]",
+    localStorage.getItem('recurring') || '[]',
   );
 
   // =========================
@@ -76,14 +77,14 @@ export class TransactionService {
   // =========================
 
   private budgets: Budget[] = JSON.parse(
-    localStorage.getItem("budgets") || "[]",
+    localStorage.getItem('budgets') || '[]',
   );
 
   // =========================
   // GOALS
   // =========================
 
-  private goals: Goal[] = JSON.parse(localStorage.getItem("goals") || "[]");
+  private goals: Goal[] = JSON.parse(localStorage.getItem('goals') || '[]');
 
   // =========================
   // TRANSACTIONS STATE
@@ -109,36 +110,84 @@ export class TransactionService {
 
   editTransaction$ = new BehaviorSubject<any>(null);
 
-  constructor() {
-    const savedCategories = localStorage.getItem("categories");
+  constructor(private cloudData: CloudDataService) {
+    const savedCategories = localStorage.getItem('categories');
 
-    if (savedCategories && JSON.parse(savedCategories).length) {
-      this.categories = JSON.parse(savedCategories);
-    } else {
-      this.categories = [
-        "Food",
-        "Fuel",
-        "Bills",
-        "Investment",
-        "Shopping",
-        "Health",
-        "Groceries",
-        "Travel",
-        "Entertainment",
-        "Restaurant",
-      ];
+    // DEFAULT CATEGORIES
 
-      localStorage.setItem(
-        "categories",
+    const defaultCategories = [
+      'Salary',
 
-        JSON.stringify(this.categories),
-      );
+      'Food',
+
+      'Fuel',
+
+      'Bills',
+
+      'Investment',
+
+      'Shopping',
+
+      'Health',
+
+      'Groceries',
+
+      'Travel',
+
+      'Entertainment',
+
+      'Restaurant',
+    ];
+
+    // EXISTING USER DATA
+
+    if (savedCategories) {
+      const parsed = JSON.parse(savedCategories);
+
+      // MERGE MISSING DEFAULTS
+
+      this.categories = [...new Set([...defaultCategories, ...parsed])];
     }
+
+    // FIRST TIME USER
+    else {
+      this.categories = defaultCategories;
+    }
+
+    // SAVE UPDATED LIST
+
+    localStorage.setItem(
+      'categories',
+
+      JSON.stringify(this.categories),
+    );
 
     // EMIT INITIAL DATA
 
     this.categoriesSubject.next(this.categories);
+    this.syncToCloud();
+
     this.processRecurringTransactions();
+  }
+  // =========================
+  // CLOUD SAVE
+  // =========================
+
+  async syncToCloud() {
+    await this.cloudData.saveUserData(
+      'transactions',
+      this.transactionsSubject.value,
+    );
+
+    await this.cloudData.saveUserData('accounts', this.accountsSubject.value);
+
+    await this.cloudData.saveUserData('goals', this.goals);
+
+    await this.cloudData.saveUserData('budgets', this.budgets);
+
+    await this.cloudData.saveUserData('recurring', this.recurringTransactions);
+
+    await this.cloudData.saveUserData('categories', this.categories);
   }
 
   // =========================
@@ -152,9 +201,11 @@ export class TransactionService {
   addTransaction(transaction: any) {
     const updated = [...this.transactionsSubject.value, transaction];
 
-    localStorage.setItem("transactions", JSON.stringify(updated));
+    localStorage.setItem('transactions', JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
+
+    this.syncToCloud();
   }
 
   deleteTransaction(index: number) {
@@ -162,9 +213,11 @@ export class TransactionService {
 
     updated.splice(index, 1);
 
-    localStorage.setItem("transactions", JSON.stringify(updated));
+    localStorage.setItem('transactions', JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
+
+    this.syncToCloud();
   }
 
   updateTransaction(index: number, updatedTransaction: any) {
@@ -172,13 +225,15 @@ export class TransactionService {
 
     updated[index] = updatedTransaction;
 
-    localStorage.setItem("transactions", JSON.stringify(updated));
+    localStorage.setItem('transactions', JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
+
+    this.syncToCloud();
   }
 
   loadTransactions() {
-    return JSON.parse(localStorage.getItem("transactions") || "[]");
+    return JSON.parse(localStorage.getItem('transactions') || '[]');
   }
 
   // =========================
@@ -192,9 +247,10 @@ export class TransactionService {
   addAccount(account: any) {
     const updated = [...this.accountsSubject.value, account];
 
-    localStorage.setItem("accounts", JSON.stringify(updated));
+    localStorage.setItem('accounts', JSON.stringify(updated));
 
     this.accountsSubject.next(updated);
+    this.syncToCloud();
   }
 
   deleteAccount(name: string) {
@@ -202,13 +258,14 @@ export class TransactionService {
       (acc: any) => acc.name !== name,
     );
 
-    localStorage.setItem("accounts", JSON.stringify(updated));
+    localStorage.setItem('accounts', JSON.stringify(updated));
 
     this.accountsSubject.next(updated);
+    this.syncToCloud();
   }
 
   loadAccounts() {
-    return JSON.parse(localStorage.getItem("accounts") || "[]");
+    return JSON.parse(localStorage.getItem('accounts') || '[]');
   }
 
   // =========================
@@ -222,7 +279,8 @@ export class TransactionService {
   addBudget(budget: Budget) {
     this.budgets.push(budget);
 
-    localStorage.setItem("budgets", JSON.stringify(this.budgets));
+    localStorage.setItem('budgets', JSON.stringify(this.budgets));
+    this.syncToCloud();
   }
 
   deleteBudget(category: string) {
@@ -230,7 +288,8 @@ export class TransactionService {
       (budget) => budget.category !== category,
     );
 
-    localStorage.setItem("budgets", JSON.stringify(this.budgets));
+    localStorage.setItem('budgets', JSON.stringify(this.budgets));
+    this.syncToCloud();
   }
 
   // =========================
@@ -244,13 +303,15 @@ export class TransactionService {
   addGoal(goal: Goal) {
     this.goals.push(goal);
 
-    localStorage.setItem("goals", JSON.stringify(this.goals));
+    localStorage.setItem('goals', JSON.stringify(this.goals));
+    this.syncToCloud();
   }
 
   deleteGoal(title: string) {
     this.goals = this.goals.filter((goal) => goal.title !== title);
 
-    localStorage.setItem("goals", JSON.stringify(this.goals));
+    localStorage.setItem('goals', JSON.stringify(this.goals));
+    this.syncToCloud();
   }
 
   // =========================
@@ -265,7 +326,7 @@ export class TransactionService {
     this.recurringTransactions.push(recurring);
 
     localStorage.setItem(
-      "recurring",
+      'recurring',
 
       JSON.stringify(this.recurringTransactions),
     );
@@ -273,6 +334,7 @@ export class TransactionService {
     // PROCESS IMMEDIATELY
 
     this.processRecurringTransactions();
+    this.syncToCloud();
   }
 
   deleteRecurringTransaction(title: string) {
@@ -281,9 +343,10 @@ export class TransactionService {
     );
 
     localStorage.setItem(
-      "recurring",
+      'recurring',
       JSON.stringify(this.recurringTransactions),
     );
+    this.syncToCloud();
   }
 
   processRecurringTransactions() {
@@ -326,19 +389,19 @@ export class TransactionService {
 
         const next = new Date(r.nextDate);
 
-        if (r.frequency === "Weekly") {
+        if (r.frequency === 'Weekly') {
           next.setDate(next.getDate() + 7);
         }
 
-        if (r.frequency === "Monthly") {
+        if (r.frequency === 'Monthly') {
           next.setMonth(next.getMonth() + 1);
         }
 
-        if (r.frequency === "Yearly") {
+        if (r.frequency === 'Yearly') {
           next.setFullYear(next.getFullYear() + 1);
         }
 
-        r.nextDate = next.toISOString().split("T")[0];
+        r.nextDate = next.toISOString().split('T')[0];
       }
 
       return r;
@@ -346,13 +409,13 @@ export class TransactionService {
 
     // SAVE UPDATED TRANSACTIONS
 
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+    localStorage.setItem('transactions', JSON.stringify(transactions));
 
     this.transactionsSubject.next(transactions);
 
     // SAVE UPDATED RECURRING
 
-    localStorage.setItem("recurring", JSON.stringify(recurring));
+    localStorage.setItem('recurring', JSON.stringify(recurring));
 
     this.recurringTransactions = recurring;
   }
@@ -402,7 +465,7 @@ export class TransactionService {
       return acc;
     });
 
-    localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
+    localStorage.setItem('accounts', JSON.stringify(updatedAccounts));
 
     this.updateAccounts(updatedAccounts);
 
@@ -411,11 +474,11 @@ export class TransactionService {
     const transactions = this.getTransactions();
 
     transactions.push({
-      type: "Transfer",
+      type: 'Transfer',
 
       amount,
 
-      category: category || "Transfer",
+      category: category || 'Transfer',
 
       account: `${from} → ${to}`,
 
@@ -424,9 +487,10 @@ export class TransactionService {
       date,
     });
 
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+    localStorage.setItem('transactions', JSON.stringify(transactions));
 
     this.updateState(transactions);
+    this.syncToCloud();
   }
 
   // =========================
@@ -438,7 +502,7 @@ export class TransactionService {
   lendings$ = this.lendingSubject.asObservable();
 
   getLendings() {
-    return JSON.parse(localStorage.getItem("lendings") || "[]");
+    return JSON.parse(localStorage.getItem('lendings') || '[]');
   }
 
   private updateLendings(lendings: any[]) {
@@ -451,12 +515,13 @@ export class TransactionService {
     lendings.push(lending);
 
     localStorage.setItem(
-      "lendings",
+      'lendings',
 
       JSON.stringify(lendings),
     );
 
     this.updateLendings(lendings);
+    this.syncToCloud();
   }
 
   updateLending(index: number, updated: any) {
@@ -465,12 +530,13 @@ export class TransactionService {
     lendings[index] = updated;
 
     localStorage.setItem(
-      "lendings",
+      'lendings',
 
       JSON.stringify(lendings),
     );
 
     this.updateLendings(lendings);
+    this.syncToCloud();
   }
 
   deleteLending(index: number) {
@@ -479,17 +545,18 @@ export class TransactionService {
     lendings.splice(index, 1);
 
     localStorage.setItem(
-      "lendings",
+      'lendings',
 
       JSON.stringify(lendings),
     );
 
     this.updateLendings(lendings);
+    this.syncToCloud();
   }
 
   refreshTransactions() {
     const transactions = JSON.parse(
-      localStorage.getItem("transactions") || "[]",
+      localStorage.getItem('transactions') || '[]',
     );
 
     this.transactionsSubject.next(transactions);
@@ -515,10 +582,220 @@ export class TransactionService {
     this.categories.push(category);
 
     localStorage.setItem(
-      "categories",
+      'categories',
 
       JSON.stringify(this.categories),
     );
     this.categoriesSubject.next(this.categories);
+  }
+
+  // =========================
+  // CLOUD RESTORE
+  // =========================
+
+  async restoreFromCloud() {
+    // TRANSACTIONS
+
+    const transactions = await this.cloudData.loadUserData('transactions');
+
+    if (transactions) {
+      localStorage.setItem(
+        'transactions',
+
+        JSON.stringify(transactions),
+      );
+
+      this.transactionsSubject.next(transactions);
+    }
+
+    // ACCOUNTS
+
+    const accounts = await this.cloudData.loadUserData('accounts');
+
+    if (accounts) {
+      localStorage.setItem(
+        'accounts',
+
+        JSON.stringify(accounts),
+      );
+
+      this.accountsSubject.next(accounts);
+    }
+
+    // GOALS
+
+    const goals = await this.cloudData.loadUserData('goals');
+
+    if (goals) {
+      this.goals = goals;
+
+      localStorage.setItem(
+        'goals',
+
+        JSON.stringify(goals),
+      );
+    }
+
+    // BUDGETS
+
+    const budgets = await this.cloudData.loadUserData('budgets');
+
+    if (budgets) {
+      this.budgets = budgets;
+
+      localStorage.setItem(
+        'budgets',
+
+        JSON.stringify(budgets),
+      );
+    }
+
+    // RECURRING
+
+    const recurring = await this.cloudData.loadUserData('recurring');
+
+    if (recurring) {
+      this.recurringTransactions = recurring;
+
+      localStorage.setItem(
+        'recurring',
+
+        JSON.stringify(recurring),
+      );
+    }
+
+    // CATEGORIES
+
+    const categories = await this.cloudData.loadUserData('categories');
+
+    if (categories) {
+      const defaultCategories = [
+        'Salary',
+
+        'Food',
+
+        'Fuel',
+
+        'Bills',
+
+        'Investment',
+
+        'Shopping',
+
+        'Health',
+
+        'Groceries',
+
+        'Travel',
+
+        'Entertainment',
+
+        'Restaurant',
+      ];
+
+      // MERGE DEFAULTS + CLOUD
+
+      this.categories = [...new Set([...defaultCategories, ...categories])];
+
+      localStorage.setItem(
+        'categories',
+
+        JSON.stringify(this.categories),
+      );
+
+      this.categoriesSubject.next(this.categories);
+    }
+  }
+  // =========================
+  // AI INSIGHTS ENGINE
+  // =========================
+
+  generateAIInsights() {
+    const insights: string[] = [];
+
+    const transactions = this.getTransactions();
+
+    const currentMonth = new Date().getMonth();
+
+    const currentYear = new Date().getFullYear();
+
+    let income = 0;
+
+    let expense = 0;
+
+    const categoryTotals: any = {};
+
+    // CURRENT MONTH DATA
+
+    transactions.forEach((t: any) => {
+      const date = new Date(t.date);
+
+      if (
+        date.getMonth() !== currentMonth ||
+        date.getFullYear() !== currentYear
+      ) {
+        return;
+      }
+
+      // INCOME
+
+      if (t.type === 'Income') {
+        income += Number(t.amount);
+      }
+
+      // EXPENSES
+
+      if (t.type === 'Expense') {
+        expense += Number(t.amount);
+
+        if (!categoryTotals[t.category]) {
+          categoryTotals[t.category] = 0;
+        }
+
+        categoryTotals[t.category] += Number(t.amount);
+      }
+    });
+
+    // SAVINGS
+
+    const savings = income - expense;
+
+    // PROJECTED EXPENSE
+
+    const today = new Date();
+
+    const avgDaily = expense / today.getDate();
+
+    const daysInMonth = new Date(
+      currentYear,
+
+      currentMonth + 1,
+
+      0,
+    ).getDate();
+
+    const projectedExpense = Math.round(avgDaily * daysInMonth);
+
+    // INSIGHTS
+
+    insights.push(`Projected monthly spending: ₹${projectedExpense}.`);
+
+    if (savings < 0) {
+      insights.push(`You are currently overspending this month.`);
+    } else {
+      insights.push(`Current monthly savings: ₹${savings}.`);
+    }
+
+    // TOP CATEGORY
+
+    const top = Object.entries(categoryTotals)
+
+      .sort((a: any, b: any) => b[1] - a[1])[0];
+
+    if (top) {
+      insights.push(`${top[0]} is your top expense category this month.`);
+    }
+
+    return insights;
   }
 }

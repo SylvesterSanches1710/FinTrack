@@ -13,7 +13,9 @@
     margin-bottom: 0.5rem;
   }
 
-  p { color: #8b8b8b; }
+  p {
+    color: #8b8b8b;
+  }
 }
 
 /* FORM */
@@ -64,7 +66,9 @@
     color: white;
     font-size: 0.938rem;
     outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
 
     &:focus {
       border-color: #2563eb;
@@ -107,7 +111,9 @@
   border: 0.0625rem solid #2a2a2a;
   border-radius: 0.875rem;
   overflow: hidden;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:focus-within {
     border-color: #2563eb;
@@ -156,9 +162,13 @@
   gap: 0.5rem;
   transition: background 0.2s ease;
 
-  i { font-size: 1.125rem; }
+  i {
+    font-size: 1.125rem;
+  }
 
-  &:hover { background: #3b82f6; }
+  &:hover {
+    background: #3b82f6;
+  }
 }
 
 /* HISTORY HEADER */
@@ -199,7 +209,9 @@
   padding: 1rem 1.25rem;
   transition: border-color 0.15s ease;
 
-  &:hover { border-color: #2f2f2f; }
+  &:hover {
+    border-color: #2f2f2f;
+  }
 }
 
 .transfer-icon {

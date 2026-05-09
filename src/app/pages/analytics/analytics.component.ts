@@ -108,6 +108,15 @@ export class AnalyticsComponent {
   };
 
   insights: string[] = [];
+  financialScore = 0;
+
+  financialStatus = '';
+
+  projectedExpense = 0;
+
+  projectedSavings = 0;
+
+  overspendingRisk = false;
 
   constructor(private transactionService: TransactionService) {}
 
@@ -143,6 +152,53 @@ export class AnalyticsComponent {
     });
 
     this.savings = this.totalIncome - this.totalExpense;
+    // =====================
+    // FINANCIAL SCORE
+    // =====================
+
+    let score = 50;
+
+    // SAVINGS RATE
+
+    if (this.totalIncome > 0) {
+      const savingsRate = (this.savings / this.totalIncome) * 100;
+
+      if (savingsRate >= 40) {
+        score += 30;
+      } else if (savingsRate >= 20) {
+        score += 20;
+      } else if (savingsRate > 0) {
+        score += 10;
+      } else {
+        score -= 20;
+      }
+    }
+
+    // TRANSACTION DISCIPLINE
+
+    if (this.transactions.length >= 10) {
+      score += 10;
+    }
+
+    // EXPENSE CONTROL
+
+    if (this.totalExpense < this.totalIncome) {
+      score += 10;
+    }
+
+    this.financialScore = Math.min(100, Math.max(0, score));
+
+    // STATUS
+
+    if (this.financialScore >= 85) {
+      this.financialStatus = 'Excellent';
+    } else if (this.financialScore >= 70) {
+      this.financialStatus = 'Healthy';
+    } else if (this.financialScore >= 50) {
+      this.financialStatus = 'Moderate';
+    } else {
+      this.financialStatus = 'Needs Attention';
+    }
 
     const categories = Object.entries(categoryTotals);
 
@@ -236,6 +292,9 @@ export class AnalyticsComponent {
     };
 
     this.generateInsights();
+
+    this.generateTrendInsights();
+    this.generatePredictions();
   }
   generateInsights() {
     this.insights = [];
@@ -277,6 +336,151 @@ export class AnalyticsComponent {
 
       this.insights.push(
         `Your biggest expense was ₹${biggest.amount} on ${biggest.category}.`,
+      );
+    }
+  }
+
+  generateTrendInsights() {
+    const currentMonth = new Date().getMonth();
+
+    const previousMonth = currentMonth - 1;
+
+    const currentTotals: any = {};
+
+    const previousTotals: any = {};
+
+    // GROUP DATA
+
+    this.transactions.forEach((t: any) => {
+      if (t.type !== 'Expense') {
+        return;
+      }
+
+      const month = new Date(t.date).getMonth();
+
+      // CURRENT MONTH
+
+      if (month === currentMonth) {
+        if (!currentTotals[t.category]) {
+          currentTotals[t.category] = 0;
+        }
+
+        currentTotals[t.category] += Number(t.amount);
+      }
+
+      // PREVIOUS MONTH
+
+      if (month === previousMonth) {
+        if (!previousTotals[t.category]) {
+          previousTotals[t.category] = 0;
+        }
+
+        previousTotals[t.category] += Number(t.amount);
+      }
+    });
+
+    // COMPARE
+
+    Object.keys(currentTotals).forEach((category) => {
+      const current = currentTotals[category] || 0;
+
+      const previous = previousTotals[category] || 0;
+
+      // SKIP NO HISTORY
+
+      if (previous <= 0) {
+        return;
+      }
+
+      const change = ((current - previous) / previous) * 100;
+
+      // INCREASE
+
+      if (change >= 20) {
+        this.insights.push(
+          `${category} spending increased by ${change.toFixed(0)}% compared to last month.`,
+        );
+      }
+
+      // DECREASE
+      else if (change <= -20) {
+        this.insights.push(
+          `${category} spending decreased by ${Math.abs(change).toFixed(0)}% compared to last month.`,
+        );
+      }
+    });
+  }
+  generatePredictions() {
+    const today = new Date();
+
+    const currentMonth = today.getMonth();
+
+    const currentYear = today.getFullYear();
+
+    const currentDay = today.getDate();
+
+    // DAYS IN MONTH
+
+    const daysInMonth = new Date(
+      currentYear,
+
+      currentMonth + 1,
+
+      0,
+    ).getDate();
+
+    let currentExpense = 0;
+
+    let currentIncome = 0;
+
+    // CURRENT MONTH DATA
+
+    this.transactions.forEach((t: any) => {
+      const date = new Date(t.date);
+
+      if (
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear
+      ) {
+        if (t.type === 'Expense') {
+          currentExpense += Number(t.amount);
+        }
+
+        if (t.type === 'Income') {
+          currentIncome += Number(t.amount);
+        }
+      }
+    });
+
+    // DAILY AVERAGE
+
+    const avgDailyExpense = currentExpense / currentDay;
+
+    // PROJECT FULL MONTH
+
+    this.projectedExpense = Math.round(avgDailyExpense * daysInMonth);
+
+    // PROJECTED SAVINGS
+
+    this.projectedSavings = currentIncome - this.projectedExpense;
+
+    // RISK DETECTION
+
+    this.overspendingRisk = this.projectedSavings < 0;
+
+    // SMART INSIGHT
+
+    this.insights.push(
+      `Projected monthly expenses may reach ₹${this.projectedExpense}.`,
+    );
+
+    if (this.overspendingRisk) {
+      this.insights.push(
+        `Warning: You are currently on track to overspend this month.`,
+      );
+    } else {
+      this.insights.push(
+        `Projected savings for this month: ₹${this.projectedSavings}.`,
       );
     }
   }

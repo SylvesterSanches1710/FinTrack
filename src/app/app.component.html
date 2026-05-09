@@ -1,4 +1,12 @@
-<div class="app-layout">
+<!-- AUTH PAGE -->
+
+<div *ngIf="hideLayout">
+  <router-outlet> </router-outlet>
+</div>
+
+<!-- MAIN APP -->
+
+<div class="app-layout" *ngIf="!hideLayout">
   <!-- MOBILE OVERLAY -->
 
   <div
@@ -25,7 +33,7 @@
       <div class="mobile-logo">Fintrack</div>
     </div>
 
-    <router-outlet></router-outlet>
+    <router-outlet> </router-outlet>
   </main>
 </div>
 

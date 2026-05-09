@@ -523,3 +523,58 @@
     padding: 22px;
   }
 }
+.dashboard-widget {
+  margin-top: 2rem;
+
+  background: #171a21;
+
+  border: 1px solid #262b36;
+
+  border-radius: 1.5rem;
+
+  padding: 1.5rem;
+}
+
+.widget-header {
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+
+    font-size: 1.2rem;
+  }
+}
+
+.insights-grid {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1rem;
+}
+
+.insight-card {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 1rem;
+
+  padding: 1rem;
+
+  background: #10141c;
+
+  border-radius: 1rem;
+
+  border: 1px solid #262b36;
+}
+
+.insight-icon {
+  font-size: 1.2rem;
+}
+
+.insight-text {
+  color: #d1d5db;
+
+  line-height: 1.5;
+}

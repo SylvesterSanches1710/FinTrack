@@ -28,9 +28,13 @@
     align-items: center;
     justify-content: center;
     gap: 0.375rem;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
 
-    i { font-size: 1rem; }
+    i {
+      font-size: 1rem;
+    }
 
     &.active {
       background: #2b6fff;
@@ -69,7 +73,9 @@
     color: white;
     font-size: 0.938rem;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
     width: 100%;
 
     &:focus {
@@ -102,7 +108,9 @@
   border: 1px solid #2b2b2b;
   border-radius: 0.875rem;
   overflow: hidden;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:focus-within {
     border-color: #2b6fff;
@@ -151,7 +159,10 @@
   cursor: pointer;
   font-size: 0.813rem;
   font-weight: 500;
-  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     border-color: #3d3d3d;
@@ -180,9 +191,13 @@
   gap: 0.25rem;
   transition: background 0.15s ease;
 
-  i { font-size: 0.875rem; }
+  i {
+    font-size: 0.875rem;
+  }
 
-  &:hover { background: rgba(43, 111, 255, 0.1); }
+  &:hover {
+    background: rgba(43, 111, 255, 0.1);
+  }
 }
 
 /* NEW CATEGORY INPUT */
@@ -208,7 +223,9 @@
     transition: background 0.15s ease;
     flex-shrink: 0;
 
-    &:hover { background: #4d84ff; }
+    &:hover {
+      background: #4d84ff;
+    }
   }
 }
 
@@ -225,5 +242,7 @@
   transition: background 0.2s ease;
   margin-top: 0.25rem;
 
-  &:hover { background: #4d84ff; }
+  &:hover {
+    background: #4d84ff;
+  }
 }

@@ -1,16 +1,16 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 import {
   RecurringTransaction,
   TransactionService,
-} from "../../transaction.service";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+} from '../../transaction.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: "app-recurring",
+  selector: 'app-recurring',
   imports: [FormsModule, CommonModule],
-  templateUrl: "./recurring.component.html",
-  styleUrl: "./recurring.component.scss",
+  templateUrl: './recurring.component.html',
+  styleUrl: './recurring.component.scss',
 })
 export class RecurringComponent {
   recurring: RecurringTransaction[] = [];
@@ -21,19 +21,19 @@ export class RecurringComponent {
   categories: string[] = [];
 
   newRecurring = {
-    title: "",
+    title: '',
 
     amount: 0,
 
-    type: "Expense",
+    type: 'Expense',
 
-    category: "",
+    category: '',
 
-    account: "",
+    account: '',
 
-    frequency: "Monthly",
+    frequency: 'Monthly',
 
-    nextDate: "",
+    nextDate: '',
   };
 
   constructor(private transactionService: TransactionService) {}
@@ -76,19 +76,19 @@ export class RecurringComponent {
     this.showModal = false;
 
     this.newRecurring = {
-      title: "",
+      title: '',
 
       amount: 0,
 
-      type: "Expense",
+      type: 'Expense',
 
-      category: "",
+      category: '',
 
-      account: "",
+      account: '',
 
-      frequency: "Monthly",
+      frequency: 'Monthly',
 
-      nextDate: "",
+      nextDate: '',
     };
   }
 

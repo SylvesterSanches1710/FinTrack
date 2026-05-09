@@ -35,6 +35,7 @@ export class DashboardComponent {
   currentMonth = '';
   categorySpend: any[] = [];
   showTransactionModal = false;
+  aiInsights: string[] = [];
 
   constructor(private transactionService: TransactionService) {}
 
@@ -163,5 +164,9 @@ export class DashboardComponent {
         color: colors[index % colors.length],
       }),
     );
+
+    // AI INSIGHTS
+
+    this.aiInsights = this.transactionService.generateAIInsights();
   }
 }

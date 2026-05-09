@@ -1,14 +1,25 @@
 <form (ngSubmit)="addTransaction()" class="transaction-form">
-
   <!-- TYPE -->
   <div class="type-toggle">
-    <button type="button" [class.active]="type === 'Expense'" (click)="type = 'Expense'">
+    <button
+      type="button"
+      [class.active]="type === 'Expense'"
+      (click)="type = 'Expense'"
+    >
       <i class="ti ti-trending-down"></i> Expense
     </button>
-    <button type="button" [class.active]="type === 'Income'" (click)="type = 'Income'">
+    <button
+      type="button"
+      [class.active]="type === 'Income'"
+      (click)="type = 'Income'"
+    >
       <i class="ti ti-trending-up"></i> Income
     </button>
-    <button type="button" [class.active]="type === 'Transfer'" (click)="type = 'Transfer'">
+    <button
+      type="button"
+      [class.active]="type === 'Transfer'"
+      (click)="type = 'Transfer'"
+    >
       <i class="ti ti-switch-horizontal"></i> Transfer
     </button>
   </div>
@@ -31,16 +42,26 @@
         *ngFor="let c of categories"
         class="chip"
         [class.active-chip]="selectedCategory === c"
-        (click)="selectedCategory = c">
+        (click)="selectedCategory = c"
+      >
         {{ c }}
       </button>
-      <button type="button" class="add-category-chip" (click)="showCategoryInput = !showCategoryInput">
+      <button
+        type="button"
+        class="add-category-chip"
+        (click)="showCategoryInput = !showCategoryInput"
+      >
         <i class="ti ti-plus"></i> Category
       </button>
     </div>
 
     <div class="new-category-box" *ngIf="showCategoryInput">
-      <input type="text" placeholder="New category name" [(ngModel)]="newCategory" name="newCategory" />
+      <input
+        type="text"
+        placeholder="New category name"
+        [(ngModel)]="newCategory"
+        name="newCategory"
+      />
       <button type="button" (click)="addCategory()">Add</button>
     </div>
   </div>
@@ -50,14 +71,21 @@
     <label>Account</label>
     <select [(ngModel)]="account" name="account">
       <option value="" disabled>Select account</option>
-      <option *ngFor="let acc of accounts" [value]="acc.name">{{ acc.name }}</option>
+      <option *ngFor="let acc of accounts" [value]="acc.name">
+        {{ acc.name }}
+      </option>
     </select>
   </div>
 
   <!-- NOTES -->
   <div class="form-group">
     <label>Notes <span class="optional">optional</span></label>
-    <input type="text" [(ngModel)]="notes" name="notes" placeholder="What was this for?" />
+    <input
+      type="text"
+      [(ngModel)]="notes"
+      name="notes"
+      placeholder="What was this for?"
+    />
   </div>
 
   <!-- DATE -->
@@ -68,7 +96,6 @@
 
   <!-- SUBMIT -->
   <button type="submit" class="submit-btn">
-    {{ editMode ? 'Update Transaction' : 'Add Transaction' }}
+    {{ editMode ? "Update Transaction" : "Add Transaction" }}
   </button>
-
 </form>

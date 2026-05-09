@@ -250,7 +250,9 @@
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background: #2a2a2a;
@@ -294,7 +296,9 @@
   background-color: #1b1b1b;
   transition: border-color 0.15s ease;
 
-  &:focus { border-color: #2563eb; }
+  &:focus {
+    border-color: #2563eb;
+  }
 }
 
 .goal-modal input:focus {
@@ -311,7 +315,9 @@
   overflow: hidden;
   transition: border-color 0.15s ease;
 
-  &:focus-within { border-color: #2563eb; }
+  &:focus-within {
+    border-color: #2563eb;
+  }
 
   span {
     padding: 0 0.875rem;
@@ -351,10 +357,14 @@
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
   flex-shrink: 0;
 
-  &:hover { transform: scale(1.15); }
+  &:hover {
+    transform: scale(1.15);
+  }
 
   &.selected {
     border-color: white;
@@ -373,6 +383,11 @@
   overflow: hidden;
   flex-shrink: 0;
 
-  &::-webkit-color-swatch-wrapper { padding: 0; }
-  &::-webkit-color-swatch { border: none; border-radius: 50%; }
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+  }
 }

@@ -45,76 +45,89 @@
         <div
           class="goal-fill"
           [style.width.%]="getProgress(goal.saved, goal.target)"
-          [style.background]="goal.color"></div>
+          [style.background]="goal.color"
+        ></div>
       </div>
 
       <div class="goal-percent">
         {{ getProgress(goal.saved, goal.target) | number: "1.0-0" }}%
       </div>
+      <div class="goal-eta">
+        {{ getGoalETA(goal) }}
+      </div>
     </div>
   </div>
 
- <!-- MODAL -->
-<div class="modal-overlay" *ngIf="showModal" (click)="showModal = false">
-  <div class="goal-modal" (click)="$event.stopPropagation()">
-
-    <div class="modal-header">
-      <h2>Add Goal</h2>
-      <button class="modal-close" (click)="showModal = false">
-        <i class="ti ti-x"></i>
-      </button>
-    </div>
-
-    <div class="modal-field">
-      <label>Goal Name</label>
-      <input type="text" placeholder="e.g. New Laptop" [(ngModel)]="newTitle" />
-    </div>
-
-    <div class="modal-field">
-      <label>Target Amount</label>
-      <div class="input-prefix">
-        <span>₹</span>
-        <input type="number" placeholder="0" [(ngModel)]="newTarget" />
+  <!-- MODAL -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="showModal = false">
+    <div class="goal-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add Goal</h2>
+        <button class="modal-close" (click)="showModal = false">
+          <i class="ti ti-x"></i>
+        </button>
       </div>
-    </div>
 
-    <div class="modal-field">
-      <label>Category</label>
-      <select [(ngModel)]="newLinkedCategory">
-        <option value="">Select a category</option>
-        <option *ngFor="let category of categories" [value]="category">
-          {{ category }}
-        </option>
-      </select>
-    </div>
+      <div class="modal-field">
+        <label>Goal Name</label>
+        <input
+          type="text"
+          placeholder="e.g. New Laptop"
+          [(ngModel)]="newTitle"
+        />
+      </div>
 
-    <div class="modal-field">
-      <label>Savings Account <span class="optional">optional</span></label>
-      <select [(ngModel)]="newLinkedAccount">
-        <option value="">Select an account</option>
-        <option *ngFor="let acc of accounts" [value]="acc.name">
-          {{ acc.name }}
-        </option>
-      </select>
-    </div>
-
-    <div class="modal-field">
-      <label>Colour</label>
-      <div class="color-picker-row">
-        <div class="color-swatch"
-          *ngFor="let c of presetColors"
-          [style.background]="c"
-          [class.selected]="newColor === c"
-          (click)="newColor = c">
+      <div class="modal-field">
+        <label>Target Amount</label>
+        <div class="input-prefix">
+          <span>₹</span>
+          <input type="number" placeholder="0" [(ngModel)]="newTarget" />
         </div>
-        <input type="color" [(ngModel)]="newColor" class="custom-color-input" title="Custom colour" />
+      </div>
+
+      <div class="modal-field">
+        <label>Category</label>
+        <select [(ngModel)]="newLinkedCategory">
+          <option value="">Select a category</option>
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label>Savings Account <span class="optional">optional</span></label>
+        <select [(ngModel)]="newLinkedAccount">
+          <option value="">Select an account</option>
+          <option *ngFor="let acc of accounts" [value]="acc.name">
+            {{ acc.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label>Colour</label>
+        <div class="color-picker-row">
+          <div
+            class="color-swatch"
+            *ngFor="let c of presetColors"
+            [style.background]="c"
+            [class.selected]="newColor === c"
+            (click)="newColor = c"
+          ></div>
+          <input
+            type="color"
+            [(ngModel)]="newColor"
+            class="custom-color-input"
+            title="Custom colour"
+          />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="showModal = false">Cancel</button>
+        <button class="save-btn" (click)="addGoal()">Create Goal</button>
       </div>
     </div>
-
-    <div class="modal-actions">
-      <button class="cancel-btn" (click)="showModal = false">Cancel</button>
-      <button class="save-btn" (click)="addGoal()">Create Goal</button>
-    </div>
-
   </div>
 </div>

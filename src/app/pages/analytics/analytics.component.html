@@ -37,6 +37,33 @@
         {{ topCategory }}
       </div>
     </div>
+    <div class="overview-card">
+      <div class="overview-label">Financial Score</div>
+
+      <div class="overview-value blue">
+        {{ financialScore }}
+      </div>
+
+      <div class="score-status">
+        {{ financialStatus }}
+      </div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-label">Projected Expenses</div>
+
+      <div class="overview-value red">₹{{ projectedExpense }}</div>
+    </div>
+
+    <div class="overview-card">
+      <div class="overview-label">Projected Savings</div>
+
+      <div
+        class="overview-value"
+        [ngClass]="projectedSavings >= 0 ? 'green' : 'red'"
+      >
+        ₹{{ projectedSavings }}
+      </div>
+    </div>
   </div>
 
   <!-- CHART -->

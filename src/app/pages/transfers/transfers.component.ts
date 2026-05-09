@@ -1,19 +1,19 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
-import { TransactionService } from "../../transaction.service";
+import { TransactionService } from '../../transaction.service';
 
-import { FormsModule } from "@angular/forms";
+import { FormsModule } from '@angular/forms';
 
-import { CommonModule } from "@angular/common";
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: "app-transfers",
+  selector: 'app-transfers',
 
   imports: [FormsModule, CommonModule],
 
-  templateUrl: "./transfers.component.html",
+  templateUrl: './transfers.component.html',
 
-  styleUrl: "./transfers.component.scss",
+  styleUrl: './transfers.component.scss',
 })
 export class TransfersComponent {
   accounts: any[] = [];
@@ -22,17 +22,17 @@ export class TransfersComponent {
 
   transfers: any[] = [];
 
-  fromAccount = "";
+  fromAccount = '';
 
-  toAccount = "";
+  toAccount = '';
 
   amount = 0;
 
-  category = "";
+  category = '';
 
-  note = "";
+  note = '';
 
-  date = "";
+  date = '';
 
   constructor(private transactionService: TransactionService) {}
 
@@ -57,7 +57,7 @@ export class TransfersComponent {
       this.transfers = this.transactionService
         .getTransactions()
 
-        .filter((t: any) => t.type === "Transfer");
+        .filter((t: any) => t.type === 'Transfer');
     });
   }
 
@@ -69,7 +69,7 @@ export class TransfersComponent {
     this.transfers = this.transactionService
       .getTransactions()
 
-      .filter((t: any) => t.type === "Transfer");
+      .filter((t: any) => t.type === 'Transfer');
   }
 
   submitTransfer() {
@@ -97,16 +97,16 @@ export class TransfersComponent {
 
     // RESET
 
-    this.fromAccount = "";
+    this.fromAccount = '';
 
-    this.toAccount = "";
+    this.toAccount = '';
 
     this.amount = 0;
 
-    this.category = "";
+    this.category = '';
 
-    this.note = "";
+    this.note = '';
 
-    this.date = "";
+    this.date = '';
   }
 }
