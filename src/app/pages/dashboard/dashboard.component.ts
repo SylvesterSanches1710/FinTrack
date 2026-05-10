@@ -1,22 +1,22 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 
-import { RouterLink } from '@angular/router';
+import { RouterLink } from "@angular/router";
 
-import { TransactionService } from '../../transaction.service';
+import { TransactionService } from "../../transaction.service";
 
 @Component({
-  selector: 'app-dashboard',
+  selector: "app-dashboard",
 
   imports: [CommonModule, RouterLink],
 
-  templateUrl: './dashboard.component.html',
+  templateUrl: "./dashboard.component.html",
 
-  styleUrl: './dashboard.component.scss',
+  styleUrl: "./dashboard.component.scss",
 })
 export class DashboardComponent {
-  currentMonth = '';
+  currentMonth = "";
 
   monthlyExpense = 0;
 
@@ -26,14 +26,25 @@ export class DashboardComponent {
 
   aiInsights: string[] = [];
 
-  greeting = '';
+  greeting = "";
 
-  userName = localStorage.getItem('displayName') || 'User';
+  userName = localStorage.getItem("displayName") || "User";
 
   constructor(private transactionService: TransactionService) {}
 
   ngOnInit() {
     this.setGreeting();
+
+    this.transactionService.accounts$.subscribe((accounts) => {
+      this.balanceList = accounts.map((acc: any) => ({
+        name: acc.name,
+
+        value: acc.balance,
+
+        color: "blue",
+      }));
+    });
+
     this.loadDashboard();
   }
 
@@ -41,12 +52,12 @@ export class DashboardComponent {
     const now = new Date();
 
     this.currentMonth = now.toLocaleString(
-      'default',
+      "default",
 
       {
-        month: 'long',
+        month: "long",
 
-        year: 'numeric',
+        year: "numeric",
       },
     );
 
@@ -73,7 +84,7 @@ export class DashboardComponent {
         const d = new Date(t.date);
 
         return (
-          t.type === 'Expense' &&
+          t.type === "Expense" &&
           d.getMonth() === currentMonth &&
           d.getFullYear() === currentYear
         );
@@ -92,7 +103,7 @@ export class DashboardComponent {
         const d = new Date(t.date);
 
         return (
-          t.type === 'Expense' &&
+          t.type === "Expense" &&
           d.getMonth() === previousMonth &&
           d.getFullYear() === previousYear
         );
@@ -114,13 +125,31 @@ export class DashboardComponent {
 
     // ACCOUNT BALANCES
 
-    this.balanceList = accounts.map((acc: any) => ({
-      name: acc.name,
+    this.balanceList = accounts.map((acc: any, index: number) => {
+      let currentBalance = Number(acc.balance);
 
-      value: acc.balance,
+      transactions.forEach((t: any) => {
+        if (t.account !== acc.name) {
+          return;
+        }
 
-      color: 'blue',
-    }));
+        const amount = Number(t.amount);
+
+        if (t.type === "Income") {
+          currentBalance += amount;
+        } else if (t.type === "Expense") {
+          currentBalance -= amount;
+        }
+      });
+
+      return {
+        name: acc.name,
+
+        value: currentBalance,
+
+        color: "blue",
+      };
+    });
 
     // INSIGHTS
 
@@ -145,7 +174,7 @@ export class DashboardComponent {
     // TOTAL SPENDING
 
     const totalExpense = transactions
-      .filter((t: any) => t.type === 'Expense')
+      .filter((t: any) => t.type === "Expense")
 
       .reduce(
         (
@@ -160,7 +189,7 @@ export class DashboardComponent {
     // TOTAL INCOME
 
     const totalIncome = transactions
-      .filter((t: any) => t.type === 'Income')
+      .filter((t: any) => t.type === "Income")
 
       .reduce(
         (
@@ -181,7 +210,7 @@ export class DashboardComponent {
     const categoryTotals: any = {};
 
     transactions.forEach((t: any) => {
-      if (t.type === 'Expense') {
+      if (t.type === "Expense") {
         categoryTotals[t.category] =
           (categoryTotals[t.category] || 0) + t.amount;
       }
@@ -190,7 +219,7 @@ export class DashboardComponent {
     const topCategory = Object.keys(categoryTotals).reduce(
       (a, b) => (categoryTotals[a] > categoryTotals[b] ? a : b),
 
-      '',
+      "",
     );
 
     // INSIGHTS
@@ -209,13 +238,13 @@ export class DashboardComponent {
     const hour = new Date().getHours();
 
     if (hour < 12) {
-      this.greeting = 'Good Morning';
+      this.greeting = "Good Morning";
     } else if (hour < 17) {
-      this.greeting = 'Good Afternoon';
+      this.greeting = "Good Afternoon";
     } else if (hour < 21) {
-      this.greeting = 'Good Evening';
+      this.greeting = "Good Evening";
     } else {
-      this.greeting = 'Good Evening';
+      this.greeting = "Good Evening";
     }
   }
 }
