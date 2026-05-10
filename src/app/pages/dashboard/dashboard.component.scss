@@ -5,31 +5,48 @@
 }
 
 .welcome-banner {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 0.0625rem solid #1a1a1a;
 }
 
 .welcome-text {
   color: #6b7280;
-
-  font-size: 1rem;
-
+  font-size: 0.938rem;
   font-weight: 500;
-
   margin-bottom: 0.25rem;
-
   letter-spacing: 0.02em;
+  text-transform: capitalize;
 }
 
 .welcome-name {
-  font-size: 2.6rem;
-
+  font-size: 2.25rem;
   font-weight: 700;
-
   color: white;
-
-  line-height: 1.1;
-
+  line-height: 1.15;
   margin: 0;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 56.25rem) {
+  .welcome-name {
+    font-size: 1.875rem;
+  }
+}
+
+@media (max-width: 36rem) {
+  .welcome-banner {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .welcome-text {
+    font-size: 0.875rem;
+  }
+
+  .welcome-name {
+    font-size: 1.625rem;
+  }
 }
 
 /* HEADER */
