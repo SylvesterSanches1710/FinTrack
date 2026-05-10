@@ -188,47 +188,89 @@
 
 /* ── RESPONSIVE ── */
 
+/* ── RESPONSIVE: TABLET ── */
+
 @media (max-width: 900px) {
   .overview-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* ── RESPONSIVE: MOBILE ── */
+
 @media (max-width: 600px) {
-  .analytics-header h1 {
-    font-size: 36px;
+  .analytics-header {
+    margin-bottom: 18px;
+
+    h1 {
+      font-size: 34px;
+    }
   }
 
   .overview-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 16px;
   }
 
   .overview-card {
-    padding: 18px;
+    padding: 14px 16px;
+    border-radius: 14px;
+  }
+
+  .overview-label {
+    font-size: 11px;
+    margin-bottom: 7px;
   }
 
   .overview-value {
-    font-size: 24px;
+    font-size: 22px;
+  }
+
+  .score-status {
+    font-size: 11px;
   }
 
   .chart-widget,
   .widget {
-    padding: 20px;
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 12px;
 
     h2 {
-      font-size: 18px;
+      font-size: 17px;
+      margin-bottom: 16px;
     }
   }
 
+  .chart-container {
+    max-width: 100%;
+  }
+
   .line-chart-container {
-    height: 220px;
+    height: 200px;
+  }
+
+  .insight-card {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .insight-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .insight-text {
+    font-size: 13px;
   }
 
   .category-row {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
-    gap: 8px;
+    gap: 6px 10px;
+    margin-bottom: 14px;
 
     .category-bar {
       grid-column: 1 / -1;
@@ -236,16 +278,27 @@
 
     .category-amount {
       text-align: right;
+      font-size: 13px;
     }
+  }
+
+  .category-name {
+    font-size: 13px;
   }
 }
 
-@media (max-width: 400px) {
+/* ── RESPONSIVE: SMALL MOBILE ── */
+
+@media (max-width: 380px) {
   .overview-grid {
-    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .overview-value {
-    font-size: 28px;
+    font-size: 19px;
+  }
+
+  .overview-card {
+    padding: 12px 14px;
   }
 }

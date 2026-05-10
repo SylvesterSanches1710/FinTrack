@@ -54,7 +54,7 @@ export class AppComponent {
   constructor(
     private transactionService: TransactionService,
 
-    private authService: AuthService,
+    public authService: AuthService,
 
     private router: Router,
   ) {
@@ -68,7 +68,14 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.authService.user$.subscribe(async (user) => {
+    this.authService.user$.subscribe((user) => {
+      // WAIT UNTIL
+      // FIREBASE FINISHES CHECKING
+
+      if (!this.authService.authReady) {
+        return;
+      }
+
       // NOT LOGGED IN
 
       if (!user) {
@@ -77,17 +84,13 @@ export class AppComponent {
         return;
       }
 
-      // RESTORE CLOUD DATA
-
-      await this.transactionService.restoreFromCloud();
-
-      // CHECK ACCOUNTS
+      // LOGGED IN
 
       const accounts = this.transactionService.getAccounts();
 
       this.showOnboarding = accounts.length === 0;
 
-      // IF SETUP COMPLETE
+      // SETUP COMPLETE
 
       if (!this.showOnboarding) {
         this.router.navigate(['/dashboard']);

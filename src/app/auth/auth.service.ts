@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   User,
+  onAuthStateChanged,
 } from '@angular/fire/auth';
 
 import { Observable } from 'rxjs';
@@ -19,8 +20,20 @@ export class AuthService {
 
   user$: Observable<User | null>;
 
+  currentUser: User | null = null;
+
+  authReady = false;
+
   constructor(private auth: Auth) {
     this.user$ = authState(this.auth);
+
+    // WAIT FOR FIREBASE SESSION
+
+    onAuthStateChanged(this.auth, (user) => {
+      this.currentUser = user;
+
+      this.authReady = true;
+    });
   }
 
   // SIGN UP

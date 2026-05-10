@@ -1,67 +1,78 @@
-<!-- AUTH PAGE -->
+<!-- LOADING SCREEN -->
 
-<div *ngIf="hideLayout">
-  <router-outlet> </router-outlet>
+<div *ngIf="!authService.authReady" class="app-loader">
+  <div class="loader"></div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 
-<div class="app-layout" *ngIf="!hideLayout">
-  <!-- MOBILE OVERLAY -->
+<div *ngIf="authService.authReady">
+  <!-- AUTH PAGE -->
 
-  <div
-    class="mobile-overlay"
-    *ngIf="sidebarOpen"
-    (click)="toggleSidebar()"
-  ></div>
+  <div *ngIf="hideLayout">
+    <router-outlet></router-outlet>
+  </div>
 
-  <!-- SIDEBAR -->
+  <!-- MAIN APP -->
 
-  <app-sidebar
-    [class.mobile-open]="sidebarOpen"
-    (closeMenu)="sidebarOpen = false"
-  ></app-sidebar>
+  <div class="app-layout" *ngIf="!hideLayout">
+    <!-- MOBILE OVERLAY -->
 
-  <!-- MAIN CONTENT -->
+    <div
+      class="mobile-overlay"
+      *ngIf="sidebarOpen"
+      (click)="toggleSidebar()"
+    ></div>
 
-  <main class="main-content">
-    <!-- MOBILE TOPBAR -->
+    <!-- SIDEBAR -->
 
-    <div class="mobile-topbar">
-      <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+    <app-sidebar
+      [class.mobile-open]="sidebarOpen"
+      (closeMenu)="sidebarOpen = false"
+    >
+    </app-sidebar>
 
-      <div class="mobile-logo">Fintrack</div>
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+      <!-- MOBILE TOPBAR -->
+
+      <div class="mobile-topbar">
+        <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+
+        <div class="mobile-logo">Fintrack</div>
+      </div>
+
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <!-- FIRST ACCOUNT ONBOARDING -->
+
+  <div class="onboarding-overlay" *ngIf="showOnboarding">
+    <div class="onboarding-modal">
+      <div class="onboarding-logo">₹</div>
+
+      <h1>Welcome to Fintrack</h1>
+
+      <p>Create your first account to start tracking finances.</p>
+
+      <select [(ngModel)]="accountName">
+        <option value="">Select Bank Account</option>
+
+        <option *ngFor="let bank of banks" [value]="bank">
+          {{ bank }}
+        </option>
+      </select>
+
+      <input
+        type="number"
+        placeholder="Starting Balance"
+        [(ngModel)]="accountBalance"
+        (focus)="selectInput($event)"
+      />
+
+      <button (click)="createFirstAccount()">Continue</button>
     </div>
-
-    <router-outlet> </router-outlet>
-  </main>
-</div>
-
-<!-- FIRST ACCOUNT ONBOARDING -->
-
-<div class="onboarding-overlay" *ngIf="showOnboarding">
-  <div class="onboarding-modal">
-    <div class="onboarding-logo">₹</div>
-
-    <h1>Welcome to Fintrack</h1>
-
-    <p>Create your first account to start tracking finances.</p>
-
-    <select [(ngModel)]="accountName">
-      <option value="">Select Bank Account</option>
-
-      <option *ngFor="let bank of banks" [value]="bank">
-        {{ bank }}
-      </option>
-    </select>
-
-    <input
-      type="number"
-      placeholder="Starting Balance"
-      [(ngModel)]="accountBalance"
-      (focus)="selectInput($event)"
-    />
-
-    <button (click)="createFirstAccount()">Continue</button>
   </div>
 </div>
