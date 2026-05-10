@@ -1,4 +1,11 @@
 <div class="dashboard-page">
+  <div class="welcome-banner">
+    <div>
+      <div class="welcome-text">{{ greeting }},</div>
+
+      <h1 class="welcome-name">{{ userName }} 👋</h1>
+    </div>
+  </div>
   <!-- HEADER -->
   <div class="page-header">
     <div>
@@ -19,18 +26,35 @@
       </div>
       <div class="stat-value" [ngClass]="acc.color">₹{{ acc.value }}</div>
       <div class="stat-trend positive">
-        <i class="ti ti-trending-up"></i> +12% vs last month
+        <i class="ti ti-trending-up"></i> ₹{{ acc.monthlyChange }}
+        this month
       </div>
     </div>
 
     <div class="stat-card spending">
       <div class="stat-top">
         <div class="stat-title">Monthly Spending</div>
-        <div class="stat-icon red"><i class="ti ti-receipt"></i></div>
+
+        <div class="stat-icon red">
+          <i class="ti ti-receipt"></i>
+        </div>
       </div>
+
       <div class="stat-value red">₹{{ monthlyExpense }}</div>
-      <div class="stat-trend negative">
-        <i class="ti ti-trending-up"></i> +8% vs last month
+
+      <div
+        class="stat-trend"
+        [ngClass]="{
+          positive: spendingChange < 0,
+          negative: spendingChange > 0,
+        }"
+      >
+        <i
+          class="ti"
+          [ngClass]="spendingChange > 0 ? 'ti-trending-up' : 'ti-trending-down'"
+        ></i>
+
+        {{ spendingChange | number: "1.0-0" }}% vs last month
       </div>
     </div>
   </div>

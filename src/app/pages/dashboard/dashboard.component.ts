@@ -1,172 +1,221 @@
 import { Component } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-import { TransactionService } from '../../transaction.service';
-import { TransactionFormComponent } from '../../transaction-form/transaction-form.component';
+
 import { RouterLink } from '@angular/router';
 
-interface Account {
-  name: string;
-  balance: number;
-  color: string;
-}
+import { TransactionService } from '../../transaction.service';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
+
   imports: [CommonModule, RouterLink],
+
   templateUrl: './dashboard.component.html',
+
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  balances: { [key: string]: number } = {};
-
-  balanceList: {
-    name: string;
-    value: number;
-    color: string;
-  }[] = [];
+  currentMonth = '';
 
   monthlyExpense = 0;
 
-  totalWorth = 0;
+  spendingChange = 0;
 
-  recentTransactions: any[] = [];
+  balanceList: any[] = [];
 
-  currentMonth = '';
-  categorySpend: any[] = [];
-  showTransactionModal = false;
   aiInsights: string[] = [];
+
+  greeting = '';
+
+  userName = localStorage.getItem('displayName') || 'User';
 
   constructor(private transactionService: TransactionService) {}
 
-  openTransactionModal() {
-    this.showTransactionModal = true;
-  }
-
-  closeTransactionModal() {
-    this.showTransactionModal = false;
-  }
-
   ngOnInit() {
-    // CURRENT MONTH
+    this.setGreeting();
+    this.loadDashboard();
+  }
 
+  loadDashboard() {
     const now = new Date();
 
-    this.currentMonth = now.toLocaleString('default', {
-      month: 'long',
-      year: 'numeric',
-    });
+    this.currentMonth = now.toLocaleString(
+      'default',
 
-    // REACTIVE UPDATES
+      {
+        month: 'long',
 
-    const refreshDashboard = () => {
-      const transactions = this.transactionService.getTransactions();
+        year: 'numeric',
+      },
+    );
 
-      const accounts = this.transactionService.getAccounts();
+    const transactions = this.transactionService.getTransactions();
 
-      this.calculate(transactions, accounts);
+    const accounts = this.transactionService.getAccounts();
 
-      this.recentTransactions = [...transactions]
+    // CURRENT MONTH
 
-        .reverse()
+    const currentMonth = now.getMonth();
 
-        .slice(0, 5);
-    };
+    const currentYear = now.getFullYear();
 
-    // TRANSACTIONS
+    // PREVIOUS MONTH
 
-    this.transactionService.transactions$.subscribe(() => {
-      refreshDashboard();
-    });
+    const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
 
-    // ACCOUNTS
+    const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
-    this.transactionService.accounts$.subscribe(() => {
-      refreshDashboard();
-    });
+    // MONTHLY EXPENSE
 
-    // INITIAL LOAD
+    this.monthlyExpense = transactions
+      .filter((t: any) => {
+        const d = new Date(t.date);
 
-    refreshDashboard();
-  }
+        return (
+          t.type === 'Expense' &&
+          d.getMonth() === currentMonth &&
+          d.getFullYear() === currentYear
+        );
+      })
 
-  calculate(transactions: any[], accounts: Account[]) {
-    this.monthlyExpense = 0;
-    this.balances = {};
+      .reduce(
+        (sum: number, t: any) => sum + t.amount,
 
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+        0,
+      );
 
-    // Initialize balances
-    accounts.forEach((acc: Account) => {
-      this.balances[acc.name] = Number(acc.balance);
-    });
+    // PREVIOUS MONTH EXPENSE
 
-    // Apply transactions
-    transactions.forEach((t: any) => {
-      const amount = Number(t.amount);
-      const date = new Date(t.date);
+    const previousMonthExpense = transactions
+      .filter((t: any) => {
+        const d = new Date(t.date);
 
-      if (!this.balances[t.account]) {
-        this.balances[t.account] = 0;
-      }
+        return (
+          t.type === 'Expense' &&
+          d.getMonth() === previousMonth &&
+          d.getFullYear() === previousYear
+        );
+      })
 
-      if (t.type === 'Income') {
-        this.balances[t.account] += amount;
-      } else {
-        this.balances[t.account] -= amount;
-      }
+      .reduce(
+        (sum: number, t: any) => sum + t.amount,
 
-      // Monthly expense
-      if (
-        t.type === 'Expense' &&
-        date.getMonth() === currentMonth &&
-        date.getFullYear() === currentYear
-      ) {
-        this.monthlyExpense += amount;
-      }
-    });
+        0,
+      );
 
-    // Create UI list
-    this.balanceList = accounts.map((acc: Account) => ({
+    // PERCENT CHANGE
+
+    this.spendingChange = this.getMonthlyChange(
+      this.monthlyExpense,
+
+      previousMonthExpense,
+    );
+
+    // ACCOUNT BALANCES
+
+    this.balanceList = accounts.map((acc: any) => ({
       name: acc.name,
-      value: this.balances[acc.name],
-      color: acc.color || 'blue',
+
+      value: acc.balance,
+
+      color: 'blue',
     }));
 
-    // Total worth
-    this.totalWorth = this.balanceList.reduce((sum, acc) => sum + acc.value, 0);
+    // INSIGHTS
+
+    this.generateInsights(transactions);
+  }
+
+  getMonthlyChange(
+    current: number,
+
+    previous: number,
+  ) {
+    if (previous === 0) {
+      return 100;
+    }
+
+    return ((current - previous) / previous) * 100;
+  }
+
+  generateInsights(transactions: any[]) {
+    this.aiInsights = [];
+
+    // TOTAL SPENDING
+
+    const totalExpense = transactions
+      .filter((t: any) => t.type === 'Expense')
+
+      .reduce(
+        (
+          sum: number,
+
+          t: any,
+        ) => sum + t.amount,
+
+        0,
+      );
+
+    // TOTAL INCOME
+
+    const totalIncome = transactions
+      .filter((t: any) => t.type === 'Income')
+
+      .reduce(
+        (
+          sum: number,
+
+          t: any,
+        ) => sum + t.amount,
+
+        0,
+      );
+
+    // SAVINGS
+
+    const savings = totalIncome - totalExpense;
+
+    // TOP CATEGORY
 
     const categoryTotals: any = {};
 
     transactions.forEach((t: any) => {
       if (t.type === 'Expense') {
-        if (!categoryTotals[t.category]) {
-          categoryTotals[t.category] = 0;
-        }
-
-        categoryTotals[t.category] += Number(t.amount);
+        categoryTotals[t.category] =
+          (categoryTotals[t.category] || 0) + t.amount;
       }
     });
 
-    const colors = ['#4d8dff', '#20d997', '#ffb020', '#ff4d57', '#8b5cf6'];
+    const topCategory = Object.keys(categoryTotals).reduce(
+      (a, b) => (categoryTotals[a] > categoryTotals[b] ? a : b),
 
-    const totalExpenses = (Object.values(categoryTotals) as number[]).reduce(
-      (a, b) => a + b,
-      0,
+      '',
     );
 
-    this.categorySpend = Object.entries(categoryTotals).map(
-      ([category, amount]: any, index) => ({
-        category,
-        amount,
-        percent: totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0,
-        color: colors[index % colors.length],
-      }),
-    );
+    // INSIGHTS
 
-    // AI INSIGHTS
+    this.aiInsights.push(`Projected monthly spending: ₹${totalExpense}.`);
 
-    this.aiInsights = this.transactionService.generateAIInsights();
+    this.aiInsights.push(`Current monthly savings: ₹${savings}.`);
+
+    if (topCategory) {
+      this.aiInsights.push(
+        `${topCategory} is your top expense category this month.`,
+      );
+    }
+  }
+  setGreeting() {
+    const hour = new Date().getHours();
+
+    if (hour < 12) {
+      this.greeting = 'Good Morning';
+    } else if (hour < 17) {
+      this.greeting = 'Good Afternoon';
+    } else if (hour < 21) {
+      this.greeting = 'Good Evening';
+    } else {
+      this.greeting = 'Good Evening';
+    }
   }
 }

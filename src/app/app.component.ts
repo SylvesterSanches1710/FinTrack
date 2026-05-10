@@ -16,12 +16,18 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
+  showNameModal = false;
+
+  displayName = '';
+
   hideLayout = false;
+
   showOnboarding = false;
 
   accountName = '';
 
   accountBalance = 0;
+
   title = 'finance-tracker-angular';
 
   sidebarOpen = false;
@@ -47,6 +53,7 @@ export class AppComponent {
 
     'Cash Wallet',
   ];
+
   selectInput(event: any) {
     event.target.select();
   }
@@ -84,7 +91,15 @@ export class AppComponent {
         return;
       }
 
-      // LOGGED IN
+      // CHECK DISPLAY NAME
+
+      const savedName = localStorage.getItem('displayName');
+
+      if (!savedName) {
+        this.showNameModal = true;
+      }
+
+      // CHECK ACCOUNTS
 
       const accounts = this.transactionService.getAccounts();
 
@@ -92,7 +107,7 @@ export class AppComponent {
 
       // SETUP COMPLETE
 
-      if (!this.showOnboarding) {
+      if (!this.showOnboarding && !this.showNameModal) {
         this.router.navigate(['/dashboard']);
       }
     });
@@ -112,5 +127,23 @@ export class AppComponent {
     });
 
     this.showOnboarding = false;
+  }
+
+  saveDisplayName() {
+    if (!this.displayName.trim()) {
+      return;
+    }
+
+    localStorage.setItem('displayName', this.displayName);
+
+    this.showNameModal = false;
+
+    const accounts = this.transactionService.getAccounts();
+
+    this.showOnboarding = accounts.length === 0;
+
+    if (!this.showOnboarding) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 }

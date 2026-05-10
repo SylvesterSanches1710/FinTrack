@@ -2,7 +2,8 @@ import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,6 +17,12 @@ export class SidebarComponent {
   closeMenu = new EventEmitter<void>();
 
   isMobile = false;
+
+  constructor(
+    public authService: AuthService,
+
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.checkScreen();
@@ -34,5 +41,10 @@ export class SidebarComponent {
     if (this.isMobile) {
       this.closeMenu.emit();
     }
+  }
+  async logout() {
+    await this.authService.logout();
+
+    this.router.navigate(['/auth']);
   }
 }

@@ -4,6 +4,34 @@
   color: white;
 }
 
+.welcome-banner {
+  margin-bottom: 1.5rem;
+}
+
+.welcome-text {
+  color: #6b7280;
+
+  font-size: 1rem;
+
+  font-weight: 500;
+
+  margin-bottom: 0.25rem;
+
+  letter-spacing: 0.02em;
+}
+
+.welcome-name {
+  font-size: 2.6rem;
+
+  font-weight: 700;
+
+  color: white;
+
+  line-height: 1.1;
+
+  margin: 0;
+}
+
 /* HEADER */
 .page-header {
   display: flex;

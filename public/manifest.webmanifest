@@ -1,0 +1,25 @@
+{
+  "name": "Fintrack",
+  "short_name": "Fintrack",
+  "theme_color": "#0d0d0d",
+  "background_color": "#0d0d0d",
+  "display": "standalone",
+  "orientation": "portrait",
+  "description": "Smart personal finance tracking and budgeting app",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

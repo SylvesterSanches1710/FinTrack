@@ -47,6 +47,26 @@
     </main>
   </div>
 
+  <!-- NAME ONBOARDING -->
+
+  <div class="onboarding-overlay" *ngIf="showNameModal">
+    <div class="onboarding-modal">
+      <div class="onboarding-logo">👋</div>
+
+      <h1>Welcome to Fintrack</h1>
+
+      <p>What should we call you?</p>
+
+      <input
+        type="text"
+        placeholder="Enter your name"
+        [(ngModel)]="displayName"
+      />
+
+      <button (click)="saveDisplayName()">Continue</button>
+    </div>
+  </div>
+
   <!-- FIRST ACCOUNT ONBOARDING -->
 
   <div class="onboarding-overlay" *ngIf="showOnboarding">
