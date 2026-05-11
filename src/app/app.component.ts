@@ -1,34 +1,36 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { SidebarComponent } from './layout/sidebar/sidebar.component';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
+import { SidebarComponent } from "./layout/sidebar/sidebar.component";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
-import { TransactionService } from './transaction.service';
-import { AuthService } from './auth/auth.service';
+import { TransactionService } from "./transaction.service";
+import { AuthService } from "./auth/auth.service";
 
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd } from "@angular/router";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   imports: [RouterOutlet, SidebarComponent, CommonModule, FormsModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  templateUrl: "./app.component.html",
+  styleUrl: "./app.component.scss",
 })
 export class AppComponent {
   showNameModal = false;
 
-  displayName = '';
+  displayName = "";
 
   hideLayout = false;
 
   showOnboarding = false;
 
-  accountName = '';
+  appReady = false;
+
+  accountName = "";
 
   accountBalance = 0;
 
-  title = 'finance-tracker-angular';
+  title = "finance-tracker-angular";
 
   sidebarOpen = false;
 
@@ -37,21 +39,21 @@ export class AppComponent {
   }
 
   banks = [
-    'HDFC Bank',
+    "HDFC Bank",
 
-    'ICICI Bank',
+    "ICICI Bank",
 
-    'Canara Bank',
+    "Canara Bank",
 
-    'SBI',
+    "SBI",
 
-    'Axis Bank',
+    "Axis Bank",
 
-    'Kotak Mahindra',
+    "Kotak Mahindra",
 
-    'Bank of Baroda',
+    "Bank of Baroda",
 
-    'Cash Wallet',
+    "Cash Wallet",
   ];
 
   selectInput(event: any) {
@@ -69,13 +71,13 @@ export class AppComponent {
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.hideLayout = event.urlAfterRedirects === '/auth';
+        this.hideLayout = event.urlAfterRedirects === "/auth";
       }
     });
   }
 
-  ngOnInit() {
-    this.authService.user$.subscribe((user) => {
+  async ngOnInit() {
+    this.authService.user$.subscribe(async (user) => {
       // WAIT UNTIL
       // FIREBASE FINISHES CHECKING
 
@@ -86,14 +88,20 @@ export class AppComponent {
       // NOT LOGGED IN
 
       if (!user) {
-        this.router.navigate(['/auth']);
+        this.appReady = true;
+
+        this.router.navigate(["/auth"]);
 
         return;
       }
 
+      // RESTORE CLOUD DATA
+
+      await this.transactionService.restoreFromCloud();
+
       // CHECK DISPLAY NAME
 
-      const savedName = localStorage.getItem('displayName');
+      const savedName = localStorage.getItem("displayName");
 
       if (!savedName) {
         this.showNameModal = true;
@@ -108,8 +116,12 @@ export class AppComponent {
       // SETUP COMPLETE
 
       if (!this.showOnboarding && !this.showNameModal) {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(["/dashboard"]);
       }
+
+      // APP READY
+
+      this.appReady = true;
     });
   }
 
@@ -123,7 +135,7 @@ export class AppComponent {
 
       balance: this.accountBalance,
 
-      color: 'blue',
+      color: "blue",
     });
 
     this.showOnboarding = false;
@@ -134,7 +146,7 @@ export class AppComponent {
       return;
     }
 
-    localStorage.setItem('displayName', this.displayName);
+    localStorage.setItem("displayName", this.displayName);
 
     this.showNameModal = false;
 
@@ -143,7 +155,7 @@ export class AppComponent {
     this.showOnboarding = accounts.length === 0;
 
     if (!this.showOnboarding) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(["/dashboard"]);
     }
   }
 }
