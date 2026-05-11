@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
-import { BehaviorSubject, Subject } from 'rxjs';
-import { CloudDataService } from './services/cloud-data.service';
+import { BehaviorSubject, Subject } from "rxjs";
+import { CloudDataService } from "./services/cloud-data.service";
 
 export interface Budget {
   title: string;
@@ -62,7 +62,7 @@ export interface Lending {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class TransactionService {
   categories: string[] = [];
@@ -75,7 +75,7 @@ export class TransactionService {
   // =========================
 
   private recurringTransactions: RecurringTransaction[] = JSON.parse(
-    localStorage.getItem('recurring') || '[]',
+    localStorage.getItem("recurring") || "[]",
   );
 
   // =========================
@@ -83,14 +83,14 @@ export class TransactionService {
   // =========================
 
   private budgets: Budget[] = JSON.parse(
-    localStorage.getItem('budgets') || '[]',
+    localStorage.getItem("budgets") || "[]",
   );
 
   // =========================
   // GOALS
   // =========================
 
-  private goals: Goal[] = JSON.parse(localStorage.getItem('goals') || '[]');
+  private goals: Goal[] = JSON.parse(localStorage.getItem("goals") || "[]");
 
   // =========================
   // TRANSACTIONS STATE
@@ -117,32 +117,32 @@ export class TransactionService {
   editTransaction$ = new BehaviorSubject<any>(null);
 
   constructor(private cloudData: CloudDataService) {
-    const savedCategories = localStorage.getItem('categories');
+    const savedCategories = localStorage.getItem("categories");
 
     // DEFAULT CATEGORIES
 
     const defaultCategories = [
-      'Salary',
+      "Salary",
 
-      'Food',
+      "Food",
 
-      'Fuel',
+      "Fuel",
 
-      'Bills',
+      "Bills",
 
-      'Investment',
+      "Investment",
 
-      'Shopping',
+      "Shopping",
 
-      'Health',
+      "Health",
 
-      'Groceries',
+      "Groceries",
 
-      'Travel',
+      "Travel",
 
-      'Entertainment',
+      "Entertainment",
 
-      'Restaurant',
+      "Restaurant",
     ];
 
     // EXISTING USER DATA
@@ -163,7 +163,7 @@ export class TransactionService {
     // SAVE UPDATED LIST
 
     localStorage.setItem(
-      'categories',
+      "categories",
 
       JSON.stringify(this.categories),
     );
@@ -174,6 +174,7 @@ export class TransactionService {
     this.syncToCloud();
 
     this.processRecurringTransactions();
+
   }
   // =========================
   // CLOUD SAVE
@@ -181,19 +182,19 @@ export class TransactionService {
 
   async syncToCloud() {
     await this.cloudData.saveUserData(
-      'transactions',
+      "transactions",
       this.transactionsSubject.value,
     );
 
-    await this.cloudData.saveUserData('accounts', this.accountsSubject.value);
+    await this.cloudData.saveUserData("accounts", this.accountsSubject.value);
 
-    await this.cloudData.saveUserData('goals', this.goals);
+    await this.cloudData.saveUserData("goals", this.goals);
 
-    await this.cloudData.saveUserData('budgets', this.budgets);
+    await this.cloudData.saveUserData("budgets", this.budgets);
 
-    await this.cloudData.saveUserData('recurring', this.recurringTransactions);
+    await this.cloudData.saveUserData("recurring", this.recurringTransactions);
 
-    await this.cloudData.saveUserData('categories', this.categories);
+    await this.cloudData.saveUserData("categories", this.categories);
   }
 
   // =========================
@@ -207,7 +208,7 @@ export class TransactionService {
   addTransaction(transaction: any) {
     const updated = [...this.transactionsSubject.value, transaction];
 
-    localStorage.setItem('transactions', JSON.stringify(updated));
+    localStorage.setItem("transactions", JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
 
@@ -219,7 +220,7 @@ export class TransactionService {
 
     updated.splice(index, 1);
 
-    localStorage.setItem('transactions', JSON.stringify(updated));
+    localStorage.setItem("transactions", JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
 
@@ -231,7 +232,7 @@ export class TransactionService {
 
     updated[index] = updatedTransaction;
 
-    localStorage.setItem('transactions', JSON.stringify(updated));
+    localStorage.setItem("transactions", JSON.stringify(updated));
 
     this.transactionsSubject.next(updated);
 
@@ -239,7 +240,7 @@ export class TransactionService {
   }
 
   loadTransactions() {
-    return JSON.parse(localStorage.getItem('transactions') || '[]');
+    return JSON.parse(localStorage.getItem("transactions") || "[]");
   }
 
   // =========================
@@ -253,7 +254,7 @@ export class TransactionService {
   addAccount(account: any) {
     const updated = [...this.accountsSubject.value, account];
 
-    localStorage.setItem('accounts', JSON.stringify(updated));
+    localStorage.setItem("accounts", JSON.stringify(updated));
 
     this.accountsSubject.next(updated);
     this.syncToCloud();
@@ -264,14 +265,14 @@ export class TransactionService {
       (acc: any) => acc.name !== name,
     );
 
-    localStorage.setItem('accounts', JSON.stringify(updated));
+    localStorage.setItem("accounts", JSON.stringify(updated));
 
     this.accountsSubject.next(updated);
     this.syncToCloud();
   }
 
   loadAccounts() {
-    return JSON.parse(localStorage.getItem('accounts') || '[]');
+    return JSON.parse(localStorage.getItem("accounts") || "[]");
   }
 
   // =========================
@@ -285,7 +286,7 @@ export class TransactionService {
   addBudget(budget: Budget) {
     this.budgets.push(budget);
 
-    localStorage.setItem('budgets', JSON.stringify(this.budgets));
+    localStorage.setItem("budgets", JSON.stringify(this.budgets));
     this.syncToCloud();
   }
 
@@ -293,7 +294,7 @@ export class TransactionService {
     this.budgets = this.budgets.filter((budget) => budget.title !== title);
 
     localStorage.setItem(
-      'budgets',
+      "budgets",
 
       JSON.stringify(this.budgets),
     );
@@ -312,14 +313,14 @@ export class TransactionService {
   addGoal(goal: Goal) {
     this.goals.push(goal);
 
-    localStorage.setItem('goals', JSON.stringify(this.goals));
+    localStorage.setItem("goals", JSON.stringify(this.goals));
     this.syncToCloud();
   }
 
   deleteGoal(title: string) {
     this.goals = this.goals.filter((goal) => goal.title !== title);
 
-    localStorage.setItem('goals', JSON.stringify(this.goals));
+    localStorage.setItem("goals", JSON.stringify(this.goals));
     this.syncToCloud();
   }
 
@@ -335,7 +336,7 @@ export class TransactionService {
     this.recurringTransactions.push(recurring);
 
     localStorage.setItem(
-      'recurring',
+      "recurring",
 
       JSON.stringify(this.recurringTransactions),
     );
@@ -352,7 +353,7 @@ export class TransactionService {
     );
 
     localStorage.setItem(
-      'recurring',
+      "recurring",
       JSON.stringify(this.recurringTransactions),
     );
     this.syncToCloud();
@@ -398,19 +399,19 @@ export class TransactionService {
 
         const next = new Date(r.nextDate);
 
-        if (r.frequency === 'Weekly') {
+        if (r.frequency === "Weekly") {
           next.setDate(next.getDate() + 7);
         }
 
-        if (r.frequency === 'Monthly') {
+        if (r.frequency === "Monthly") {
           next.setMonth(next.getMonth() + 1);
         }
 
-        if (r.frequency === 'Yearly') {
+        if (r.frequency === "Yearly") {
           next.setFullYear(next.getFullYear() + 1);
         }
 
-        r.nextDate = next.toISOString().split('T')[0];
+        r.nextDate = next.toISOString().split("T")[0];
       }
 
       return r;
@@ -418,13 +419,13 @@ export class TransactionService {
 
     // SAVE UPDATED TRANSACTIONS
 
-    localStorage.setItem('transactions', JSON.stringify(transactions));
+    localStorage.setItem("transactions", JSON.stringify(transactions));
 
     this.transactionsSubject.next(transactions);
 
     // SAVE UPDATED RECURRING
 
-    localStorage.setItem('recurring', JSON.stringify(recurring));
+    localStorage.setItem("recurring", JSON.stringify(recurring));
 
     this.recurringTransactions = recurring;
   }
@@ -474,7 +475,7 @@ export class TransactionService {
       return acc;
     });
 
-    localStorage.setItem('accounts', JSON.stringify(updatedAccounts));
+    localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
 
     this.updateAccounts(updatedAccounts);
 
@@ -483,11 +484,11 @@ export class TransactionService {
     const transactions = this.getTransactions();
 
     transactions.push({
-      type: 'Transfer',
+      type: "Transfer",
 
       amount,
 
-      category: category || 'Transfer',
+      category: category || "Transfer",
 
       account: `${from} → ${to}`,
 
@@ -496,7 +497,7 @@ export class TransactionService {
       date,
     });
 
-    localStorage.setItem('transactions', JSON.stringify(transactions));
+    localStorage.setItem("transactions", JSON.stringify(transactions));
 
     this.updateState(transactions);
     this.syncToCloud();
@@ -511,7 +512,7 @@ export class TransactionService {
   lendings$ = this.lendingSubject.asObservable();
 
   getLendings() {
-    return JSON.parse(localStorage.getItem('lendings') || '[]');
+    return JSON.parse(localStorage.getItem("lendings") || "[]");
   }
 
   private updateLendings(lendings: any[]) {
@@ -524,7 +525,7 @@ export class TransactionService {
     lendings.push(lending);
 
     localStorage.setItem(
-      'lendings',
+      "lendings",
 
       JSON.stringify(lendings),
     );
@@ -539,7 +540,7 @@ export class TransactionService {
     lendings[index] = updated;
 
     localStorage.setItem(
-      'lendings',
+      "lendings",
 
       JSON.stringify(lendings),
     );
@@ -554,7 +555,7 @@ export class TransactionService {
     lendings.splice(index, 1);
 
     localStorage.setItem(
-      'lendings',
+      "lendings",
 
       JSON.stringify(lendings),
     );
@@ -565,7 +566,7 @@ export class TransactionService {
 
   refreshTransactions() {
     const transactions = JSON.parse(
-      localStorage.getItem('transactions') || '[]',
+      localStorage.getItem("transactions") || "[]",
     );
 
     this.transactionsSubject.next(transactions);
@@ -591,7 +592,7 @@ export class TransactionService {
     this.categories.push(category);
 
     localStorage.setItem(
-      'categories',
+      "categories",
 
       JSON.stringify(this.categories),
     );
@@ -605,11 +606,11 @@ export class TransactionService {
   async restoreFromCloud() {
     // TRANSACTIONS
 
-    const transactions = await this.cloudData.loadUserData('transactions');
+    const transactions = await this.cloudData.loadUserData("transactions");
 
     if (transactions) {
       localStorage.setItem(
-        'transactions',
+        "transactions",
 
         JSON.stringify(transactions),
       );
@@ -619,11 +620,11 @@ export class TransactionService {
 
     // ACCOUNTS
 
-    const accounts = await this.cloudData.loadUserData('accounts');
+    const accounts = await this.cloudData.loadUserData("accounts");
 
     if (accounts) {
       localStorage.setItem(
-        'accounts',
+        "accounts",
 
         JSON.stringify(accounts),
       );
@@ -633,13 +634,13 @@ export class TransactionService {
 
     // GOALS
 
-    const goals = await this.cloudData.loadUserData('goals');
+    const goals = await this.cloudData.loadUserData("goals");
 
     if (goals) {
       this.goals = goals;
 
       localStorage.setItem(
-        'goals',
+        "goals",
 
         JSON.stringify(goals),
       );
@@ -647,13 +648,13 @@ export class TransactionService {
 
     // BUDGETS
 
-    const budgets = await this.cloudData.loadUserData('budgets');
+    const budgets = await this.cloudData.loadUserData("budgets");
 
     if (budgets) {
       this.budgets = budgets;
 
       localStorage.setItem(
-        'budgets',
+        "budgets",
 
         JSON.stringify(budgets),
       );
@@ -661,13 +662,13 @@ export class TransactionService {
 
     // RECURRING
 
-    const recurring = await this.cloudData.loadUserData('recurring');
+    const recurring = await this.cloudData.loadUserData("recurring");
 
     if (recurring) {
       this.recurringTransactions = recurring;
 
       localStorage.setItem(
-        'recurring',
+        "recurring",
 
         JSON.stringify(recurring),
       );
@@ -675,31 +676,31 @@ export class TransactionService {
 
     // CATEGORIES
 
-    const categories = await this.cloudData.loadUserData('categories');
+    const categories = await this.cloudData.loadUserData("categories");
 
     if (categories) {
       const defaultCategories = [
-        'Salary',
+        "Salary",
 
-        'Food',
+        "Food",
 
-        'Fuel',
+        "Fuel",
 
-        'Bills',
+        "Bills",
 
-        'Investment',
+        "Investment",
 
-        'Shopping',
+        "Shopping",
 
-        'Health',
+        "Health",
 
-        'Groceries',
+        "Groceries",
 
-        'Travel',
+        "Travel",
 
-        'Entertainment',
+        "Entertainment",
 
-        'Restaurant',
+        "Restaurant",
       ];
 
       // MERGE DEFAULTS + CLOUD
@@ -707,7 +708,7 @@ export class TransactionService {
       this.categories = [...new Set([...defaultCategories, ...categories])];
 
       localStorage.setItem(
-        'categories',
+        "categories",
 
         JSON.stringify(this.categories),
       );
@@ -748,13 +749,13 @@ export class TransactionService {
 
       // INCOME
 
-      if (t.type === 'Income') {
+      if (t.type === "Income") {
         income += Number(t.amount);
       }
 
       // EXPENSES
 
-      if (t.type === 'Expense') {
+      if (t.type === "Expense") {
         expense += Number(t.amount);
 
         if (!categoryTotals[t.category]) {
