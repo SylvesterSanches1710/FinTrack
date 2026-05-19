@@ -1,445 +1,513 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { CloudDataService } from './services/cloud-data.service';
+import { Firestore, doc, onSnapshot } from '@angular/fire/firestore';
 
-import { BehaviorSubject, Subject } from "rxjs";
-import { CloudDataService } from "./services/cloud-data.service";
+// =============================================================================
+// INTERFACES
+// =============================================================================
 
 export interface Budget {
   title: string;
-
   categories: string[];
-
   limit: number;
-
   period: string;
-
   recurring: boolean;
-
   color: string;
 }
 
 export interface Goal {
   title: string;
-
   target: number;
-
   linkedCategory: string;
-
   linkedAccount?: string;
-
   color: string;
 }
 
 export interface RecurringTransaction {
   title: string;
-
   amount: number;
-
   type: string;
-
   category: string;
-
   account: string;
-
   frequency: string;
-
   nextDate: string;
 }
 
 export interface Lending {
   person: string;
-
   amount: number;
-
   recovered: number;
-
   remaining: number;
-
   note: string;
-
   date: string;
-
   status: string;
 }
 
-@Injectable({
-  providedIn: "root",
-})
+export interface Investment {
+  type: string;
+  name: string;
+  symbol?: string;
+  quantity: number;
+  investedAmount: number;
+  currentValue: number;
+  avgPrice?: number;
+  platform?: string;
+  notes?: string;
+  livePrice?: number;
+}
+
+// =============================================================================
+// SERVICE
+// =============================================================================
+
+@Injectable({ providedIn: 'root' })
 export class TransactionService {
+  // ---------------------------------------------------------------------------
+  // DEFAULT CATEGORIES
+  // ---------------------------------------------------------------------------
+
+  private readonly DEFAULT_CATEGORIES = [
+    'Salary',
+    'Food',
+    'Fuel',
+    'Bills',
+    'Investment',
+    'Shopping',
+    'Health',
+    'Groceries',
+    'Travel',
+    'Entertainment',
+    'Restaurant',
+  ];
+
+  // ---------------------------------------------------------------------------
+  // STATE
+  // ---------------------------------------------------------------------------
+
   categories: string[] = [];
   categoriesSubject = new BehaviorSubject<string[]>([]);
-
   categories$ = this.categoriesSubject.asObservable();
-
-  // =========================
-  // RECURRING TRANSACTIONS
-  // =========================
-
-  private recurringTransactions: RecurringTransaction[] = JSON.parse(
-    localStorage.getItem("recurring") || "[]",
-  );
-
-  // =========================
-  // BUDGETS
-  // =========================
-
-  private budgets: Budget[] = JSON.parse(
-    localStorage.getItem("budgets") || "[]",
-  );
-
-  // =========================
-  // GOALS
-  // =========================
-
-  private goals: Goal[] = JSON.parse(localStorage.getItem("goals") || "[]");
-
-  // =========================
-  // TRANSACTIONS STATE
-  // =========================
 
   private transactionsSubject = new BehaviorSubject<any[]>(
     this.loadTransactions(),
   );
-
   transactions$ = this.transactionsSubject.asObservable();
 
-  // =========================
-  // ACCOUNTS STATE
-  // =========================
-
   private accountsSubject = new BehaviorSubject<any[]>(this.loadAccounts());
-
   accounts$ = this.accountsSubject.asObservable();
 
-  // =========================
-  // EDIT EVENT
-  // =========================
+  private lendingSubject = new BehaviorSubject<any[]>(this.getLendings());
+  lendings$ = this.lendingSubject.asObservable();
 
   editTransaction$ = new BehaviorSubject<any>(null);
 
-  constructor(private cloudData: CloudDataService) {
-    const savedCategories = localStorage.getItem("categories");
+  private budgets: Budget[] = JSON.parse(
+    localStorage.getItem('budgets') || '[]',
+  );
+  private goals: Goal[] = JSON.parse(localStorage.getItem('goals') || '[]');
+  private recurringTransactions: RecurringTransaction[] = JSON.parse(
+    localStorage.getItem('recurring') || '[]',
+  );
+  private investments: Investment[] = JSON.parse(
+    localStorage.getItem('investments') || '[]',
+  );
+  private investmentsSubject = new BehaviorSubject<Investment[]>(
+    this.investments,
+  );
 
-    // DEFAULT CATEGORIES
+  investments$ = this.investmentsSubject.asObservable();
 
-    const defaultCategories = [
-      "Salary",
+  // ---------------------------------------------------------------------------
+  // CONSTRUCTOR
+  // ---------------------------------------------------------------------------
 
-      "Food",
+  constructor(
+    private cloudData: CloudDataService,
 
-      "Fuel",
-
-      "Bills",
-
-      "Investment",
-
-      "Shopping",
-
-      "Health",
-
-      "Groceries",
-
-      "Travel",
-
-      "Entertainment",
-
-      "Restaurant",
-    ];
-
-    // EXISTING USER DATA
-
-    if (savedCategories) {
-      const parsed = JSON.parse(savedCategories);
-
-      // MERGE MISSING DEFAULTS
-
-      this.categories = [...new Set([...defaultCategories, ...parsed])];
-    }
-
-    // FIRST TIME USER
-    else {
-      this.categories = defaultCategories;
-    }
-
-    // SAVE UPDATED LIST
-
-    localStorage.setItem(
-      "categories",
-
-      JSON.stringify(this.categories),
-    );
-
-    // EMIT INITIAL DATA
-
-    this.categoriesSubject.next(this.categories);
+    private firestore: Firestore,
+  ) {
+    this.initCategories();
     this.syncToCloud();
-
     this.processRecurringTransactions();
-
   }
-  // =========================
-  // CLOUD SAVE
-  // =========================
 
-  async syncToCloud() {
+  private initCategories(): void {
+    const saved = localStorage.getItem('categories');
+    const parsed: string[] = saved ? JSON.parse(saved) : [];
+    this.categories = [...new Set([...this.DEFAULT_CATEGORIES, ...parsed])];
+    localStorage.setItem('categories', JSON.stringify(this.categories));
+    this.categoriesSubject.next(this.categories);
+  }
+
+  // ---------------------------------------------------------------------------
+  // CLOUD SYNC
+  // ---------------------------------------------------------------------------
+
+  async syncToCloud(): Promise<void> {
     await this.cloudData.saveUserData(
-      "transactions",
+      'transactions',
       this.transactionsSubject.value,
     );
-
-    await this.cloudData.saveUserData("accounts", this.accountsSubject.value);
-
-    await this.cloudData.saveUserData("goals", this.goals);
-
-    await this.cloudData.saveUserData("budgets", this.budgets);
-
-    await this.cloudData.saveUserData("recurring", this.recurringTransactions);
-
-    await this.cloudData.saveUserData("categories", this.categories);
+    await this.cloudData.saveUserData('accounts', this.accountsSubject.value);
+    await this.cloudData.saveUserData('goals', this.goals);
+    await this.cloudData.saveUserData('budgets', this.budgets);
+    await this.cloudData.saveUserData('recurring', this.recurringTransactions);
+    await this.cloudData.saveUserData('categories', this.categories);
+    await this.cloudData.saveUserData('investments', this.investments);
   }
 
-  // =========================
-  // TRANSACTIONS
-  // =========================
+  async restoreFromCloud(): Promise<void> {
+    const transactions = await this.cloudData.loadUserData('transactions');
+    if (transactions) {
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      this.transactionsSubject.next(transactions);
+    }
 
-  getTransactions() {
+    const accounts = await this.cloudData.loadUserData('accounts');
+    if (accounts) {
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+      this.accountsSubject.next(accounts);
+    }
+
+    const goals = await this.cloudData.loadUserData('goals');
+    if (goals) {
+      this.goals = goals;
+      localStorage.setItem('goals', JSON.stringify(goals));
+    }
+
+    const budgets = await this.cloudData.loadUserData('budgets');
+    if (budgets) {
+      this.budgets = budgets;
+      localStorage.setItem('budgets', JSON.stringify(budgets));
+    }
+
+    const recurring = await this.cloudData.loadUserData('recurring');
+    if (recurring) {
+      this.recurringTransactions = recurring;
+      localStorage.setItem('recurring', JSON.stringify(recurring));
+    }
+
+    const categories = await this.cloudData.loadUserData('categories');
+    if (categories) {
+      this.categories = [
+        ...new Set([...this.DEFAULT_CATEGORIES, ...categories]),
+      ];
+      localStorage.setItem('categories', JSON.stringify(this.categories));
+      this.categoriesSubject.next(this.categories);
+    }
+
+    const investments = await this.cloudData.loadUserData('investments');
+    if (investments) {
+      this.investments = investments;
+      this.investmentsSubject.next(investments);
+      localStorage.setItem('investments', JSON.stringify(investments));
+    }
+  }
+
+  startRealtimeSync() {
+    const userId = localStorage.getItem('uid');
+
+    if (!userId) {
+      return;
+    }
+
+    // =====================================
+    // TRANSACTIONS
+    // =====================================
+
+    const transactionsRef = doc(
+      this.firestore,
+
+      `users/${userId}/finance/transactions`,
+    );
+
+    onSnapshot(
+      transactionsRef,
+
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          return;
+        }
+
+        const data = snapshot.data()['data'];
+
+        localStorage.setItem(
+          'transactions',
+
+          JSON.stringify(data),
+        );
+
+        this.transactionsSubject.next(data);
+
+        console.log('Transactions synced');
+      },
+    );
+
+    // =====================================
+    // ACCOUNTS
+    // =====================================
+
+    const accountsRef = doc(
+      this.firestore,
+
+      `users/${userId}/finance/accounts`,
+    );
+
+    onSnapshot(
+      accountsRef,
+
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          return;
+        }
+
+        const data = snapshot.data()['data'];
+
+        localStorage.setItem(
+          'accounts',
+
+          JSON.stringify(data),
+        );
+
+        this.accountsSubject.next(data);
+
+        console.log('Accounts synced');
+      },
+    );
+
+    // =====================================
+    // INVESTMENTS
+    // =====================================
+
+    const investmentsRef = doc(
+      this.firestore,
+
+      `users/${userId}/finance/investments`,
+    );
+
+    onSnapshot(
+      investmentsRef,
+
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          return;
+        }
+
+        const data = snapshot.data()['data'];
+
+        this.investments = data;
+
+        localStorage.setItem(
+          'investments',
+
+          JSON.stringify(data),
+        );
+
+        this.investmentsSubject.next(data);
+
+        console.log('Investments synced');
+      },
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // TRANSACTIONS
+  // ---------------------------------------------------------------------------
+
+  getTransactions(): any[] {
     return this.transactionsSubject.value;
   }
 
-  addTransaction(transaction: any) {
+  loadTransactions(): any[] {
+    return JSON.parse(localStorage.getItem('transactions') || '[]');
+  }
+
+  refreshTransactions(): void {
+    this.transactionsSubject.next(this.loadTransactions());
+  }
+
+  addTransaction(transaction: any): void {
     const updated = [...this.transactionsSubject.value, transaction];
-
-    localStorage.setItem("transactions", JSON.stringify(updated));
-
-    this.transactionsSubject.next(updated);
-
-    this.syncToCloud();
+    this.saveTransactions(updated);
   }
 
-  deleteTransaction(index: number) {
-    const updated = [...this.transactionsSubject.value];
+  updateTransaction(index: number, updated: any): void {
+    const transactions = [...this.transactionsSubject.value];
+    transactions[index] = updated;
+    this.saveTransactions(transactions);
+  }
 
+  deleteTransaction(index: number): void {
+    const updated = [...this.transactionsSubject.value];
     updated.splice(index, 1);
+    this.saveTransactions(updated);
+  }
 
-    localStorage.setItem("transactions", JSON.stringify(updated));
-
-    this.transactionsSubject.next(updated);
-
+  private saveTransactions(transactions: any[]): void {
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+    this.transactionsSubject.next(transactions);
     this.syncToCloud();
   }
 
-  updateTransaction(index: number, updatedTransaction: any) {
-    const updated = [...this.transactionsSubject.value];
-
-    updated[index] = updatedTransaction;
-
-    localStorage.setItem("transactions", JSON.stringify(updated));
-
-    this.transactionsSubject.next(updated);
-
-    this.syncToCloud();
+  private updateState(transactions: any[]): void {
+    this.transactionsSubject.next(transactions);
   }
 
-  loadTransactions() {
-    return JSON.parse(localStorage.getItem("transactions") || "[]");
-  }
-
-  // =========================
+  // ---------------------------------------------------------------------------
   // ACCOUNTS
-  // =========================
+  // ---------------------------------------------------------------------------
 
-  getAccounts() {
+  getAccounts(): any[] {
     return this.accountsSubject.value;
   }
 
-  addAccount(account: any) {
-    const updated = [...this.accountsSubject.value, account];
-
-    localStorage.setItem("accounts", JSON.stringify(updated));
-
-    this.accountsSubject.next(updated);
-    this.syncToCloud();
+  loadAccounts(): any[] {
+    return JSON.parse(localStorage.getItem('accounts') || '[]');
   }
 
-  deleteAccount(name: string) {
+  addAccount(account: any): void {
+    const updated = [...this.accountsSubject.value, account];
+    this.saveAccounts(updated);
+  }
+
+  deleteAccount(name: string): void {
     const updated = this.accountsSubject.value.filter(
       (acc: any) => acc.name !== name,
     );
+    this.saveAccounts(updated);
+  }
 
-    localStorage.setItem("accounts", JSON.stringify(updated));
-
-    this.accountsSubject.next(updated);
+  private saveAccounts(accounts: any[]): void {
+    localStorage.setItem('accounts', JSON.stringify(accounts));
+    this.accountsSubject.next(accounts);
     this.syncToCloud();
   }
 
-  loadAccounts() {
-    return JSON.parse(localStorage.getItem("accounts") || "[]");
+  private updateAccounts(accounts: any[]): void {
+    this.accountsSubject.next(accounts);
   }
 
-  // =========================
+  // ---------------------------------------------------------------------------
   // BUDGETS
-  // =========================
+  // ---------------------------------------------------------------------------
 
-  getBudgets() {
+  getBudgets(): Budget[] {
     return this.budgets;
   }
 
-  addBudget(budget: Budget) {
+  addBudget(budget: Budget): void {
     this.budgets.push(budget);
+    this.saveBudgets();
+  }
 
-    localStorage.setItem("budgets", JSON.stringify(this.budgets));
+  deleteBudget(title: string): void {
+    this.budgets = this.budgets.filter((b) => b.title !== title);
+    this.saveBudgets();
+  }
+
+  private saveBudgets(): void {
+    localStorage.setItem('budgets', JSON.stringify(this.budgets));
     this.syncToCloud();
   }
 
-  deleteBudget(title: string) {
-    this.budgets = this.budgets.filter((budget) => budget.title !== title);
-
-    localStorage.setItem(
-      "budgets",
-
-      JSON.stringify(this.budgets),
-    );
-
-    this.syncToCloud();
-  }
-
-  // =========================
+  // ---------------------------------------------------------------------------
   // GOALS
-  // =========================
+  // ---------------------------------------------------------------------------
 
-  getGoals() {
+  getGoals(): Goal[] {
     return this.goals;
   }
 
-  addGoal(goal: Goal) {
+  addGoal(goal: Goal): void {
     this.goals.push(goal);
+    this.saveGoals();
+  }
 
-    localStorage.setItem("goals", JSON.stringify(this.goals));
+  deleteGoal(title: string): void {
+    this.goals = this.goals.filter((g) => g.title !== title);
+    this.saveGoals();
+  }
+
+  private saveGoals(): void {
+    localStorage.setItem('goals', JSON.stringify(this.goals));
     this.syncToCloud();
   }
 
-  deleteGoal(title: string) {
-    this.goals = this.goals.filter((goal) => goal.title !== title);
-
-    localStorage.setItem("goals", JSON.stringify(this.goals));
-    this.syncToCloud();
-  }
-
-  // =========================
+  // ---------------------------------------------------------------------------
   // RECURRING TRANSACTIONS
-  // =========================
+  // ---------------------------------------------------------------------------
 
-  getRecurringTransactions() {
+  getRecurringTransactions(): RecurringTransaction[] {
     return this.recurringTransactions;
   }
 
-  addRecurringTransaction(recurring: RecurringTransaction) {
+  addRecurringTransaction(recurring: RecurringTransaction): void {
     this.recurringTransactions.push(recurring);
-
-    localStorage.setItem(
-      "recurring",
-
-      JSON.stringify(this.recurringTransactions),
-    );
-
-    // PROCESS IMMEDIATELY
-
+    this.saveRecurring();
     this.processRecurringTransactions();
-    this.syncToCloud();
   }
 
-  deleteRecurringTransaction(title: string) {
+  deleteRecurringTransaction(title: string): void {
     this.recurringTransactions = this.recurringTransactions.filter(
       (r) => r.title !== title,
     );
+    this.saveRecurring();
+  }
 
+  private saveRecurring(): void {
     localStorage.setItem(
-      "recurring",
+      'recurring',
       JSON.stringify(this.recurringTransactions),
     );
     this.syncToCloud();
   }
 
-  processRecurringTransactions() {
+  processRecurringTransactions(): void {
     const today = new Date();
-
     let transactions = this.getTransactions();
 
-    let recurring = this.getRecurringTransactions();
-
-    recurring = recurring.map((r: any) => {
+    this.recurringTransactions = this.recurringTransactions.map((r: any) => {
       const dueDate = new Date(r.nextDate);
+      if (dueDate > today) return r;
 
-      // IF DUE
+      const alreadyExists = transactions.some(
+        (t: any) =>
+          t.category === r.category &&
+          t.amount === r.amount &&
+          t.date === r.nextDate,
+      );
 
-      if (dueDate <= today) {
-        const alreadyExists = transactions.some(
-          (t: any) =>
-            t.category === r.category &&
-            t.amount === r.amount &&
-            t.date === r.nextDate,
-        );
-
-        // AVOID DUPLICATES
-
-        if (!alreadyExists) {
-          transactions.push({
-            amount: r.amount,
-
-            type: r.type,
-
-            category: r.category,
-
-            account: r.account,
-
-            date: r.nextDate,
-          });
-        }
-
-        // UPDATE NEXT DATE
-
-        const next = new Date(r.nextDate);
-
-        if (r.frequency === "Weekly") {
-          next.setDate(next.getDate() + 7);
-        }
-
-        if (r.frequency === "Monthly") {
-          next.setMonth(next.getMonth() + 1);
-        }
-
-        if (r.frequency === "Yearly") {
-          next.setFullYear(next.getFullYear() + 1);
-        }
-
-        r.nextDate = next.toISOString().split("T")[0];
+      if (!alreadyExists) {
+        transactions.push({
+          amount: r.amount,
+          type: r.type,
+          category: r.category,
+          account: r.account,
+          date: r.nextDate,
+        });
       }
+
+      const next = new Date(r.nextDate);
+      if (r.frequency === 'Weekly') next.setDate(next.getDate() + 7);
+      if (r.frequency === 'Monthly') next.setMonth(next.getMonth() + 1);
+      if (r.frequency === 'Yearly') next.setFullYear(next.getFullYear() + 1);
+      r.nextDate = next.toISOString().split('T')[0];
 
       return r;
     });
 
-    // SAVE UPDATED TRANSACTIONS
-
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-
+    localStorage.setItem('transactions', JSON.stringify(transactions));
     this.transactionsSubject.next(transactions);
-
-    // SAVE UPDATED RECURRING
-
-    localStorage.setItem("recurring", JSON.stringify(recurring));
-
-    this.recurringTransactions = recurring;
+    localStorage.setItem(
+      'recurring',
+      JSON.stringify(this.recurringTransactions),
+    );
   }
 
-  // =========================
+  // ---------------------------------------------------------------------------
   // TRANSFERS
-  // =========================
-  private updateAccounts(accounts: any[]) {
-    this.accountsSubject.next(accounts);
-  }
-
-  private updateState(transactions: any[]) {
-    this.transactionsSubject.next(transactions);
-  }
+  // ---------------------------------------------------------------------------
 
   transferMoney(
     from: string,
@@ -448,363 +516,174 @@ export class TransactionService {
     note: string,
     date: string,
     category?: string,
-  ) {
-    const accounts = this.getAccounts();
-
-    const updatedAccounts = accounts.map((acc: any) => {
-      // REMOVE FROM SOURCE
-
-      if (acc.name === from) {
-        return {
-          ...acc,
-
-          balance: acc.balance - amount,
-        };
-      }
-
-      // ADD TO TARGET
-
-      if (acc.name === to) {
-        return {
-          ...acc,
-
-          balance: acc.balance + amount,
-        };
-      }
-
+  ): void {
+    const updatedAccounts = this.getAccounts().map((acc: any) => {
+      if (acc.name === from) return { ...acc, balance: acc.balance - amount };
+      if (acc.name === to) return { ...acc, balance: acc.balance + amount };
       return acc;
     });
 
-    localStorage.setItem("accounts", JSON.stringify(updatedAccounts));
-
+    localStorage.setItem('accounts', JSON.stringify(updatedAccounts));
     this.updateAccounts(updatedAccounts);
 
-    // CREATE TRANSFER RECORD
-
     const transactions = this.getTransactions();
-
     transactions.push({
-      type: "Transfer",
-
+      type: 'Transfer',
       amount,
-
-      category: category || "Transfer",
-
+      category: category || 'Transfer',
       account: `${from} → ${to}`,
-
       note,
-
       date,
     });
 
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-
+    localStorage.setItem('transactions', JSON.stringify(transactions));
     this.updateState(transactions);
     this.syncToCloud();
   }
 
-  // =========================
+  // ---------------------------------------------------------------------------
   // LENT MONEY
-  // =========================
+  // ---------------------------------------------------------------------------
 
-  private lendingSubject = new BehaviorSubject<any[]>(this.getLendings());
-
-  lendings$ = this.lendingSubject.asObservable();
-
-  getLendings() {
-    return JSON.parse(localStorage.getItem("lendings") || "[]");
+  getLendings(): any[] {
+    return JSON.parse(localStorage.getItem('lendings') || '[]');
   }
 
-  private updateLendings(lendings: any[]) {
+  addLending(lending: any): void {
+    const lendings = this.getLendings();
+    lendings.push(lending);
+    this.saveLendings(lendings);
+  }
+
+  updateLending(index: number, updated: any): void {
+    const lendings = this.getLendings();
+    lendings[index] = updated;
+    this.saveLendings(lendings);
+  }
+
+  deleteLending(index: number): void {
+    const lendings = this.getLendings();
+    lendings.splice(index, 1);
+    this.saveLendings(lendings);
+  }
+
+  private saveLendings(lendings: any[]): void {
+    localStorage.setItem('lendings', JSON.stringify(lendings));
+    this.lendingSubject.next(lendings);
+    this.syncToCloud();
+  }
+
+  private updateLendings(lendings: any[]): void {
     this.lendingSubject.next(lendings);
   }
 
-  addLending(lending: any) {
-    const lendings = this.getLendings();
-
-    lendings.push(lending);
-
-    localStorage.setItem(
-      "lendings",
-
-      JSON.stringify(lendings),
-    );
-
-    this.updateLendings(lendings);
-    this.syncToCloud();
-  }
-
-  updateLending(index: number, updated: any) {
-    const lendings = this.getLendings();
-
-    lendings[index] = updated;
-
-    localStorage.setItem(
-      "lendings",
-
-      JSON.stringify(lendings),
-    );
-
-    this.updateLendings(lendings);
-    this.syncToCloud();
-  }
-
-  deleteLending(index: number) {
-    const lendings = this.getLendings();
-
-    lendings.splice(index, 1);
-
-    localStorage.setItem(
-      "lendings",
-
-      JSON.stringify(lendings),
-    );
-
-    this.updateLendings(lendings);
-    this.syncToCloud();
-  }
-
-  refreshTransactions() {
-    const transactions = JSON.parse(
-      localStorage.getItem("transactions") || "[]",
-    );
-
-    this.transactionsSubject.next(transactions);
-  }
-
-  // =========================
+  // ---------------------------------------------------------------------------
   // CATEGORIES
-  // =========================
+  // ---------------------------------------------------------------------------
 
-  getCategories() {
+  getCategories(): string[] {
     return this.categories;
   }
 
-  addCategory(category: string) {
+  addCategory(category: string): void {
+    const trimmed = category.trim();
+    if (!trimmed) return;
+
     const exists = this.categories.some(
-      (c) => c.toLowerCase() === category.toLowerCase(),
+      (c) => c.toLowerCase() === trimmed.toLowerCase(),
     );
+    if (exists) return;
 
-    if (exists || !category.trim()) {
-      return;
-    }
-
-    this.categories.push(category);
-
-    localStorage.setItem(
-      "categories",
-
-      JSON.stringify(this.categories),
-    );
+    this.categories.push(trimmed);
+    localStorage.setItem('categories', JSON.stringify(this.categories));
     this.categoriesSubject.next(this.categories);
   }
 
-  // =========================
-  // CLOUD RESTORE
-  // =========================
+  // ---------------------------------------------------------------------------
+  // INVESTMENTS
+  // ---------------------------------------------------------------------------
 
-  async restoreFromCloud() {
-    // TRANSACTIONS
-
-    const transactions = await this.cloudData.loadUserData("transactions");
-
-    if (transactions) {
-      localStorage.setItem(
-        "transactions",
-
-        JSON.stringify(transactions),
-      );
-
-      this.transactionsSubject.next(transactions);
-    }
-
-    // ACCOUNTS
-
-    const accounts = await this.cloudData.loadUserData("accounts");
-
-    if (accounts) {
-      localStorage.setItem(
-        "accounts",
-
-        JSON.stringify(accounts),
-      );
-
-      this.accountsSubject.next(accounts);
-    }
-
-    // GOALS
-
-    const goals = await this.cloudData.loadUserData("goals");
-
-    if (goals) {
-      this.goals = goals;
-
-      localStorage.setItem(
-        "goals",
-
-        JSON.stringify(goals),
-      );
-    }
-
-    // BUDGETS
-
-    const budgets = await this.cloudData.loadUserData("budgets");
-
-    if (budgets) {
-      this.budgets = budgets;
-
-      localStorage.setItem(
-        "budgets",
-
-        JSON.stringify(budgets),
-      );
-    }
-
-    // RECURRING
-
-    const recurring = await this.cloudData.loadUserData("recurring");
-
-    if (recurring) {
-      this.recurringTransactions = recurring;
-
-      localStorage.setItem(
-        "recurring",
-
-        JSON.stringify(recurring),
-      );
-    }
-
-    // CATEGORIES
-
-    const categories = await this.cloudData.loadUserData("categories");
-
-    if (categories) {
-      const defaultCategories = [
-        "Salary",
-
-        "Food",
-
-        "Fuel",
-
-        "Bills",
-
-        "Investment",
-
-        "Shopping",
-
-        "Health",
-
-        "Groceries",
-
-        "Travel",
-
-        "Entertainment",
-
-        "Restaurant",
-      ];
-
-      // MERGE DEFAULTS + CLOUD
-
-      this.categories = [...new Set([...defaultCategories, ...categories])];
-
-      localStorage.setItem(
-        "categories",
-
-        JSON.stringify(this.categories),
-      );
-
-      this.categoriesSubject.next(this.categories);
-    }
+  getInvestments(): Investment[] {
+    return this.investments;
   }
-  // =========================
-  // AI INSIGHTS ENGINE
-  // =========================
 
-  generateAIInsights() {
+  addInvestment(investment: Investment): void {
+    this.investments.push(investment);
+    this.saveInvestments();
+  }
+
+  deleteInvestment(index: number): void {
+    this.investments.splice(index, 1);
+    this.saveInvestments();
+  }
+
+  saveEditedInvestments(investments: Investment[]): void {
+    this.investments = investments;
+
+    this.saveInvestments();
+  }
+
+  private saveInvestments(): void {
+    localStorage.setItem(
+      'investments',
+
+      JSON.stringify(this.investments),
+    );
+
+    this.investmentsSubject.next(this.investments);
+
+    this.syncToCloud();
+  }
+
+  // ---------------------------------------------------------------------------
+  // AI INSIGHTS
+  // ---------------------------------------------------------------------------
+
+  generateAIInsights(): string[] {
     const insights: string[] = [];
-
     const transactions = this.getTransactions();
-
-    const currentMonth = new Date().getMonth();
-
-    const currentYear = new Date().getFullYear();
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
 
     let income = 0;
-
     let expense = 0;
-
-    const categoryTotals: any = {};
-
-    // CURRENT MONTH DATA
+    const categoryTotals: Record<string, number> = {};
 
     transactions.forEach((t: any) => {
       const date = new Date(t.date);
-
       if (
         date.getMonth() !== currentMonth ||
         date.getFullYear() !== currentYear
-      ) {
+      )
         return;
-      }
 
-      // INCOME
-
-      if (t.type === "Income") {
+      if (t.type === 'Income') {
         income += Number(t.amount);
-      }
-
-      // EXPENSES
-
-      if (t.type === "Expense") {
+      } else if (t.type === 'Expense') {
         expense += Number(t.amount);
-
-        if (!categoryTotals[t.category]) {
-          categoryTotals[t.category] = 0;
-        }
-
-        categoryTotals[t.category] += Number(t.amount);
+        categoryTotals[t.category] =
+          (categoryTotals[t.category] || 0) + Number(t.amount);
       }
     });
 
-    // SAVINGS
-
     const savings = income - expense;
-
-    // PROJECTED EXPENSE
-
-    const today = new Date();
-
-    const avgDaily = expense / today.getDate();
-
-    const daysInMonth = new Date(
-      currentYear,
-
-      currentMonth + 1,
-
-      0,
-    ).getDate();
-
+    const avgDaily = expense / now.getDate();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const projectedExpense = Math.round(avgDaily * daysInMonth);
 
-    // INSIGHTS
-
     insights.push(`Projected monthly spending: ₹${projectedExpense}.`);
+    insights.push(
+      savings < 0
+        ? 'You are currently overspending this month.'
+        : `Current monthly savings: ₹${savings}.`,
+    );
 
-    if (savings < 0) {
-      insights.push(`You are currently overspending this month.`);
-    } else {
-      insights.push(`Current monthly savings: ₹${savings}.`);
-    }
-
-    // TOP CATEGORY
-
-    const top = Object.entries(categoryTotals)
-
-      .sort((a: any, b: any) => b[1] - a[1])[0];
-
-    if (top) {
+    const top = Object.entries(categoryTotals).sort(
+      (a: any, b: any) => b[1] - a[1],
+    )[0];
+    if (top)
       insights.push(`${top[0]} is your top expense category this month.`);
-    }
 
     return insights;
   }

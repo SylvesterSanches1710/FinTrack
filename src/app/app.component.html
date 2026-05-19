@@ -1,93 +1,82 @@
 <!-- LOADING SCREEN -->
-
 <div *ngIf="!authService.authReady || !appReady" class="app-loader">
-  <div class="loader"></div>
+  <div class="loader-ring">
+    <div class="loader-icon">₹</div>
+  </div>
 </div>
 
 <!-- APP -->
-
 <div *ngIf="authService.authReady && appReady">
-  <!-- AUTH PAGE -->
-
+  <!-- AUTH PAGE (no layout) -->
   <div *ngIf="hideLayout">
-    <router-outlet> </router-outlet>
+    <router-outlet></router-outlet>
   </div>
 
   <!-- MAIN APP -->
-
   <div class="app-layout" *ngIf="!hideLayout">
     <!-- MOBILE OVERLAY -->
-
     <div
       class="mobile-overlay"
       *ngIf="sidebarOpen"
-      (click)="toggleSidebar()"></div>
+      (click)="toggleSidebar()"
+    ></div>
 
     <!-- SIDEBAR -->
-
     <app-sidebar
       [class.mobile-open]="sidebarOpen"
-      (closeMenu)="sidebarOpen = false">
+      (closeMenu)="sidebarOpen = false"
+    >
     </app-sidebar>
 
     <!-- MAIN CONTENT -->
-
     <main class="main-content">
       <!-- MOBILE TOPBAR -->
-
       <div class="mobile-topbar">
-        <button class="menu-btn" (click)="toggleSidebar()">☰</button>
-
+        <button
+          class="menu-btn"
+          (click)="toggleSidebar()"
+          aria-label="Open menu"
+        >
+          <i class="ti ti-menu-2"></i>
+        </button>
         <div class="mobile-logo">Fintrack</div>
       </div>
 
-      <router-outlet> </router-outlet>
+      <router-outlet></router-outlet>
     </main>
   </div>
 
   <!-- NAME ONBOARDING -->
-
   <div class="onboarding-overlay" *ngIf="showNameModal">
     <div class="onboarding-modal">
       <div class="onboarding-logo">👋</div>
-
-      <h1>Welcome to Fintrack</h1>
-
-      <p>What should we call you?</p>
-
-      <input
-        type="text"
-        placeholder="Enter your name"
-        [(ngModel)]="displayName" />
-
+      <div class="onboarding-text">
+        <h1>Welcome to Fintrack</h1>
+        <p>What should we call you?</p>
+      </div>
+      <input type="text" placeholder="Your name" [(ngModel)]="displayName" />
       <button (click)="saveDisplayName()">Continue</button>
     </div>
   </div>
 
   <!-- FIRST ACCOUNT ONBOARDING -->
-
   <div class="onboarding-overlay" *ngIf="showOnboarding">
     <div class="onboarding-modal">
       <div class="onboarding-logo">₹</div>
-
-      <h1>Welcome to Fintrack</h1>
-
-      <p>Create your first account to start tracking finances.</p>
-
+      <div class="onboarding-text">
+        <h1>Add your first account</h1>
+        <p>Create an account to start tracking your finances.</p>
+      </div>
       <select [(ngModel)]="accountName">
-        <option value="">Select Bank Account</option>
-
-        <option *ngFor="let bank of banks" [value]="bank">
-          {{ bank }}
-        </option>
+        <option value="" disabled>Select Bank Account</option>
+        <option *ngFor="let bank of banks" [value]="bank">{{ bank }}</option>
       </select>
-
       <input
         type="number"
         placeholder="Starting Balance"
         [(ngModel)]="accountBalance"
-        (focus)="selectInput($event)" />
-
+        (focus)="selectInput($event)"
+      />
       <button (click)="createFirstAccount()">Continue</button>
     </div>
   </div>

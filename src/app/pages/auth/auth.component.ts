@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../auth/auth.service';
+import { TransactionService } from '../../transaction.service';
 
 @Component({
   selector: 'app-auth',
@@ -32,6 +33,7 @@ export class AuthComponent {
     private authService: AuthService,
 
     private router: Router,
+    private transactionService: TransactionService,
   ) {}
 
   async submitAuth() {
@@ -51,6 +53,30 @@ export class AuthComponent {
       this.router.navigate(['/dashboard']);
     } catch (err: any) {
       this.error = err.message;
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async tryDemo() {
+    this.loading = true;
+
+    this.error = '';
+
+    try {
+      await this.authService.login(
+        'demo@fintrack.app',
+
+        'Demo12345',
+      );
+
+      await this.transactionService.restoreFromCloud();
+
+      localStorage.setItem('displayName', 'Demo User');
+
+      this.router.navigate(['/dashboard']);
+    } catch (err: any) {
+      this.error = 'Demo account unavailable';
     } finally {
       this.loading = false;
     }

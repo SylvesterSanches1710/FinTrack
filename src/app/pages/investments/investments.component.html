@@ -1,0 +1,209 @@
+<div class="investments-page">
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Investments</h1>
+      <p>Track your wealth portfolio</p>
+    </div>
+    <button class="add-btn" (click)="showModal = true">
+      <i class="ti ti-plus"></i> Add Investment
+    </button>
+  </div>
+
+  <!-- PORTFOLIO STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">Total Invested</div>
+      <div class="stat-value">₹{{ getTotalInvested() }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Current Value</div>
+      <div class="stat-value green">
+        ₹{{ getCurrentValue() | number: "1.0-0" }}
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Profit / Loss</div>
+      <div
+        class="stat-value"
+        [ngClass]="{ green: getProfitLoss() >= 0, red: getProfitLoss() < 0 }"
+      >
+        ₹{{ getProfitLoss() | number: "1.0-0" }}
+      </div>
+    </div>
+  </div>
+
+  <!-- INVESTMENTS GRID -->
+  <div class="investments-grid">
+    <div class="investment-card" *ngFor="let inv of investments; let i = index">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="investment-name">{{ inv.name }}</div>
+          <div class="investment-type">{{ inv.type }}</div>
+        </div>
+        <div class="card-actions">
+          <button class="edit-btn" (click)="editInvestment(inv, i)">
+            <i class="ti ti-edit"></i>
+          </button>
+          <button class="delete-btn" (click)="deleteInvestment(i)">
+            <i class="ti ti-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="investment-values">
+        <div class="value-item">
+          <span>Invested</span>
+          <strong>₹{{ inv.investedAmount }}</strong>
+        </div>
+        <div class="value-item">
+          <span>Current</span>
+          <strong>₹{{ inv.currentValue | number: "1.0-0" }}</strong>
+        </div>
+      </div>
+
+      <div
+        class="investment-pl"
+        [ngClass]="{
+          green: inv.currentValue >= inv.investedAmount,
+          red: inv.currentValue < inv.investedAmount,
+        }"
+      >
+        {{ inv.currentValue >= inv.investedAmount ? "+" : "" }}₹{{
+          inv.currentValue - inv.investedAmount | number: "1.0-0"
+        }}
+      </div>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO CHART -->
+  <div class="chart-card">
+    <h2>Portfolio Allocation</h2>
+    <canvas
+      baseChart
+      [data]="pieChartData"
+      [options]="pieChartOptions"
+      [type]="pieChartType"
+    ></canvas>
+    <div class="allocation-list">
+      <div
+        class="allocation-item"
+        *ngFor="let inv of pieChartData.labels; let i = index"
+      >
+        <span>{{ inv }}</span>
+        <strong>₹{{ pieChartData.datasets[0].data[i] }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="resetForm()">
+    <div class="investment-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add Investment</h2>
+        <button class="modal-close" (click)="resetForm()">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-field">
+        <label>Type</label>
+        <select [(ngModel)]="newInvestment.type">
+          <option>Stock</option>
+          <option>Mutual Fund</option>
+          <option>ETF</option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label>Name</label>
+        <input
+          type="text"
+          placeholder="Investment name"
+          [(ngModel)]="newInvestment.name"
+          (input)="searchAssets()"
+        />
+        <div class="search-results" *ngIf="searchResults.length">
+          <div class="search-group" *ngIf="groupedResults.Stocks?.length">
+            <div class="group-title">Stocks</div>
+            <div
+              class="search-item"
+              *ngFor="let asset of groupedResults.Stocks"
+              (click)="selectAsset(asset)"
+            >
+              <strong>{{ asset.symbol }}</strong>
+              <span>{{ asset.name }}</span>
+            </div>
+          </div>
+          <div class="search-group" *ngIf="groupedResults.ETFs?.length">
+            <div class="group-title">ETFs</div>
+            <div
+              class="search-item"
+              *ngFor="let asset of groupedResults.ETFs"
+              (click)="selectAsset(asset)"
+            >
+              <strong>{{ asset.symbol }}</strong>
+              <span>{{ asset.name }}</span>
+            </div>
+          </div>
+          <div
+            class="search-group"
+            *ngIf="groupedResults['Mutual Funds']?.length"
+          >
+            <div class="group-title">Mutual Funds</div>
+            <div
+              class="search-item"
+              *ngFor="let asset of groupedResults['Mutual Funds']"
+              (click)="selectAsset(asset)"
+            >
+              <strong>{{ asset.symbol }}</strong>
+              <span>{{ asset.name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label>Symbol</label>
+        <input
+          type="text"
+          readonly
+          placeholder="Auto selected"
+          [(ngModel)]="newInvestment.symbol"
+        />
+      </div>
+
+      <div class="modal-field">
+        <label>Quantity</label>
+        <input type="number" [(ngModel)]="newInvestment.quantity" />
+      </div>
+
+      <div class="modal-field">
+        <label>Invested Amount</label>
+        <div class="input-prefix">
+          <span>₹</span>
+          <input type="number" [(ngModel)]="newInvestment.investedAmount" />
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label>Platform <span class="optional">optional</span></label>
+        <input
+          type="text"
+          placeholder="Zerodha, Groww..."
+          [(ngModel)]="newInvestment.platform"
+        />
+      </div>
+
+      <div class="modal-field">
+        <label>Notes <span class="optional">optional</span></label>
+        <textarea rows="3" [(ngModel)]="newInvestment.notes"></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="resetForm()">Cancel</button>
+        <button class="save-btn" (click)="addInvestment()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,3 +1,7 @@
+/* =============================================================================
+   RESET & BASE
+============================================================================= */
+
 * {
   margin: 0;
   padding: 0;
@@ -7,9 +11,13 @@
 body {
   background: #0f0f0f;
   color: white;
-  font-family: Inter, sans-serif;
+  font-family: "Inter", sans-serif;
   overflow-x: hidden;
 }
+
+/* =============================================================================
+   APP LAYOUT
+============================================================================= */
 
 .app-layout {
   display: flex;
@@ -20,275 +28,234 @@ body {
 
 .main-content {
   flex: 1;
-
-  margin-left: 250px;
-
-  width: calc(100% - 240px);
-
-  padding: 40px 42px;
-
+  margin-left: 15rem;
+  width: calc(100% - 15rem);
+  padding: 2.5rem 2.625rem;
   min-height: 100vh;
-
   overflow-y: auto;
   background: #080808;
 }
 
-/* MOBILE TOPBAR */
+/* =============================================================================
+   MOBILE TOPBAR
+============================================================================= */
 
 .mobile-topbar {
   display: none;
-
   align-items: center;
-
-  gap: 16px;
-
-  margin-bottom: 20px;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .menu-btn {
-  width: 46px;
-  height: 46px;
-
+  width: 2.75rem;
+  height: 2.75rem;
   border: none;
-
-  border-radius: 12px;
-
+  border-radius: 0.875rem;
   background: #1b1b1b;
-
   color: white;
-
-  font-size: 20px;
-
+  font-size: 1.25rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #242424;
+  }
 }
 
 .mobile-logo {
-  font-size: 1.7rem;
-
+  font-size: 1.5rem;
   font-weight: 800;
-
   letter-spacing: -0.04em;
-
-  line-height: 1;
-
   background: linear-gradient(90deg, #ffffff 0%, #dbe7ff 45%, #8fb2ff 100%);
-
   -webkit-background-clip: text;
-
   -webkit-text-fill-color: transparent;
-
   background-clip: text;
-
-  text-shadow: 0 0 20px rgba(43, 111, 255, 0.15);
 }
 
-/* MOBILE OVERLAY */
+/* =============================================================================
+   MOBILE OVERLAY
+============================================================================= */
 
 .mobile-overlay {
   position: fixed;
-
   inset: 0;
-
   background: rgba(0, 0, 0, 0.6);
-
   z-index: 998;
+  backdrop-filter: blur(0.125rem);
 }
 
-/* RESPONSIVE */
+/* =============================================================================
+   LOADING SCREEN
+============================================================================= */
 
-@media (max-width: 900px) {
-  .mobile-topbar {
-    display: flex;
-  }
-
-  .main-content {
-    margin-left: 0 !important;
-
-    width: 100%;
-
-    padding: 20px;
-  }
-}
-
-.onboarding-overlay {
-  position: fixed;
-
-  inset: 0;
-
-  background: rgba(0, 0, 0, 0.92);
-
-  backdrop-filter: blur(0.5rem);
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  z-index: 5000;
-}
-
-.onboarding-modal {
-  width: 28rem;
-
-  background: #141414;
-
-  border: 0.0625rem solid #232323;
-
-  border-radius: 2rem;
-
-  padding: 2.5rem;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 1rem;
-
-  text-align: center;
-
-  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.5);
-
-  h1 {
-    font-size: 2rem;
-
-    margin: 0.5rem 0;
-  }
-
-  p {
-    color: #9ca3af;
-
-    margin-bottom: 1rem;
-  }
-
-  input,
-  select {
-    width: 100%;
-
-    height: 3.5rem;
-
-    border: 0.0625rem solid #2a2a2a;
-
-    background: #1b1b1b;
-
-    border-radius: 1rem;
-
-    padding: 0 1rem;
-
-    color: white;
-
-    font-size: 1rem;
-
-    outline: none;
-
-    transition:
-      border-color 0.2s ease,
-      background 0.2s ease;
-
-    appearance: none;
-  }
-
-  select {
-    cursor: pointer;
-
-    background-image:
-      linear-gradient(45deg, transparent 50%, #9ca3af 50%),
-      linear-gradient(135deg, #9ca3af 50%, transparent 50%);
-
-    background-position:
-      calc(100% - 1.3rem) 1.45rem,
-      calc(100% - 1rem) 1.45rem;
-
-    background-size:
-      0.4rem 0.4rem,
-      0.4rem 0.4rem;
-
-    background-repeat: no-repeat;
-  }
-
-  input:focus,
-  select:focus {
-    border-color: #2563eb;
-
-    background: #1f1f1f;
-  }
-
-  button {
-    height: 3.5rem;
-
-    border: none;
-
-    border-radius: 1rem;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 1rem;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: 0.2s ease;
-  }
-
-  button:hover {
-    background: #3b82f6;
-  }
-}
-
-.onboarding-logo {
-  width: 5rem;
-
-  height: 5rem;
-
-  margin: 0 auto;
-
-  border-radius: 50%;
-
-  background: #2563eb;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  font-size: 2rem;
-
-  font-weight: 700;
-}
 .app-loader {
   width: 100vw;
-
   height: 100vh;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   background: #050505;
 }
 
-.loader {
-  width: 3rem;
-
-  height: 3rem;
-
+.loader-ring {
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
-
-  border: 3px solid #1f2937;
-
+  border: 0.1875rem solid #1f2937;
   border-top-color: #2b6fff;
-
   animation: spin 0.8s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-icon {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2b6fff;
+  animation: spin 0.8s linear infinite reverse;
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* =============================================================================
+   ONBOARDING
+============================================================================= */
+
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(0.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 1rem;
+}
+
+.onboarding-modal {
+  width: 100%;
+  max-width: 26rem;
+  background: #141414;
+  border: 0.0625rem solid #232323;
+  border-radius: 1.75rem;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.5);
+}
+
+.onboarding-logo {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a4fd8, #2b6fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.onboarding-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  p {
+    font-size: 0.938rem;
+    color: #9ca3af;
+  }
+}
+
+.onboarding-modal input,
+.onboarding-modal select {
+  width: 100%;
+  height: 3.25rem;
+  border: 0.0625rem solid #2a2a2a;
+  background: #1b1b1b;
+  border-radius: 0.875rem;
+  padding: 0 1rem;
+  color: white;
+  font-size: 0.938rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: #2563eb;
+  }
+}
+
+.onboarding-modal select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-color: #1b1b1b;
+}
+
+.onboarding-modal button {
+  width: 100%;
+  height: 3.25rem;
+  border: none;
+  border-radius: 0.875rem;
+  background: #2563eb;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 0.25rem;
+
+  &:hover {
+    background: #3b82f6;
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE
+============================================================================= */
+
+@media (max-width: 56.25rem) {
+  .mobile-topbar {
+    display: flex;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 36rem) {
+  .onboarding-modal {
+    padding: 1.75rem 1.25rem;
+    border-radius: 1.5rem;
+  }
+
+  .onboarding-text h1 {
+    font-size: 1.25rem;
   }
 }

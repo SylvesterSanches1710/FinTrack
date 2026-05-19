@@ -28,6 +28,7 @@
     "ng2-charts": "^6.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "yahoo-finance2": "^3.14.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

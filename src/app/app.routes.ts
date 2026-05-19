@@ -10,6 +10,7 @@ import { LentMoneyComponent } from './pages/lent-money/lent-money.component';
 import { BudgetsComponent } from './pages/budgets/budgets.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { authGuard } from './auth/auth.guard';
+import { InvestmentsComponent } from './pages/investments/investments.component';
 
 export const routes: Routes = [
   {
@@ -74,6 +75,12 @@ export const routes: Routes = [
   {
     path: 'lent-money',
     component: LentMoneyComponent,
+    canActivate: [authGuard],
+  },
+
+  {
+    path: 'investments',
+    component: InvestmentsComponent,
     canActivate: [authGuard],
   },
 ];

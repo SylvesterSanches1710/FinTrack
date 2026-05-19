@@ -31,6 +31,9 @@ export class AuthService {
 
     onAuthStateChanged(this.auth, (user) => {
       this.currentUser = user;
+      if (user) {
+        localStorage.setItem('uid', user.uid);
+      }
 
       this.authReady = true;
     });
