@@ -20,6 +20,10 @@ export class GoalsComponent {
 
   showModal = false;
 
+  editMode = false;
+
+  editIndex = -1;
+
   newTitle = '';
 
   newTarget = 0;
@@ -140,12 +144,30 @@ export class GoalsComponent {
     )}`;
   }
 
+  editGoal(goal: any, index: number) {
+    this.editMode = true;
+
+    this.editIndex = index;
+
+    this.newTitle = goal.title;
+
+    this.newTarget = goal.target;
+
+    this.newColor = goal.color;
+
+    this.newLinkedCategory = goal.linkedCategory;
+
+    this.newLinkedAccount = goal.linkedAccount || '';
+
+    this.showModal = true;
+  }
+
   addGoal() {
     if (!this.newTitle || !this.newLinkedCategory || this.newTarget <= 0) {
       return;
     }
 
-    this.transactionService.addGoal({
+    const goalData = {
       title: this.newTitle,
 
       target: this.newTarget,
@@ -155,12 +177,24 @@ export class GoalsComponent {
       linkedAccount: this.newLinkedAccount,
 
       color: this.newColor,
-    });
+    };
+
+    if (this.editMode) {
+      this.transactionService.updateGoal(
+        this.editIndex,
+
+        goalData,
+      );
+    } else {
+      this.transactionService.addGoal(goalData);
+    }
 
     this.loadGoals();
 
-    // RESET
+    this.resetForm();
+  }
 
+  resetForm() {
     this.newTitle = '';
 
     this.newTarget = 0;
@@ -170,6 +204,10 @@ export class GoalsComponent {
     this.newLinkedCategory = '';
 
     this.newLinkedAccount = '';
+
+    this.editMode = false;
+
+    this.editIndex = -1;
 
     this.showModal = false;
   }

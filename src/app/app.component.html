@@ -21,13 +21,15 @@
     <div
       class="mobile-overlay"
       *ngIf="sidebarOpen"
-      (click)="toggleSidebar()"></div>
+      (click)="toggleSidebar()"
+    ></div>
 
     <!-- SIDEBAR -->
 
     <app-sidebar
       [class.mobile-open]="sidebarOpen"
-      (closeMenu)="sidebarOpen = false">
+      (closeMenu)="sidebarOpen = false"
+    >
     </app-sidebar>
 
     <!-- MAIN CONTENT -->
@@ -58,7 +60,8 @@
       <input
         type="text"
         placeholder="Enter your name"
-        [(ngModel)]="displayName" />
+        [(ngModel)]="displayName"
+      />
 
       <button (click)="saveDisplayName()">Continue</button>
     </div>
@@ -86,7 +89,8 @@
         type="number"
         placeholder="Starting Balance"
         [(ngModel)]="accountBalance"
-        (focus)="selectInput($event)" />
+        (focus)="selectInput($event)"
+      />
 
       <button (click)="createFirstAccount()">Continue</button>
     </div>

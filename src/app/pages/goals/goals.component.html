@@ -23,6 +23,14 @@
           <div class="goal-percent" [style.color]="goal.color">
             {{ getProgress(goal.saved, goal.target) | number: "1.0-0" }}%
           </div>
+
+          <button
+            class="edit-btn"
+            (click)="editGoal(goal, goals.indexOf(goal))"
+          >
+            <i class="ti ti-edit"></i>
+          </button>
+
           <button class="delete-btn" (click)="deleteGoal(goal.title)">
             <i class="ti ti-trash"></i>
           </button>
@@ -74,7 +82,9 @@
   <div class="modal-overlay" *ngIf="showModal" (click)="showModal = false">
     <div class="goal-modal" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>Add Goal</h2>
+        <h2>
+          {{ editMode ? "Edit Goal" : "Add Goal" }}
+        </h2>
         <button class="modal-close" (click)="showModal = false">
           <i class="ti ti-x"></i>
         </button>
@@ -138,7 +148,9 @@
 
       <div class="modal-actions">
         <button class="cancel-btn" (click)="showModal = false">Cancel</button>
-        <button class="save-btn" (click)="addGoal()">Create Goal</button>
+        <button class="save-btn" (click)="addGoal()">
+          {{ editMode ? "Update Goal" : "Create Goal" }}
+        </button>
       </div>
     </div>
   </div>

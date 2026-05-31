@@ -103,6 +103,29 @@
   font-weight: 700;
 }
 
+/* EDIT */
+.edit-btn {
+  width: 1.875rem;
+  height: 1.875rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #4b5563;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.938rem;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: rgba(37, 99, 235, 0.12);
+    color: #2563eb;
+  }
+}
+
 /* DELETE */
 .delete-btn {
   width: 1.875rem;
