@@ -8,6 +8,7 @@ import { TransactionService } from './transaction.service';
 import { AuthService } from './auth/auth.service';
 
 import { Router, NavigationEnd } from '@angular/router';
+import { UpdateService } from './services/update.service';
 
 @Component({
   selector: 'app-root',
@@ -66,6 +67,8 @@ export class AppComponent {
     public authService: AuthService,
 
     private router: Router,
+    
+    public updateService: UpdateService,
   ) {
     // ROUTE CHANGES
 
