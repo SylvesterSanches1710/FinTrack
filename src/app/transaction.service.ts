@@ -173,7 +173,7 @@ export class TransactionService {
     this.categoriesSubject.next(this.categories);
     this.syncToCloud();
 
-    this.processRecurringTransactions();
+    // this.processRecurringTransactions();
   }
   // =========================
   // CLOUD SAVE
@@ -378,7 +378,7 @@ export class TransactionService {
     let recurring = this.getRecurringTransactions();
 
     recurring = recurring.map((r: any) => {
-      const dueDate = new Date(r.nextDate);
+      const dueDate = new Date(r.nextDate + 'T00:00:00');
 
       // IF DUE
 
@@ -439,6 +439,7 @@ export class TransactionService {
     localStorage.setItem('recurring', JSON.stringify(recurring));
 
     this.recurringTransactions = recurring;
+    this.syncToCloud();
   }
 
   // =========================
@@ -726,6 +727,11 @@ export class TransactionService {
 
       this.categoriesSubject.next(this.categories);
     }
+    // PROCESS RECURRING AFTER CLOUD DATA IS LOADED
+
+    this.processRecurringTransactions();
+
+    this.syncToCloud();
   }
   // =========================
   // AI INSIGHTS ENGINE

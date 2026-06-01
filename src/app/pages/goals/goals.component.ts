@@ -38,6 +38,8 @@ export class GoalsComponent {
 
   categories: string[] = [];
 
+  expandedGoalIndex = -1;
+
   presetColors = [
     '#2b6fff',
     '#20d997',
@@ -216,5 +218,42 @@ export class GoalsComponent {
     this.transactionService.deleteGoal(title);
 
     this.loadGoals();
+  }
+
+  toggleGoal(index: number) {
+    if (this.expandedGoalIndex === index) {
+      this.expandedGoalIndex = -1;
+    } else {
+      this.expandedGoalIndex = index;
+    }
+  }
+  getGoalTransactions(goal: any) {
+    const transactions = this.transactionService.getTransactions();
+
+    return transactions
+      .filter((t: any) => t.category === goal.linkedCategory)
+      .sort(
+        (a: any, b: any) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+  }
+
+  getGoalStats(goal: any) {
+    const transactions = this.getGoalTransactions(goal);
+
+    const totalContributions = transactions.length;
+
+    const totalSaved = transactions.reduce(
+      (sum: number, t: any) => sum + Number(t.amount),
+      0,
+    );
+
+    const averageContribution =
+      totalContributions > 0 ? Math.round(totalSaved / totalContributions) : 0;
+
+    return {
+      totalContributions,
+      averageContribution,
+    };
   }
 }

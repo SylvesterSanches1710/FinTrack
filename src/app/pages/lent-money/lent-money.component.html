@@ -8,6 +8,40 @@
     <button class="add-btn" (click)="showModal = true">+ Add Entry</button>
   </div>
 
+  <div class="lending-summary">
+    <div class="summary-card">
+      <span>Total Lent</span>
+
+      <strong> ₹{{ getLendingStats().totalLent }} </strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Outstanding</span>
+
+      <strong> ₹{{ getLendingStats().totalOutstanding }} </strong>
+    </div>
+
+    <div class="summary-card">
+      <span>People Owing</span>
+
+      <strong>
+        {{ getLendingStats().peopleCount }}
+      </strong>
+    </div>
+  </div>
+
+  <div class="top-borrowers" *ngIf="getTopBorrowers().length > 0">
+    <h3>Top Borrowers</h3>
+
+    <div class="borrower-row" *ngFor="let borrower of getTopBorrowers()">
+      <span>
+        {{ borrower.person }}
+      </span>
+
+      <strong> ₹{{ borrower.amount }} </strong>
+    </div>
+  </div>
+
   <!-- CARDS -->
   <div class="lending-grid">
     <div class="lending-card" *ngFor="let lending of lendings; let i = index">

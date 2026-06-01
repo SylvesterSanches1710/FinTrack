@@ -12,7 +12,7 @@
 
   <!-- GRID -->
   <div class="goals-grid">
-    <div class="goal-card" *ngFor="let goal of goals">
+    <div class="goal-card" *ngFor="let goal of goals; let i = index">
       <!-- CARD HEADER -->
       <div class="goal-header">
         <div class="goal-title-row">
@@ -72,7 +72,66 @@
           </span>
         </div>
         <div class="goal-eta">
-          <i class="ti ti-clock"></i> {{ getGoalETA(goal) }}
+          <i class="ti ti-clock"></i>
+          {{ getGoalETA(goal) }}
+        </div>
+
+        <button class="goal-expand-btn" (click)="toggleGoal(i)">
+          <i
+            class="ti"
+            [ngClass]="
+              expandedGoalIndex === i ? 'ti-chevron-up' : 'ti-chevron-down'
+            "
+          >
+          </i>
+
+          {{ expandedGoalIndex === i ? "Hide Activity" : "Show Activity" }}
+        </button>
+
+        <div class="goal-transactions" *ngIf="expandedGoalIndex === i">
+          <!-- SUMMARY -->
+
+          <div class="goal-summary">
+            <div class="goal-summary-item">
+              <span>Contributions</span>
+              <strong>
+                {{ getGoalStats(goal).totalContributions }}
+              </strong>
+            </div>
+
+            <div class="goal-summary-item">
+              <span>Average</span>
+              <strong> ₹{{ getGoalStats(goal).averageContribution }} </strong>
+            </div>
+          </div>
+
+          <!-- TRANSACTIONS -->
+
+          <div
+            class="goal-transaction"
+            *ngFor="let transaction of getGoalTransactions(goal)"
+          >
+            <div class="goal-transaction-top">
+              <div class="goal-transaction-date">
+                {{ transaction.date }}
+              </div>
+
+              <div class="goal-transaction-amount">
+                ₹{{ transaction.amount }}
+              </div>
+            </div>
+
+            <div class="goal-transaction-note" *ngIf="transaction.notes">
+              {{ transaction.notes }}
+            </div>
+          </div>
+
+          <div
+            class="empty-transactions"
+            *ngIf="getGoalTransactions(goal).length === 0"
+          >
+            No contributions yet
+          </div>
         </div>
       </div>
     </div>

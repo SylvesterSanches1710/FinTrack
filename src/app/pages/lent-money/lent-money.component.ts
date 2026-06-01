@@ -239,4 +239,44 @@ export class LentMoneyComponent {
 
     this.showRecoveryModal = false;
   }
+
+  getLendingStats() {
+    const totalLent = this.lendings.reduce(
+      (sum, lending) => sum + Number(lending.amount),
+      0,
+    );
+
+    const totalOutstanding = this.lendings.reduce(
+      (sum, lending) => sum + Number(lending.remaining),
+      0,
+    );
+
+    const uniquePeople = new Set(this.lendings.map((l) => l.person));
+
+    return {
+      totalLent,
+      totalOutstanding,
+      peopleCount: uniquePeople.size,
+    };
+  }
+
+  getTopBorrowers() {
+    const grouped: any = {};
+
+    this.lendings.forEach((lending) => {
+      if (!grouped[lending.person]) {
+        grouped[lending.person] = 0;
+      }
+
+      grouped[lending.person] += Number(lending.remaining);
+    });
+
+    return Object.entries(grouped)
+      .map(([person, amount]) => ({
+        person,
+        amount,
+      }))
+      .sort((a: any, b: any) => b.amount - a.amount)
+      .slice(0, 3);
+  }
 }
