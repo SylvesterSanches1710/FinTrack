@@ -1,106 +1,121 @@
+// =============================================================================
+//  LENT MONEY — Mobile-first, fully optimised
+// =============================================================================
+
 .lent-page {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 2.5rem;
+  gap: 1.25rem;
+  padding: 1.5rem 1.25rem;
   color: white;
+  min-height: 100vh;
 }
 
-/* =============================================================================
-   HEADER
-============================================================================= */
+// =============================================================================
+//  HEADER
+// =============================================================================
 
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
 
   h1 {
-    font-size: 2.625rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    margin: 0 0 0.375rem;
+    margin: 0 0 0.25rem;
+    line-height: 1.2;
   }
 
   p {
+    font-size: 0.813rem;
     color: #9ca3af;
+    margin: 0;
   }
 }
 
 .add-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  height: 3rem;
-  padding: 0 1.375rem;
+  height: 2.5rem;
+  padding: 0 1.125rem;
   border: none;
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   background: #2563eb;
   color: white;
   font-weight: 600;
-  font-size: 0.938rem;
+  font-size: 0.875rem;
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.2s ease;
+  white-space: nowrap;
+
+  i {
+    font-size: 1rem;
+  }
 
   &:hover {
     background: #3b82f6;
   }
+  &:active {
+    transform: scale(0.97);
+  }
 }
 
-/* =============================================================================
-   SUMMARY STATS
-============================================================================= */
+// =============================================================================
+//  SUMMARY STATS
+// =============================================================================
 
 .lending-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 0.625rem;
 }
 
 .summary-card {
   background: #141414;
   border: 0.0625rem solid #232323;
-  border-radius: 1.25rem;
-  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  padding: 0.875rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  transition: border-color 0.15s ease;
-
-  &:hover {
-    border-color: #2f2f2f;
-  }
+  gap: 0.375rem;
 
   span {
-    font-size: 0.813rem;
+    font-size: 0.688rem;
     font-weight: 500;
     color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   strong {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: white;
+    line-height: 1;
   }
 }
 
-/* =============================================================================
-   TOP BORROWERS
-============================================================================= */
+// =============================================================================
+//  TOP BORROWERS
+// =============================================================================
 
 .top-borrowers {
   background: #141414;
   border: 0.0625rem solid #232323;
-  border-radius: 1.25rem;
-  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  padding: 1rem;
 
   h3 {
-    font-size: 0.938rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: #9ca3af;
-    margin: 0 0 0.875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.625rem;
   }
 }
 
@@ -108,7 +123,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.625rem 0;
+  padding: 0.5rem 0;
   border-bottom: 0.0625rem solid #1a1a1a;
 
   &:last-child {
@@ -116,39 +131,39 @@
   }
 
   span {
-    font-size: 0.938rem;
+    font-size: 0.875rem;
     color: #d1d5db;
   }
 
   strong {
-    font-size: 0.938rem;
+    font-size: 0.875rem;
     font-weight: 700;
     color: white;
   }
 }
 
-/* =============================================================================
-   GRID
-============================================================================= */
+// =============================================================================
+//  GRID
+// =============================================================================
 
 .lending-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
 }
 
-/* =============================================================================
-   CARD
-============================================================================= */
+// =============================================================================
+//  CARD
+// =============================================================================
 
 .lending-card {
   background: #141414;
   border: 0.0625rem solid #232323;
-  border-radius: 1.5rem;
-  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
   transition: border-color 0.2s ease;
 
   &:hover {
@@ -156,22 +171,24 @@
   }
 }
 
+// ── Card Header ──────────────────────────────────────────────────────────────
+
 .card-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.625rem;
 }
 
 .avatar {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   background: #1f1f1f;
   border: 0.0625rem solid #2a2a2a;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #2563eb;
   flex-shrink: 0;
@@ -183,23 +200,26 @@
 }
 
 .person {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-date {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #6b7280;
-  margin-top: 0.125rem;
+  margin-top: 0.1rem;
 }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.3rem 0.75rem;
+  padding: 0.25rem 0.625rem;
   border-radius: 999rem;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -218,8 +238,8 @@
 }
 
 .delete-btn {
-  width: 2rem;
-  height: 2rem;
+  width: 1.875rem;
+  height: 1.875rem;
   border: none;
   border-radius: 0.5rem;
   background: transparent;
@@ -228,7 +248,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.9rem;
   flex-shrink: 0;
   transition:
     background 0.15s ease,
@@ -240,35 +260,39 @@
   }
 }
 
-.amount-row {
-  display: flex;
-  background: #1a1a1a;
-  border-radius: 0.875rem;
-  overflow: hidden;
+// ── Amount Row — ALWAYS 3 horizontal columns, never stacks ───────────────────
 
-  > div {
-    flex: 1;
-    padding: 0.875rem 1rem;
+.amount-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); // ← key fix: hardcoded 3 cols
+  background: #1a1a1a;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.amount-cell {
+  padding: 0.625rem 0.5rem;
+  text-align: center;
+
+  &:not(:last-child) {
     border-right: 0.0625rem solid #232323;
-    &:last-child {
-      border-right: none;
-    }
   }
 }
 
 .amount-label {
-  font-size: 0.688rem;
+  font-size: 0.625rem;
   font-weight: 500;
   color: #6b7280;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   margin-bottom: 0.25rem;
 }
 
 .amount {
-  font-size: 1.125rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: white;
+  white-space: nowrap;
 }
 
 .recovered-amt {
@@ -278,9 +302,11 @@
   color: #f59e0b;
 }
 
+// ── Progress Bar ─────────────────────────────────────────────────────────────
+
 .recovery-bar {
   width: 100%;
-  height: 0.375rem;
+  height: 0.3rem;
   background: #1f1f1f;
   border-radius: 999px;
   overflow: hidden;
@@ -290,26 +316,29 @@
   height: 100%;
   background: #2563eb;
   border-radius: 999px;
-  transition: width 0.3s ease;
+  transition: width 0.4s ease;
 }
+
+// ── Card Footer ───────────────────────────────────────────────────────────────
 
 .card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .card-meta {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  font-size: 0.8rem;
+  gap: 0.25rem;
+  font-size: 0.75rem;
   color: #6b7280;
   min-width: 0;
+  flex: 1;
 
   i {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     flex-shrink: 0;
   }
 }
@@ -327,18 +356,20 @@
 }
 
 .recover-btn {
-  height: 2.25rem;
-  padding: 0 1rem;
+  height: 2rem;
+  padding: 0 0.75rem;
   border: none;
-  border-radius: 0.625rem;
+  border-radius: 0.5rem;
   background: #1f2937;
   color: #60a5fa;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background: #2563eb;
@@ -346,45 +377,93 @@
   }
 }
 
-/* =============================================================================
-   MODAL
-============================================================================= */
+// =============================================================================
+//  EMPTY STATE
+// =============================================================================
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 3rem 1rem;
+  text-align: center;
+
+  i {
+    font-size: 2.5rem;
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9ca3af;
+  }
+
+  span {
+    font-size: 0.813rem;
+    color: #4b5563;
+  }
+}
+
+// =============================================================================
+//  MODAL
+// =============================================================================
 
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(0.4rem);
+  backdrop-filter: blur(0.375rem);
   display: flex;
-  align-items: center;
+  align-items: flex-end; // sheet slides up from bottom on mobile
   justify-content: center;
   z-index: 5000;
-  padding: 1rem;
+  padding: 0;
 }
 
 .lending-modal {
   width: 100%;
-  max-width: 28rem;
+  max-width: 480px;
   background: #141414;
   border: 0.0625rem solid #232323;
-  border-radius: 1.75rem;
-  padding: 1.75rem;
+  border-radius: 1.5rem 1.5rem 0 0;
+  padding: 0 1.25rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.45);
-  max-height: 90vh;
+  box-shadow: 0 -1rem 3rem rgba(0, 0, 0, 0.5);
+  max-height: 92dvh;
   overflow-y: auto;
+
+  // Drag handle
+  &::before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 0.25rem;
+    background: #333;
+    border-radius: 999px;
+    margin: 0.875rem auto 0;
+    flex-shrink: 0;
+  }
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  background: #141414;
+  padding: 0.5rem 0 0.25rem;
+  z-index: 10;
 
   h2 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
   }
 }
@@ -414,7 +493,7 @@
 .modal-field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.375rem;
 
   label {
     font-size: 0.813rem;
@@ -435,7 +514,7 @@
 .lending-modal input,
 .lending-modal select {
   width: 100%;
-  height: 3.25rem;
+  height: 3rem;
   border: 0.0625rem solid #2a2a2a;
   background: #1b1b1b;
   border-radius: 0.875rem;
@@ -444,6 +523,8 @@
   font-size: 0.938rem;
   outline: none;
   transition: border-color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
 
   &:focus {
     border-color: #2563eb;
@@ -456,12 +537,12 @@
 }
 
 .lending-modal select {
-  appearance: none;
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-color: #1b1b1b;
+  padding-right: 2.5rem;
 }
 
 .input-prefix {
@@ -483,7 +564,7 @@
     font-size: 1rem;
     font-weight: 500;
     border-right: 0.0625rem solid #2a2a2a;
-    height: 3.25rem;
+    height: 3rem;
     display: flex;
     align-items: center;
     flex-shrink: 0;
@@ -491,26 +572,27 @@
 
   input {
     flex: 1;
-    height: 3.25rem;
+    height: 3rem;
     border: none !important;
     background: transparent;
     padding: 0 1rem;
     color: white;
     font-size: 0.938rem;
     outline: none;
+    border-radius: 0 !important;
   }
 }
 
 .modal-actions {
   display: flex;
-  gap: 0.875rem;
+  gap: 0.75rem;
   margin-top: 0.25rem;
 }
 
 .cancel-btn,
 .save-btn {
   flex: 1;
-  height: 3.25rem;
+  height: 3rem;
   border: none;
   border-radius: 0.875rem;
   font-weight: 600;
@@ -526,95 +608,63 @@
     background: #2a2a2a;
   }
 }
+
 .save-btn {
   background: #2563eb;
   color: white;
   &:hover {
     background: #3b82f6;
   }
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
-/* =============================================================================
-   RESPONSIVE
-============================================================================= */
+// =============================================================================
+//  RESPONSIVE — Tablet & Desktop: restore multi-column grid
+// =============================================================================
 
-@media (max-width: 48rem) {
+@media (min-width: 640px) {
   .lent-page {
-    padding: 1.25rem;
+    padding: 2rem 1.75rem;
+    gap: 1.5rem;
   }
 
-  .page-header {
-    h1 {
-      font-size: 2rem;
-    }
+  .page-header h1 {
+    font-size: 2.25rem;
   }
 
-  .add-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .lending-summary {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.625rem;
-  }
-
-  .summary-card {
-    padding: 1rem;
-    strong {
-      font-size: 1.375rem;
-    }
+  .summary-card strong {
+    font-size: 1.625rem;
   }
 
   .lending-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1.25rem;
   }
 
   .modal-overlay {
-    align-items: flex-end;
-    padding: 0;
+    align-items: center;
+    padding: 1rem;
   }
 
   .lending-modal {
-    max-width: 100%;
-    border-radius: 1.5rem 1.5rem 0 0;
-    padding: 0 1.25rem 1.5rem;
-    max-height: 92dvh;
+    border-radius: 1.75rem;
+    padding: 1.75rem;
+    max-width: 28rem;
 
     &::before {
-      content: "";
-      display: block;
-      width: 2.5rem;
-      height: 0.25rem;
-      background: #333;
-      border-radius: 999px;
-      margin: 1rem auto 0.5rem;
+      display: none;
     }
-  }
-
-  .modal-header {
-    position: sticky;
-    top: 0;
-    background: #141414;
-    padding: 0.75rem 0;
-    z-index: 10;
   }
 }
 
-@media (max-width: 36rem) {
-  .lending-summary {
-    grid-template-columns: 1fr;
+@media (min-width: 1024px) {
+  .lent-page {
+    padding: 2.5rem;
   }
-
-  .amount-row {
-    flex-direction: column;
-  }
-
-  .amount-row > div {
-    border-right: none;
-    border-bottom: 0.0625rem solid #232323;
-    &:last-child {
-      border-bottom: none;
-    }
+  .page-header h1 {
+    font-size: 2.625rem;
   }
 }

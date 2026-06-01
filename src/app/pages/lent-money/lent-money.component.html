@@ -5,40 +5,33 @@
       <h1>Lent Money</h1>
       <p>Track money lent to others</p>
     </div>
-    <button class="add-btn" (click)="showModal = true">+ Add Entry</button>
+    <button class="add-btn" (click)="showModal = true">
+      <i class="ti ti-plus"></i> Add Entry
+    </button>
   </div>
 
+  <!-- SUMMARY -->
   <div class="lending-summary">
     <div class="summary-card">
       <span>Total Lent</span>
-
-      <strong> ₹{{ getLendingStats().totalLent }} </strong>
+      <strong>₹{{ getLendingStats().totalLent }}</strong>
     </div>
-
     <div class="summary-card">
       <span>Outstanding</span>
-
-      <strong> ₹{{ getLendingStats().totalOutstanding }} </strong>
+      <strong>₹{{ getLendingStats().totalOutstanding }}</strong>
     </div>
-
     <div class="summary-card">
-      <span>People Owing</span>
-
-      <strong>
-        {{ getLendingStats().peopleCount }}
-      </strong>
+      <span>Owing</span>
+      <strong>{{ getLendingStats().peopleCount }}</strong>
     </div>
   </div>
 
+  <!-- TOP BORROWERS -->
   <div class="top-borrowers" *ngIf="getTopBorrowers().length > 0">
     <h3>Top Borrowers</h3>
-
     <div class="borrower-row" *ngFor="let borrower of getTopBorrowers()">
-      <span>
-        {{ borrower.person }}
-      </span>
-
-      <strong> ₹{{ borrower.amount }} </strong>
+      <span>{{ borrower.person }}</span>
+      <strong>₹{{ borrower.amount }}</strong>
     </div>
   </div>
 
@@ -61,22 +54,26 @@
           }"
           >{{ lending.status }}</span
         >
-        <button class="delete-btn" (click)="deleteLending(i)">
+        <button
+          class="delete-btn"
+          (click)="deleteLending(i)"
+          aria-label="Delete entry"
+        >
           <i class="ti ti-trash"></i>
         </button>
       </div>
 
-      <!-- AMOUNT ROW -->
+      <!-- AMOUNT ROW — always 3 columns, never stacks -->
       <div class="amount-row">
-        <div>
+        <div class="amount-cell">
           <div class="amount-label">Lent</div>
           <div class="amount">₹{{ lending.amount }}</div>
         </div>
-        <div>
+        <div class="amount-cell">
           <div class="amount-label">Recovered</div>
           <div class="amount recovered-amt">₹{{ lending.recovered }}</div>
         </div>
-        <div>
+        <div class="amount-cell">
           <div class="amount-label">Remaining</div>
           <div class="amount remaining-amt">₹{{ lending.remaining }}</div>
         </div>
@@ -86,14 +83,17 @@
       <div class="recovery-bar">
         <div
           class="recovery-fill"
-          [style.width.%]="(lending.recovered / lending.amount) * 100"
+          [style.width.%]="
+            lending.amount > 0 ? (lending.recovered / lending.amount) * 100 : 0
+          "
         ></div>
       </div>
 
       <!-- FOOTER -->
       <div class="card-footer">
         <div class="card-meta">
-          <i class="ti ti-building-bank"></i> {{ lending.account }}
+          <i class="ti ti-building-bank"></i>
+          {{ lending.account }}
           <span *ngIf="lending.note" class="note-dot">·</span>
           <span *ngIf="lending.note" class="note">{{ lending.note }}</span>
         </div>
@@ -103,17 +103,29 @@
       </div>
     </div>
   </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" *ngIf="lendings.length === 0">
+    <i class="ti ti-coin-off"></i>
+    <p>No lending entries yet</p>
+    <span>Tap <strong>+ Add Entry</strong> to get started</span>
+  </div>
 </div>
 
-<!-- ADD MODAL -->
+<!-- ═══ ADD MODAL ═══ -->
 <div class="modal-overlay" *ngIf="showModal" (click)="showModal = false">
   <div class="lending-modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Add Lending Entry</h2>
-      <button class="modal-close" (click)="showModal = false">
+      <button
+        class="modal-close"
+        (click)="showModal = false"
+        aria-label="Close"
+      >
         <i class="ti ti-x"></i>
       </button>
     </div>
+
     <div class="modal-field">
       <label>Person</label>
       <input
@@ -122,6 +134,7 @@
         [(ngModel)]="person"
       />
     </div>
+
     <div class="modal-field">
       <label>Account</label>
       <select [(ngModel)]="selectedAccount">
@@ -131,6 +144,7 @@
         </option>
       </select>
     </div>
+
     <div class="modal-field">
       <label>Amount</label>
       <div class="input-prefix">
@@ -138,14 +152,17 @@
         <input type="number" placeholder="0" [(ngModel)]="amount" />
       </div>
     </div>
+
     <div class="modal-field">
       <label>Note <span class="optional">optional</span></label>
       <input type="text" placeholder="What was it for?" [(ngModel)]="note" />
     </div>
+
     <div class="modal-field">
       <label>Date</label>
       <input type="date" [(ngModel)]="date" />
     </div>
+
     <div class="modal-actions">
       <button class="cancel-btn" (click)="showModal = false">Cancel</button>
       <button class="save-btn" (click)="addLending()">Save Entry</button>
@@ -153,7 +170,7 @@
   </div>
 </div>
 
-<!-- RECOVERY MODAL -->
+<!-- ═══ RECOVERY MODAL ═══ -->
 <div
   class="modal-overlay"
   *ngIf="showRecoveryModal"
@@ -162,10 +179,15 @@
   <div class="lending-modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Update Recovery</h2>
-      <button class="modal-close" (click)="showRecoveryModal = false">
+      <button
+        class="modal-close"
+        (click)="showRecoveryModal = false"
+        aria-label="Close"
+      >
         <i class="ti ti-x"></i>
       </button>
     </div>
+
     <div class="modal-field">
       <label>Amount Recovered</label>
       <div class="input-prefix">
@@ -173,6 +195,7 @@
         <input type="number" placeholder="0" [(ngModel)]="recoveryAmount" />
       </div>
     </div>
+
     <div class="modal-actions">
       <button class="cancel-btn" (click)="showRecoveryModal = false">
         Cancel
